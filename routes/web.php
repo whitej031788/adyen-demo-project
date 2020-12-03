@@ -11,6 +11,12 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+// If they haven't created a demo session, then send them to the start page for demo creation
+Route::group(['middleware' => 'demosession'], function () {
+  Route::get('/', 'ShowController@index');
 });
+
+// Create demo, GET for new  demo, POST for the actual creation
+Route::get('/create-demo', 'DemoController@view');
+
+Route::post('/create-demo', 'DemoController@create');
