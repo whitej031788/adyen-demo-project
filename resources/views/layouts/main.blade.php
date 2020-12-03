@@ -16,11 +16,13 @@
         href="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/3.18.2/adyen.css"
         crossorigin="anonymous">
 
+      <link href="/css/adyen-demo.css" rel="stylesheet">
+
     <script type="text/javascript">
       // The demo_session is a JSON respresentation of what the demo is meant to show
       // If it is defined, it should be available in all views, and thus JS files
 
-      var demo_session = JSON.parse('{!! $demo_session !!}');
+      var demoSession = JSON.parse('{!! json_encode(session('demo_session')) !!}');
     </script>
   </head>
   <body>

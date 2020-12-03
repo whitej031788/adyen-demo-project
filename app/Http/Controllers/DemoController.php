@@ -26,4 +26,10 @@ class DemoController extends Controller
 
     return redirect('/');
   }
+
+  public function delete(Request $request)
+  {
+    $request->session()->forget('demo_session');
+    return redirect('/create-demo');
+  }
 }

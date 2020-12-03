@@ -14,6 +14,8 @@
 // If they haven't created a demo session, then send them to the start page for demo creation
 Route::group(['middleware' => 'demosession'], function () {
   Route::get('/', 'ShowController@index');
+
+  Route::post('/delete-demo', 'DemoController@delete');
 });
 
 // Create demo, GET for new  demo, POST for the actual creation
