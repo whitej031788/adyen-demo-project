@@ -2,3 +2,17 @@
   font-weight: 900;
   text-decoration: underline;
 }
+
+.checkbox-lg {
+  font-size: 18px;
+  font-weight: 900;
+}
+
+input.checkbox-lg {
+  height: 16px;
+  width: 16px;
+}
+
+.sub-options {
+  display: none;
+}

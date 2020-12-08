@@ -9,9 +9,13 @@
     "license": "MIT",
     "require": {
         "php": "^7.1.3",
+        "adyen/php-api-library": "^8.0",
+        "aws/aws-sdk-php": "^3.168",
         "fideloper/proxy": "^4.0",
         "laravel/framework": "5.8.*",
-        "laravel/tinker": "^1.0"
+        "laravel/nexmo-notification-channel": "^2.5",
+        "laravel/tinker": "^1.0",
+        "nexmo/laravel": "^2.4"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",

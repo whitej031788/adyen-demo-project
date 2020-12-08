@@ -34,4 +34,8 @@ return [
         'secret' => env('SPARKPOST_SECRET'),
     ],
 
+    'nexmo' => [
+        'sms_from' => '15556666666',
+    ]
+
 ];
