@@ -23,12 +23,12 @@
       // If it is defined, it should be available in all views, and thus JS files
 
       var demoSession = JSON.parse('{!! json_encode(session('demo_session')) !!}');
-      var merchantAccount = '{{$merchantAccount}}';
+      var merchantAccount = '{{isset($merchantAccount) ? $merchantAccount : ""}}';
     </script>
   </head>
   <body>
 
-    <div class="container" id="main-container">
+    <div class="container pb-3" id="main-container">
       @yield('content')
     </div>
     <script src="https://pay.google.com/gp/p/js/pay.js"></script>

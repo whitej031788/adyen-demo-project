@@ -13,4 +13,8 @@ class ShowController extends Controller
   public function customCallCenter(Request $request) {
     return view('custom-call-center', ['merchantAccount' => \Config::get('adyen.motoMerchantAccount')]);
   }
+
+  public function standardEcom(Request $request) {
+    return view('standard-ecom', ['merchantAccount' => \Config::get('adyen.ecomMerchantAccount')]);
+  }
 }

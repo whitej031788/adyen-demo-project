@@ -15,16 +15,10 @@
 Route::group(['middleware' => 'demosession'], function () {
   Route::get('/', 'ShowController@index');
   Route::get('/custom-call-center', 'ShowController@customCallCenter');
-
+  Route::get('/standard-ecom', 'ShowController@standardEcom');
   Route::post('/delete-demo', 'DemoController@delete');
 });
-
 // Create demo, GET for new  demo, POST for the actual creation
 Route::get('/create-demo', 'DemoController@view');
 
 Route::post('/create-demo', 'DemoController@create');
-
-// temporary
-Route::get('/harvey-nichols', function () {
-  return view('harvey-nichols');
-});
