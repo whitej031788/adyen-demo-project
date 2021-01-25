@@ -22,3 +22,8 @@ Route::group(['middleware' => 'demosession'], function () {
 Route::get('/create-demo', 'DemoController@view');
 
 Route::post('/create-demo', 'DemoController@create');
+
+// File upload controllers
+Route::get('file-upload', 'DemoController@fileUpload')->name('file.upload');
+
+Route::post('file-upload', 'DemoController@fileUploadPost')->name('file.upload.post');
