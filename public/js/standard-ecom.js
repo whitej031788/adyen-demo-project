@@ -1,6 +1,13 @@
+import { PayByLink } from './components/pay-by-link.js';
+
 let dataObj = {
   "countryCode": "GB",
-  "merchantAccount": merchantAccount
+  "merchantAccount": merchantAccount,
+  "reference": "YOUR_PAYMENT_REFERENCE",
+  "amount": {
+    "value": 4200,
+    "currency": "GBP"
+  },
 };
 
 $.ajax({
@@ -14,4 +21,10 @@ $.ajax({
   error: function(jqXhr, textStatus, errorThrown) {
     console.log(errorThrown);
   }
+});
+
+let newPbl = new PayByLink(dataObj);
+
+newPbl.getQRCode().then(function(qrCodeSvg) {
+  $('#qr-code').append(qrCodeSvg);
 });

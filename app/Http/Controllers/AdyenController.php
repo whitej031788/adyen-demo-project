@@ -54,6 +54,18 @@ class AdyenController extends Controller
     return response()->json($result);
   }
 
+  public function getPaymentLinkQR(Request $request) {
+    $params = $request->all();
+    $curlUrl = "https://checkout-test.adyen.com/v52/paymentLinks";
+
+    $result = $this->makeAdyenRequest($curlUrl, $params, true, false);
+
+    $urlToQrEncode = $result->url;
+    $qrSvg = \QrCode::size(250)->generate($urlToQrEncode);
+
+    return response()->json($qrSvg);
+  }
+
   private function makeAdyenRequest($methodOrUrl, $params, $isClassic, $service) {
     if (!$isClassic) {
       $result = $service->$methodOrUrl($params);

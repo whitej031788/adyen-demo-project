@@ -22,3 +22,5 @@ Route::post('/adyen/getPaymentMethods', 'AdyenController@getPaymentMethods');
 Route::post('/adyen/makePayment', 'AdyenController@makePayment');
 
 Route::post('/adyen/generateAndSendPaymentLink', 'AdyenController@generateAndSendPaymentLink');
+
+Route::post('/adyen/getPaymentLinkQR', 'AdyenController@getPaymentLinkQR');
