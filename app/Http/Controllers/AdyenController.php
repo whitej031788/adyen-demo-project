@@ -40,7 +40,7 @@ class AdyenController extends Controller
     $type = $request->type;
     $params = $request->data;
 
-    $curlUrl = "https://checkout-test.adyen.com/v52/paymentLinks";
+    $curlUrl = "https://checkout-test.adyen.com/v66/paymentLinks";
 
     $result = $this->makeAdyenRequest($curlUrl, $params, true, false);
 
@@ -62,7 +62,7 @@ class AdyenController extends Controller
 
   public function getPaymentLinkQR(Request $request) {
     $params = $request->all();
-    $curlUrl = "https://checkout-test.adyen.com/v52/paymentLinks";
+    $curlUrl = "https://checkout-test.adyen.com/v66/paymentLinks";
 
     $result = $this->makeAdyenRequest($curlUrl, $params, true, false);
 
