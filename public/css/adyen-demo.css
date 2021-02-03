@@ -1,18 +1,32 @@
 .merchant-name {
-  font-weight: 900;
-  text-decoration: underline;
+	font-weight: 900;
+	text-decoration: underline;
 }
 
 .checkbox-lg {
-  font-size: 18px;
-  font-weight: 900;
+	font-size: 18px;
+	font-weight: 900;
 }
 
 input.checkbox-lg {
-  height: 16px;
-  width: 16px;
+	height: 16px;
+	width: 16px;
 }
 
 .sub-options {
-  display: none;
+	display: none;
+}
+
+/*Non-Adyen standard styling from here*/
+body {background-color: #f6f6f6;}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+}
+#qr-code{
+	text-align: center;
 }
