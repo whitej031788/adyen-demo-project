@@ -109,7 +109,7 @@
                   </div>
                 </div>
                 <div class="col-md-12">
-                  <button type="button" class="btn btn-primary" onclick="handleSendPaymentLink(event);">Generate and send payment link</button>
+                  <button type="button" class="btn btn-primary payment-link">Generate and send payment link</button>
                 </div>
               </div>
             </div>

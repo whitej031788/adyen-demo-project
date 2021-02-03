@@ -4,7 +4,8 @@ export class PayByLink {
     this.data = data;
   }
 
-  // Call Laravel REST API with data to get QR code image
+  // Call Laravel REST API with data to get QR code SVG example
+  // The result of this promise is SVG XML and can be rendered to an HTML page
   getQRCode() {
     return $.ajax({
       url: '/api/adyen/getPaymentLinkQR',
@@ -18,11 +19,21 @@ export class PayByLink {
     console.log('getlink');
   }
 
-  sendLinkSMS(link) {
-    console.log('sendsms');
+  sendLinkSMS() {
+    return $.ajax({
+      url: '/api/adyen/generateAndSendPaymentLink',
+      dataType: 'json',
+      type: 'post',
+      data: {type: 'sms', data: this.data}
+    });
   }
 
-  sendLinkEmail(link) {
-    console.log('sendemail');
+  sendLinkEmail() {
+    return $.ajax({
+      url: '/api/adyen/generateAndSendPaymentLink',
+      dataType: 'json',
+      type: 'post',
+      data: {type: 'email', data: this.data}
+    });
   }
 }

@@ -37,19 +37,23 @@ class AdyenController extends Controller
   }
 
   public function generateAndSendPaymentLink(Request $request) {
-    $params = $request->all();
+    $type = $request->type;
+    $params = $request->data;
+
     $curlUrl = "https://checkout-test.adyen.com/v52/paymentLinks";
 
     $result = $this->makeAdyenRequest($curlUrl, $params, true, false);
 
-    // \Nexmo::message()->send([
-    //     'to' => $request->shopperPhone,
-    //     'from' => $request->merchantName,
-    //     'text' => "Please click the below to link to pay for your order:\n\n" . $result->url . " ||| "
-    // ]);
-
-    Mail::to($request->shopperEmail)
-      ->send(new AdyenPayByLink($result->url, $request->merchantName, $request->reference));
+    if ($type == 'sms') {
+      \Nexmo::message()->send([
+        'to' => $params['shopperPhone'],
+        'from' => $params['merchantName'],
+        'text' => "Please click the below to link to pay for your order:\n\n" . $result->url . " ||| "
+      ]);
+    } elseif ($type == 'email') {
+      Mail::to($params['shopperEmail'])
+        ->send(new AdyenPayByLink($result->url, $params['merchantName'], $params['reference']));
+    }
 
     return response()->json($result);
   }

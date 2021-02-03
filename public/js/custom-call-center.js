@@ -1,3 +1,4 @@
+import { PayByLink } from './components/pay-by-link.js';
 // demoSession global variable that is always available containing demo settings
 $("body").css("background-color", demoSession ? demoSession.brandColorTwo : '');
 $("#main-container").css("background-color", demoSession ? demoSession.brandColorOne : '');
@@ -53,20 +54,13 @@ function handleSendPaymentLink(e) {
     "merchantName": demoSession.merchantName
   };
 
-  $.ajax({
-    url: '/api/adyen/generateAndSendPaymentLink',
-    dataType: 'json',
-    type: 'post',
-    data: dataObj,
-    success: function(retData, textStatus, jQxhr) {
-      let url = retData.url;
-      $('#payment-link').html(url);
-      $('#payment-link-success').show();
-      window.scrollTo(0,0);
-    },
-    error: function(jqXhr, textStatus, errorThrown) {
-      console.log(errorThrown);
-    }
+  let newPbl = new PayByLink(dataObj);
+
+  newPbl.sendLinkEmail().then(function(retData) {
+    let url = retData.url;
+    $('#payment-link').html(url);
+    $('#payment-link-success').show();
+    window.scrollTo(0,0);
   });
 };
 
@@ -107,3 +101,6 @@ var configuration = {
 
 var checkout = new AdyenCheckout(configuration);
 var card = checkout.create('card', {showPayButton: true}).mount('#card-container');
+
+// Event handlers
+document.querySelector('.payment-link').addEventListener("click", handleSendPaymentLink)
