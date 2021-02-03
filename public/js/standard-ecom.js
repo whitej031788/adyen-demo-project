@@ -18,19 +18,15 @@ newPbl.getQRCode().then(function(qrCodeSvg) {
   $('#qr-code').append(qrCodeSvg);
 });
 
-console.log(newPbl.data);
-
 Pusher.logToConsole = true;
 
-var pusher = new Pusher('47e2eb4a3e296716c3fd', {
+let pusher = new Pusher('47e2eb4a3e296716c3fd', {
   cluster: 'eu'
 });
 
 var channel = pusher.subscribe('adyen-demo');
 
 channel.bind('payment-success', function(data) {
-  console.log('Pusher Triggered: ', data);
-  console.log(newPbl.data);
   if (newPbl.data.reference == data.merchantReference) {
     alert(JSON.stringify(data));
   }
