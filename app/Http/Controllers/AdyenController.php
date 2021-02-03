@@ -55,6 +55,8 @@ class AdyenController extends Controller
         ->send(new AdyenPayByLink($result->url, $params['merchantName'], $params['reference']));
     }
 
+    // 'fetch' is also a $type but that is just if they want to get the link, not send it
+
     return response()->json($result);
   }
 
@@ -68,6 +70,61 @@ class AdyenController extends Controller
     $qrSvg = \QrCode::size(250)->generate($urlToQrEncode);
 
     return response()->json($qrSvg);
+  }
+
+  public function terminalCloudApiRequest(Request $request) {
+    $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
+
+    $params = $request->all();
+
+    $saleToPoiRequest = array (
+      'SaleToPOIRequest' =>
+        array (
+          'MessageHeader' =>
+          array (
+            'ProtocolVersion' => '3.0',
+            'MessageClass' => 'Service',
+            'MessageCategory' => 'Payment',
+            'MessageType' => 'Request',
+            'ServiceID' => $this->generateRandomString(),
+            'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
+            'POIID' => 'P400Plus-275384684',
+          ),
+          'PaymentRequest' =>
+          array (
+            'SaleData' =>
+            array (
+              'SaleTransactionID' =>
+              array (
+                'TransactionID' => $params['reference'],
+                'TimeStamp' => date("c"),
+              ),
+            ),
+            'PaymentTransaction' =>
+            array (
+              'AmountsReq' =>
+              array (
+                'Currency' => $params['amount']['currency'],
+                'RequestedAmount' => (float)($params['amount']['value'] / 100),
+              ),
+            ),
+          ),
+        ),
+      );
+
+    $result = $this->makeAdyenRequest("runTenderSync", $saleToPoiRequest, false, $terminalService);
+
+    return response()->json($result);
+  }
+
+  private function generateRandomString($length = 10) {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+      $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
   }
 
   private function makeAdyenRequest($methodOrUrl, $params, $isClassic, $service) {

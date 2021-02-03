@@ -1,4 +1,5 @@
 import { PayByLink } from './components/pay-by-link.js';
+import { TerminalApi } from './components/terminal-api.js';
 
 let pblDataObj = {
   "countryCode": "GB",
@@ -13,9 +14,14 @@ let pblDataObj = {
 };
 
 let newPbl = new PayByLink(pblDataObj);
+let terminalApi = new TerminalApi(pblDataObj);
 
 newPbl.getQRCode().then(function(qrCodeSvg) {
   $('#qr-code').append(qrCodeSvg);
+});
+
+terminalApi.cloudApiRequest().then(function(result) {
+  console.log(result);
 });
 
 Pusher.logToConsole = true;

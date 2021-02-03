@@ -16,7 +16,12 @@ export class PayByLink {
   }
 
   getLink() {
-    console.log('getlink');
+    return $.ajax({
+      url: '/api/adyen/generateAndSendPaymentLink',
+      dataType: 'json',
+      type: 'post',
+      data: {type: 'fetch', data: this.data}
+    });
   }
 
   sendLinkSMS() {
