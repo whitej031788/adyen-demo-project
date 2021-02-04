@@ -16,19 +16,43 @@
         href="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/3.20.0/adyen.css"
         crossorigin="anonymous">
 
+    <link href="/css/fontawesome.min.css" rel="stylesheet">
     <link href="/css/adyen-demo.css" rel="stylesheet">
 
     <script type="text/javascript">
       // The demo_session is a JSON respresentation of what the demo is meant to show
       // If it is defined, it should be available in all views, and thus JS files
-
       var demoSession = JSON.parse('{!! json_encode(session('demo_session')) !!}');
-      var merchantAccount = '{{isset($merchantAccount) ? $merchantAccount : ""}}';
+
+      // Adyen config mostly comes from the .env file and then is rendered in the blade views
+      // Not all properties are needed for different demo settings
+      var adyenConfig = {};
+      adyenConfig.merchantAccount = '{{isset($merchantAccount) ? $merchantAccount : ""}}';
+      adyenConfig.clientKey = '{{isset($clientKey) ? $clientKey : ""}}';
     </script>
   </head>
   <body>
+    <nav class="navbar navbar-expand-lg">
+      <a href="#" class="navbar-brand">
+        <img src="" height="50" alt="" class="merchant-logo">
+      </a>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="nav navbar-nav ml-auto">
+          <li class="nav-item">
+             <a class="nav-link brand-color-one" href="#">
+               <i class="fas fa-phone pr-1"></i> Call us free on 0800 123 4567
+             </a>
+          </li>
+          <li class="nav-item pl-3">
+             <a class="nav-link brand-color-one" href="#">
+               <i class="fas fa-cart-plus"></i>
+             </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
 
-    <div class="container pb-3" id="main-container">
+    <div class="container pb-3 pt-3" id="main-container">
       @yield('content')
     </div>
     <script src="https://pay.google.com/gp/p/js/pay.js"></script>

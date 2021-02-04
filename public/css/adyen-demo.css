@@ -17,10 +17,30 @@ input.checkbox-lg {
 	display: none;
 }
 
-/*Non-Adyen standard styling from here*/
-body {background-color: #f6f6f6;}
+.demo-cart-icon {
+	font-size: 25px;
+}
 
-img {
+.fas {
+	font-size: 20px;
+}
+
+.no-white-space * {
+	white-space: nowrap;
+}
+
+@font-face {
+  font-family: "FS-Emeric-Regular";
+  src: url("/fonts/FSEmeric.woff") format('woff');
+}
+
+/* Non-Adyen standard styling from here */
+body {
+	font-family: "FS-Emeric-Regular", Helvetica, sans-serif;
+	background-color: #f6f6f6;
+}
+
+img.cart-image {
   display: block;
   max-width: 100%;
   height: auto;

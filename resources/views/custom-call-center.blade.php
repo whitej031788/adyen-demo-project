@@ -1,11 +1,6 @@
 @extends('layouts.main')
 
 @section('content')
-  <nav class="navbar">
-    <a href="#" class="navbar-brand">
-      <img src="" height="100" alt="" class="merchant-logo">
-    </a>
-  </nav>
   <div class="row">
     <div class="col-12">
       <h1 class="text-center"><span class="merchant-name"></span> Call Centre</h1>

@@ -14,8 +14,10 @@ class AdyenController extends Controller
     $this->adyenClient->setEnvironment(\Adyen\Environment::TEST);
   }
 
+  // Rest API endpoint, can also be called from other controllers using second parameter
   public function getPaymentMethods(Request $request) {
     $checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
+
     $params = $request->all();
 
     $result = $this->makeAdyenRequest("paymentMethods", $params, false, $checkoutService);
@@ -40,7 +42,7 @@ class AdyenController extends Controller
     $type = $request->type;
     $params = $request->data;
 
-    $curlUrl = "https://checkout-test.adyen.com/v66/paymentLinks";
+    $curlUrl = "https://checkout-test.adyen.com/v52/paymentLinks";
 
     $result = $this->makeAdyenRequest($curlUrl, $params, true, false);
 
@@ -62,7 +64,7 @@ class AdyenController extends Controller
 
   public function getPaymentLinkQR(Request $request) {
     $params = $request->all();
-    $curlUrl = "https://checkout-test.adyen.com/v66/paymentLinks";
+    $curlUrl = "https://checkout-test.adyen.com/v52/paymentLinks";
 
     $result = $this->makeAdyenRequest($curlUrl, $params, true, false);
 

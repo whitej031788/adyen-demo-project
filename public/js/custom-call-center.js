@@ -1,6 +1,5 @@
 import { PayByLink } from './components/pay-by-link.js';
 // demoSession global variable that is always available containing demo settings
-$("body").css("background-color", demoSession ? demoSession.brandColorTwo : '');
 $("#main-container").css("background-color", demoSession ? demoSession.brandColorOne : '');
 
 function handleOnSubmit(state, component) {
@@ -103,4 +102,4 @@ var checkout = new AdyenCheckout(configuration);
 var card = checkout.create('card', {showPayButton: true}).mount('#card-container');
 
 // Event handlers
-document.querySelector('.payment-link').addEventListener("click", handleSendPaymentLink)
+document.querySelector('.payment-link').addEventListener("click", handleSendPaymentLink);

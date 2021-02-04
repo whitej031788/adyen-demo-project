@@ -14,4 +14,7 @@ window.onload = function() {
   [].slice.call(logos).forEach(function(logo) {
       logo.src = demoSession ? demoSession.merchantLogoUrl : '';
   });
+
+  $("nav").css("background-color", demoSession ? demoSession.brandColorTwo : 'black');
+  $(".brand-color-one").css("color", demoSession ? demoSession.brandColorOne : 'white');
 }
