@@ -37,26 +37,32 @@ class AdyenController extends Controller
   }
 
   public function generateAndSendPaymentLink(Request $request) {
-    $params = $request->all();
-    $curlUrl = "https://checkout-test.adyen.com/v52/paymentLinks";
+    $type = $request->type;
+    $params = $request->data;
+
+    $curlUrl = "https://checkout-test.adyen.com/v66/paymentLinks";
 
     $result = $this->makeAdyenRequest($curlUrl, $params, true, false);
 
-    // \Nexmo::message()->send([
-    //     'to' => $request->shopperPhone,
-    //     'from' => $request->merchantName,
-    //     'text' => "Please click the below to link to pay for your order:\n\n" . $result->url . " ||| "
-    // ]);
+    if ($type == 'sms') {
+      \Nexmo::message()->send([
+        'to' => $params['shopperPhone'],
+        'from' => $params['merchantName'],
+        'text' => "Please click the below to link to pay for your order:\n\n" . $result->url . " ||| "
+      ]);
+    } elseif ($type == 'email') {
+      Mail::to($params['shopperEmail'])
+        ->send(new AdyenPayByLink($result->url, $params['merchantName'], $params['reference']));
+    }
 
-    Mail::to($request->shopperEmail)
-      ->send(new AdyenPayByLink($result->url, $request->merchantName, $request->reference));
+    // 'fetch' is also a $type but that is just if they want to get the link, not send it
 
     return response()->json($result);
   }
 
   public function getPaymentLinkQR(Request $request) {
     $params = $request->all();
-    $curlUrl = "https://checkout-test.adyen.com/v52/paymentLinks";
+    $curlUrl = "https://checkout-test.adyen.com/v66/paymentLinks";
 
     $result = $this->makeAdyenRequest($curlUrl, $params, true, false);
 
@@ -64,6 +70,61 @@ class AdyenController extends Controller
     $qrSvg = \QrCode::size(250)->generate($urlToQrEncode);
 
     return response()->json($qrSvg);
+  }
+
+  public function terminalCloudApiRequest(Request $request) {
+    $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
+
+    $params = $request->all();
+
+    $saleToPoiRequest = array (
+      'SaleToPOIRequest' =>
+        array (
+          'MessageHeader' =>
+          array (
+            'ProtocolVersion' => '3.0',
+            'MessageClass' => 'Service',
+            'MessageCategory' => 'Payment',
+            'MessageType' => 'Request',
+            'ServiceID' => $this->generateRandomString(),
+            'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
+            'POIID' => 'P400Plus-275384684',
+          ),
+          'PaymentRequest' =>
+          array (
+            'SaleData' =>
+            array (
+              'SaleTransactionID' =>
+              array (
+                'TransactionID' => $params['reference'],
+                'TimeStamp' => date("c"),
+              ),
+            ),
+            'PaymentTransaction' =>
+            array (
+              'AmountsReq' =>
+              array (
+                'Currency' => $params['amount']['currency'],
+                'RequestedAmount' => (float)($params['amount']['value'] / 100),
+              ),
+            ),
+          ),
+        ),
+      );
+
+    $result = $this->makeAdyenRequest("runTenderSync", $saleToPoiRequest, false, $terminalService);
+
+    return response()->json($result);
+  }
+
+  private function generateRandomString($length = 10) {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+      $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
   }
 
   private function makeAdyenRequest($methodOrUrl, $params, $isClassic, $service) {
