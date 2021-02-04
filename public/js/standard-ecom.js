@@ -25,6 +25,10 @@ $.ajax({
 
 let newPbl = new PayByLink(dataObj);
 
-newPbl.getQRCode().then(function(qrCodeSvg) {
-  $('#qr-code').append(qrCodeSvg);
-});
+function createQR(){
+  newPbl.getQRCode().then(function(qrCodeSvg) {
+    $('#qr-code').append(qrCodeSvg);
+  });
+}
+
+document.querySelector('#qr-button').addEventListener("click", createQR)
