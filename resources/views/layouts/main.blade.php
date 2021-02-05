@@ -39,12 +39,12 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="nav navbar-nav ml-auto">
           <li class="nav-item">
-             <a class="nav-link brand-color-one" href="#">
+             <a class="nav-link txt-brand-color-one" href="#">
                <i class="fas fa-phone pr-1"></i> Call us free on 0800 123 4567
              </a>
           </li>
           <li class="nav-item pl-3">
-             <a class="nav-link brand-color-one" href="#">
+             <a class="nav-link txt-brand-color-one" href="#">
                <i class="fas fa-cart-plus"></i>
              </a>
           </li>

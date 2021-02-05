@@ -16,5 +16,7 @@ window.onload = function() {
   });
 
   $("nav").css("background-color", demoSession ? demoSession.brandColorTwo : 'black');
-  $(".brand-color-one").css("color", demoSession ? demoSession.brandColorOne : 'white');
+  $(".txt-brand-color-one").css("color", demoSession ? demoSession.brandColorOne : 'white');
+  $(".bkg-brand-color-two").css("background-color", demoSession ? demoSession.brandColorTwo : 'white');
+  $(".bdr-brand-color-two").css("border-color", demoSession ? demoSession.brandColorTwo : 'white');
 }
