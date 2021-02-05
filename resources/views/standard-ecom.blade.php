@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('content')
-	<div class="row justify-content-center">
+	<div class="row">
 		<div class="col-md-10 col-sm-12">
 			<div class="row text-center">
 				<div class="col-2">
@@ -26,7 +26,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-10 offset-md-1 col-sm-12">
+		<div class="col-md-10 col-sm-12">
 			<div class="card" style="width: auto;">
 				<div class="card-body">
 					<img class="cart-image mx-auto" src="{{URL::asset('/img/sofology-checkout.png')}}">
@@ -36,11 +36,11 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-md-1 col-sm-12 no-white-space">
+		<div class="col-md-2 col-sm-12">
 			<h5 style="text-decoration: underline;">Cash Register</h5>
 			<button type="button" class="btn btn-primary" id="create-qr-code">QR Code</button>
 			<button type="button" class="btn btn-secondary mt-1" id="pay-at-terminal">Pay @ Terminal</button>
-			<button type="button" class="btn btn-secondary mt-1" id="send-sms">Send SMS</button>
+			<button type="button" class="btn btn-primary mt-1" id="send-sms">Send SMS</button>
 			<button type="button" class="btn btn-secondary mt-1" id="send-email">Send Email</button>
 		</div>
 	</div>

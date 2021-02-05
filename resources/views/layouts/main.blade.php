@@ -36,6 +36,7 @@
       <a href="#" class="navbar-brand">
         <img src="" height="50" alt="" class="merchant-logo">
       </a>
+      @if ($view_name == 'standard-ecom')
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="nav navbar-nav ml-auto">
           <li class="nav-item">
@@ -50,6 +51,7 @@
           </li>
         </ul>
       </div>
+      @endif
     </nav>
 
     <div class="container pb-3 pt-3" id="main-container">

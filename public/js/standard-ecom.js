@@ -5,7 +5,6 @@ import { CheckoutApi } from './components/checkout-api.js';
 let pblDataObj = {
   "countryCode": "GB",
   "merchantAccount": adyenConfig.merchantAccount,
-  "merchantName": demoSession.merchantName,
   "reference": Math.floor(Math.random() * 10000000).toString(),
   "shopperEmail": "jamie.white@adyen.com",
   "amount": {
@@ -23,7 +22,13 @@ checkoutApi.getPaymentMethods().then(function(paymentMethodsResponse) {
     environment: "test",
     clientKey: adyenConfig.clientKey,
     paymentMethodsResponse: paymentMethodsResponse,
-    onSubmit: checkoutApi.submitPayment
+    onSubmit: function(state, component) {
+      component.setStatus('loading');
+      checkoutApi.submitPayment(state, component).then(function(result) {
+        console.log(result);
+        component.setStatus('success');
+      })
+    }
   };
 
   var checkout = new AdyenCheckout(configuration);

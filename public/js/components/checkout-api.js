@@ -1,4 +1,5 @@
 export class CheckoutApi {
+
   constructor(data) {
     this.data = data;
   }

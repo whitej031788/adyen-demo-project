@@ -10,7 +10,7 @@ function handleOnSubmit(state, component) {
     "paymentMethod": state.data.paymentMethod,
     "reference": $('#reference').val(),
     "shopperInteraction": "Moto",
-    "merchantAccount": merchantAccount,
+    "merchantAccount": adyenConfig.merchantAccount,
     "amount": {
       "currency": $('#currency').val(),
       "value": $('#value').val() * 100
@@ -43,7 +43,7 @@ function handleSendPaymentLink(e) {
     "reference": $('#reference').val(),
     "shopperInteraction": "Moto",
     "countryCode": $('#countryCode').val(),
-    "merchantAccount": merchantAccount,
+    "merchantAccount": adyenConfig.merchantAccount,
     "amount": {
       "currency": $('#currency').val(),
       "value": $('#value').val() * 100

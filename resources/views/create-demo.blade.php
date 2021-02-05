@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('content')
-<div class="row mt-5">
+<div class="row">
   <div class="col-12">
     <h1 class="text-center">Adyen Demo Tool</h1>
   </div>
@@ -60,17 +60,6 @@
   </div>
   @if (!session('demo_session'))
   <div class="row">
-    <div class="col-12">
-      @if ($errors->any())
-      <div class="alert alert-danger">
-        <ul>
-          @foreach ($errors->all() as $error)
-          <li>{{ $error }}</li>
-          @endforeach
-        </ul>
-      </div>
-      @endif
-    </div>
     <div class="col-12">
       <form action="/create-demo" method="POST">
         @csrf
