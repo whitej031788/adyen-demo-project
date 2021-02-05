@@ -17,6 +17,6 @@ window.onload = function() {
 
   $("nav").css("background-color", demoSession ? demoSession.brandColorTwo : 'black');
   $(".txt-brand-color-one").css("color", demoSession ? demoSession.brandColorOne : 'white');
-  $(".bkg-brand-color-two").css("background-color", demoSession ? demoSession.brandColorTwo : 'white');
+  $(".bkg-brand-color-two").css("background-color", demoSession ? demoSession.brandColorTwo : 'black');
   $(".bdr-brand-color-two").css("border-color", demoSession ? demoSession.brandColorTwo : 'white');
 }

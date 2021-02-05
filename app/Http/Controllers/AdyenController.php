@@ -90,7 +90,7 @@ class AdyenController extends Controller
             'MessageType' => 'Request',
             'ServiceID' => $this->generateRandomString(),
             'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
-            'POIID' => 'P400Plus-275384684',
+            'POIID' => \Config::get('adyen.terminalPooid'),
           ),
           'PaymentRequest' =>
           array (
