@@ -29,6 +29,14 @@
       var adyenConfig = {};
       adyenConfig.merchantAccount = '{{isset($merchantAccount) ? $merchantAccount : ""}}';
       adyenConfig.clientKey = '{{isset($clientKey) ? $clientKey : ""}}';
+      adyenConfig.terminalPooid = '{{isset($terminalPooid) ? $terminalPooid : ""}}';
+      adyenConfig.terminalPooidTwo = '{{isset($terminalPooidTwo) ? $terminalPooidTwo : ""}}';
+
+      for (const property in adyenConfig) {
+        if (!adyenConfig[property]) {
+          delete adyenConfig[property];
+        }
+      }
     </script>
   </head>
   <body>
@@ -68,5 +76,6 @@
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
     <script src="/js/main.js" type="text/javascript"></script>
     <script src="/js/{{$view_name}}.js" type="module"></script>
+    <script src="/js/app.js"></script>
   </body>
 </html>

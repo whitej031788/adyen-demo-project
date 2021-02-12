@@ -3,12 +3,12 @@ export class TerminalApi {
     this.data = data;
   }
 
-  cloudApiRequest() {
+  cloudApiRequest(terminal) {
     return $.ajax({
       url: '/api/adyen/terminalCloudApiRequest',
       dataType: 'json',
       type: 'post',
-      data: this.data
+      data: {data: this.data, terminal: terminal}
     });
   }
 }

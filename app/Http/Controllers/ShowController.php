@@ -21,7 +21,13 @@ class ShowController extends Controller
   public function standardEcom(Request $request) {
     return view('standard-ecom', [
       'merchantAccount' => \Config::get('adyen.ecomMerchantAccount'),
-      'clientKey' => \Config::get('adyen.clientKey')
+      'clientKey' => \Config::get('adyen.clientKey'),
+      'terminalPooid' => \Config::get('adyen.terminalPooid'),
+      'terminalPooidTwo' => \Config::get('adyen.terminalPooidTwo')
     ]);
+  }
+
+  public function afpOnboarding(Request $request) {
+    return view('afp-onboarding');
   }
 }

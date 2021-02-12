@@ -29,6 +29,10 @@ input.checkbox-lg {
 	white-space: nowrap;
 }
 
+.custom-file-input {
+	cursor: pointer;
+}
+
 @font-face {
   font-family: "FS-Emeric-Regular";
   src: url("/fonts/FSEmeric.woff") format('woff');

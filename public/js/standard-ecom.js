@@ -17,7 +17,13 @@ let newPbl = new PayByLink(pblDataObj);
 let terminalApi = new TerminalApi(pblDataObj);
 let checkoutApi = new CheckoutApi(pblDataObj);
 
-checkoutApi.getPaymentMethods().then(function(paymentMethodsResponse) {
+let payMethodObj = {
+  "merchantAccount": checkoutApi.data.merchantAccount,
+  "countryCode": checkoutApi.data.countryCode,
+  "blockedPaymentMethods": ["klarna","sepadirectdebit","clearpay"]
+};
+
+checkoutApi.getPaymentMethods(payMethodObj).then(function(paymentMethodsResponse) {
   let configuration = {
     environment: "test",
     clientKey: adyenConfig.clientKey,
@@ -25,9 +31,14 @@ checkoutApi.getPaymentMethods().then(function(paymentMethodsResponse) {
     onSubmit: function(state, component) {
       component.setStatus('loading');
       checkoutApi.submitPayment(state, component).then(function(result) {
-        console.log(result);
         component.setStatus('success');
-      })
+      });
+    },
+    paymentMethodsConfiguration: {
+      paywithgoogle: {
+        environment: "TEST",
+        amount: newPbl.data.amount
+      }
     }
   };
 
@@ -43,11 +54,24 @@ function generateQrCode() {
 }
 
 function payAtTerminal() {
-  $('#action-content').html('<div class="p-3">The customers payment for order #' + terminalApi.data.reference + ' has been sent to the terminal, waiting for result...</div>');
+  // If a second terminal is setup and this is the initial click, let them choose
+  if (adyenConfig.terminalPooidTwo && this.id == "pay-at-terminal") {
+    $('#choose-terminal').show();
+  } else {
+    let terminal = "";
+    // Check if this is already the second choice, IE have they selected pooidOne or Two already
+    if (this.id == "terminalPooid" || this.id == "terminalPooidTwo") {
+      terminal = this.id;
+    } else {
+      terminal = "terminalPooid";
+    }
+
+    $('#action-content').html('<div class="p-3">The customers payment for order #' + terminalApi.data.reference + ' has been sent to the terminal, waiting for result...</div>');
+    terminalApi.cloudApiRequest(terminal)(function(result) {
+      console.log(result);
+    });
+  }
   $('#action-modal').modal('show');
-  terminalApi.cloudApiRequest()(function(result) {
-    console.log(result);
-  });
 }
 
 // TO DO
@@ -62,7 +86,7 @@ function sendEmail() {
 
 // Event Handlers for page
 document.querySelector('#create-qr-code').addEventListener("click", generateQrCode);
-document.querySelector('#pay-at-terminal').addEventListener("click", payAtTerminal);
+$(".pay-at-terminal").on('click', payAtTerminal);
 document.querySelector('#send-sms').addEventListener("click", sendSms);
 document.querySelector('#send-email').addEventListener("click", sendEmail);
 

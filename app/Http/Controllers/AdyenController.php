@@ -75,9 +75,25 @@ class AdyenController extends Controller
   }
 
   public function terminalCloudApiRequest(Request $request) {
-    $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
+    if ($request->has('terminal')) {
+      $requestTerminal = $request->terminal;
+    } else {
+      $requestTerminal = "terminalPooid";
+    }
+    // If there is a second pooid setup, and a second api key, AND the request is for the second pooid, then we need a new client
+    if ($requestTerminal == "terminalPooidTwo" && !empty(\Config::get('adyen.apiKeyTwo'))) {
+      $newAdyenClient = new \Adyen\Client();
+      $newAdyenClient->setXApiKey(\Config::get('adyen.apiKeyTwo'));
+      $newAdyenClient->setEnvironment(\Adyen\Environment::TEST);
+      $terminalService = new \Adyen\Service\PosPayment($newAdyenClient);
+    } else {
+      $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
+    }
 
     $params = $request->all();
+
+    $requestData = $params['data'];
+    $pooid = \Config::get('adyen.' . $requestTerminal);
 
     $saleToPoiRequest = array (
       'SaleToPOIRequest' =>
@@ -90,7 +106,7 @@ class AdyenController extends Controller
             'MessageType' => 'Request',
             'ServiceID' => $this->generateRandomString(),
             'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
-            'POIID' => \Config::get('adyen.terminalPooid'),
+            'POIID' => $pooid,
           ),
           'PaymentRequest' =>
           array (
@@ -98,7 +114,7 @@ class AdyenController extends Controller
             array (
               'SaleTransactionID' =>
               array (
-                'TransactionID' => $params['reference'],
+                'TransactionID' => $requestData['reference'],
                 'TimeStamp' => date("c"),
               ),
             ),
@@ -106,8 +122,8 @@ class AdyenController extends Controller
             array (
               'AmountsReq' =>
               array (
-                'Currency' => $params['amount']['currency'],
-                'RequestedAmount' => (float)($params['amount']['value'] / 100),
+                'Currency' => $requestData['amount']['currency'],
+                'RequestedAmount' => (float)($requestData['amount']['value'] / 100),
               ),
             ),
           ),

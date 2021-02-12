@@ -14,9 +14,17 @@
 // If they haven't created a demo session, then send them to the start page for demo creation
 Route::group(['middleware' => 'demosession'], function () {
   Route::get('/', 'ShowController@index');
+  
+  // Preact Routes
+  Route::get('/afp-onboarding', function () {return view('afp-onboarding');});
+  Route::get('/afp-payment', function () {return view('afp-payment');});
+  // End Preact Routes
+
+  // Normal JS Routes
   Route::get('/custom-call-center', 'ShowController@customCallCenter');
   Route::get('/standard-ecom', 'ShowController@standardEcom');
   Route::post('/delete-demo', 'DemoController@delete');
+  // End Normal JS Routes
 });
 // Create demo, GET for new  demo, POST for the actual creation
 Route::get('/create-demo', 'DemoController@view');
