@@ -1,4 +1,5 @@
 import { h, render } from 'preact';
+import 'regenerator-runtime/runtime';
 
 let root;
 

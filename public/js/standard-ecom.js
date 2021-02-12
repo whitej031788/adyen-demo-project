@@ -8,7 +8,7 @@ let pblDataObj = {
   "reference": Math.floor(Math.random() * 10000000).toString(),
   "shopperEmail": "jamie.white@adyen.com",
   "amount": {
-    "value": 4200,
+    "value": 69900,
     "currency": "GBP"
   },
 };
