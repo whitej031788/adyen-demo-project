@@ -1,6 +1,7 @@
 import { PayByLink } from './components/pay-by-link.js';
 // demoSession global variable that is always available containing demo settings
-$("#main-container").css("background-color", demoSession ? demoSession.brandColorOne : '');
+$("body").css("background-color", demoSession ? demoSession.brandColorOne : '');
+$("#main-container").css("background-color", 'white');
 
 function handleOnSubmit(state, component) {
   $('#card-payment-success').hide();
@@ -46,7 +47,7 @@ function handleSendPaymentLink(e) {
     "merchantAccount": adyenConfig.merchantAccount,
     "amount": {
       "currency": $('#currency').val(),
-      "value": $('#value').val() * 100
+      "value": Math.trunc($('#value').val() * 100)
     },
     "shopperPhone": $('#shopperPhone').val(),
     "shopperEmail": $('#shopperEmail').val(),

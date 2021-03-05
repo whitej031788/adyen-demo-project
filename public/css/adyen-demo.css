@@ -17,8 +17,20 @@ input.checkbox-lg {
 	display: none;
 }
 
+.merchant-logo {
+	max-width: 100px;
+	width: auto;
+	height: auto;
+}
+
 .demo-cart-icon {
 	font-size: 25px;
+}
+
+.btn > a {
+	width: 100%;
+	height: 100%;
+	display: block;
 }
 
 .fas {
@@ -44,20 +56,8 @@ body {
 	background-color: #f6f6f6;
 }
 
-img.cart-image {
+img.merchant-checkout, img.merchant-checkout-noreplace {
   display: block;
   max-width: 100%;
   height: auto;
-}
-
-#qr-code{
-	/*text-align: center;*/
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	font-size: 50px;
-	color: white;
-	transform: translate(-50%,-50%);
-	-ms-transform: translate(-50%,-50%);
-	background-color: rgba(0,0,0,0.5);
 }

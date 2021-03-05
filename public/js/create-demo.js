@@ -1,10 +1,13 @@
 // demoSession global variable that is always available containing demo settings
 $(function() {
-  $("#configFile").change(function() {
+  $(".custom-file-input").change(function() {
     if (this.files && this.files[0]) {
       let fileName = this.files[0].name;
-      $('#configFileLabel').text(fileName);
-      $('#uploadFile').attr('disabled', false);
+      let idSelector = '#' + this.name + 'Label';
+      $(idSelector).text(fileName);
+      if (this.name == 'configFile') {
+        $('#uploadFile').attr('disabled', false);
+      }
     }
   });
 });

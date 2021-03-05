@@ -3,10 +3,10 @@
 @section('content')
 	<div class="row justify-content-center">
 		<div class="col-md-10 col-sm-12">
-			<div class="row text-center">
+			<div class="row text-center justify-content-center">
 				<div class="col-2">
 					<div><i class="fas fa-check-circle"></i></div>
-					<div>Delivery details</div>
+					<div>Details</div>
 				</div>
 				<div class="col-2">
 					<hr />
@@ -27,17 +27,17 @@
 	</div>
 	</br>
 	<div class="row">
-		<div class="col-md-8 offset-md-1 col-sm-12">
+		<div class="col-md-9 offset-md-1 col-sm-12">
 			<div class="card" style="width: auto;">
 				<div class="card-body">
-					<img class="cart-image mx-auto" src="{{URL::asset('/img/sofology-checkout.png')}}">
+					<img class="merchant-checkout mx-auto" src="" />
 					<div class="row justify-content-center">
 						<div id="dropin-container" class=" col-md-10 col-sm-12 mt-3"></div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="col-md-2 offset-md-1">
+		<div class="col-md-1">
 			<div class="card" style="width: 12em;">
 				<div class="card-body" style="align-self: center;">
 					<h5 style="text-decoration: underline;">Cash Register</h5>
@@ -68,6 +68,8 @@
 							<button type="button" id="terminalPooid" class="btn btn-secondary m-3 pay-at-terminal">Customer Service</button>
   						<button type="button" id="terminalPooidTwo" class="btn btn-secondary m-3 pay-at-terminal">Shop Floor</button>
 						</div>
+					</div>
+					<div class="p-3" id="qr-code" style="display: none;">
 					</div>
 				</div>
 				<div class="modal-footer">

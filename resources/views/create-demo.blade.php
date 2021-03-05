@@ -49,7 +49,7 @@
 @if (!session('demo_session'))
 <div class="row">
   <div class="col-12">
-    <form action="/create-demo" method="POST">
+    <form action="/create-demo" method="POST" enctype="multipart/form-data">
       @csrf
       <h2>General Merchant Info</h2>
       <div class="row">
@@ -81,57 +81,99 @@
             <small id="brandColorTwoHelp" class="form-text text-muted">Hex color or color wheel for secondary brand color</small>
           </div>
         </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="checkoutScreenshot">Checkout Screenshot</label>
+            <div class="custom-file">
+              <input type="file" class="custom-file-input" name="checkoutScreenshot" id="checkoutScreenshot">
+              <label class="custom-file-label" id="checkoutScreenshotLabel" for="checkoutScreenshot">Choose file</label>
+            </div>
+            <small id="checkoutScreenshotHelp" class="form-text text-muted">Screenshot image of their checkout</small>
+          </div>
+        </div>
       </div>
       <h2>Features</h2>
       <div class="row">
         <div class="col-md-6">
           <div class="form-check">
-            <input type="checkbox" class="form-check-input checkbox-lg expand-under-ul" value="enableMoto" id="enableMoto">
+            <input type="checkbox" class="form-check-input checkbox-lg expand-under-ul" name="enableMoto" id="enableMoto">
             <label class="form-check-label checkbox-lg" for="enableMoto">MOTO</label>
           </div>
           <ul class="list-group sub-options">
             <li class="list-group-item">
               <div class="form-check">
-                <input type="checkbox" class="form-check-input" value="enableMoto.hostedCallCentre" id="enableMoto.hostedCallCentre">
+                <input type="checkbox" class="form-check-input" name="enableMoto.hostedCallCentre" id="enableMoto.hostedCallCentre">
                 <label class="form-check-label" for="enableMoto.hostedCallCentre">Adyen Hosted Call Centre</label>
               </div>
             </li>
             <li class="list-group-item">
               <div class="form-check">
-                <input type="checkbox" class="form-check-input" value="enableMoto.customCallCenter" id="enableMoto.customCallCenter">
+                <input type="checkbox" class="form-check-input" name="enableMoto.customCallCenter" id="enableMoto.customCallCenter">
                 <label class="form-check-label" for="enableMoto.customCallCenter">Custom Call Center</label>
               </div>
             </li>
             <li class="list-group-item">
               <div class="form-check">
-                <input type="checkbox" class="form-check-input" value="enableMoto.pblMoto" id="enableMoto.pblMoto">
+                <input type="checkbox" class="form-check-input" name="enableMoto.pblMoto" id="enableMoto.pblMoto">
                 <label class="form-check-label" for="enableMoto.pblMoto">PBL for MOTO</label>
+              </div>
+            </li>
+            <li class="list-group-item">
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="enableMoto.enableIvr" id="enableMoto.enableIvr">
+                <label class="form-check-label" for="enableMoto.enableIvr">IVR Example</label>
               </div>
             </li>
           </ul>
         </div>
         <div class="col-md-6">
           <div class="form-check">
-            <input type="checkbox" class="form-check-input checkbox-lg expand-under-ul" value="enableEcom" id="enableEcom">
+            <input type="checkbox" class="form-check-input checkbox-lg expand-under-ul" name="enableEcom" id="enableEcom">
             <label class="form-check-label checkbox-lg" for="enableEcom">ECOM</label>
           </div>
           <ul class="list-group sub-options">
             <li class="list-group-item">
               <div class="form-check">
-                <input type="checkbox" class="form-check-input" value="enableEcom.pblMoto" id="enableEcom.pblMoto">
-                <label class="form-check-label" for="enableMoto.pblMoto">Drop-In</label>
+                <input type="checkbox" class="form-check-input" name="enableEcom.enableDropIn" id="enableEcom.enableDropIn">
+                <label class="form-check-label" for="enableEcom.enableDropIn">Drop-In</label>
               </div>
             </li>
             <li class="list-group-item">
               <div class="form-check">
-                <input type="checkbox" class="form-check-input" value="enableMoto.pblMoto" id="enableMoto.pblMoto">
-                <label class="form-check-label" for="enableMoto.pblMoto">Components</label>
+                <input type="checkbox" class="form-check-input" name="enableEcom.enableComponents" id="enableEcom.enableComponents">
+                <label class="form-check-label" for="enableEcom.enableComponents">Components</label>
               </div>
             </li>
             <li class="list-group-item">
               <div class="form-check">
-                <input type="checkbox" class="form-check-input" value="enableMoto.pblMoto" id="enableMoto.pblMoto">
-                <label class="form-check-label" for="enableMoto.pblMoto">Tokenization</label>
+                <input type="checkbox" class="form-check-input" name="enableEcom.enableTokenization" id="enableEcom.enableTokenization">
+                <label class="form-check-label" for="enableEcom.enableTokenization">Tokenization</label>
+              </div>
+            </li>
+            <li class="list-group-item">
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="enableEcom.enableCashRegister" id="enableEcom.enableCashRegister">
+                <label class="form-check-label" for="enableEcom.enableCashRegister">Cash Register (QR Code, PBL, TAPI)</label>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-6 mt-2">
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input checkbox-lg expand-under-ul" name="enableAfp" id="enableAfp">
+            <label class="form-check-label checkbox-lg" for="enableAfp">Adyen for Platforms</label>
+          </div>
+          <ul class="list-group sub-options">
+            <li class="list-group-item">
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="enableAfp.enableEcom" id="enableAfp.enableEcom">
+                <label class="form-check-label" for="enableAfp.enableEcom">AFP Ecom</label>
+              </div>
+            </li>
+            <li class="list-group-item">
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="enableAfp.enablePos" id="enableAfp.enablePos">
+                <label class="form-check-label" for="enableAfp.enablePos">AFP Pos</label>
               </div>
             </li>
           </ul>

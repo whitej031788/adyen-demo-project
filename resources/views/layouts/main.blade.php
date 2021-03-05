@@ -22,7 +22,8 @@
     <script type="text/javascript">
       // The demo_session is a JSON respresentation of what the demo is meant to show
       // If it is defined, it should be available in all views, and thus JS files
-      var demoSession = JSON.parse('{!! json_encode(session('demo_session')) !!}');
+      var demoSession = {!! json_encode(session('demo_session')) !!};
+      demoSession = JSON.parse(demoSession);
 
       // Adyen config mostly comes from the .env file and then is rendered in the blade views
       // Not all properties are needed for different demo settings
@@ -42,7 +43,7 @@
   <body>
     <nav class="navbar navbar-expand-lg">
       <a href="#" class="navbar-brand">
-        <img src="" height="50" alt="" class="merchant-logo">
+        <img src="" alt="" class="merchant-logo">
       </a>
       @if ($view_name == 'standard-ecom')
       <div class="collapse navbar-collapse" id="navbarSupportedContent">

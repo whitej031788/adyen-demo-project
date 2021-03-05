@@ -8,7 +8,7 @@ let pblDataObj = {
   "reference": Math.floor(Math.random() * 10000000).toString(),
   "shopperEmail": "jamie.white@adyen.com",
   "amount": {
-    "value": 69900,
+    "value": 37998,
     "currency": "GBP"
   },
 };
@@ -20,7 +20,7 @@ let checkoutApi = new CheckoutApi(pblDataObj);
 let payMethodObj = {
   "merchantAccount": checkoutApi.data.merchantAccount,
   "countryCode": checkoutApi.data.countryCode,
-  "blockedPaymentMethods": ["klarna","sepadirectdebit","clearpay"]
+  "blockedPaymentMethods": ['sepa', 'klarna_account', 'alipay', 'givex', 'svs']
 };
 
 checkoutApi.getPaymentMethods(payMethodObj).then(function(paymentMethodsResponse) {
@@ -31,7 +31,12 @@ checkoutApi.getPaymentMethods(payMethodObj).then(function(paymentMethodsResponse
     onSubmit: function(state, component) {
       component.setStatus('loading');
       checkoutApi.submitPayment(state, component).then(function(result) {
-        component.setStatus('success');
+        console.log(result);
+        if (result.action) {
+          component.handleAction(result.action);
+        } else {
+          component.setStatus('success');
+        }
       });
     },
     paymentMethodsConfiguration: {
@@ -47,13 +52,17 @@ checkoutApi.getPaymentMethods(payMethodObj).then(function(paymentMethodsResponse
 });
 
 function generateQrCode() {
+  $('#choose-terminal').hide();
   newPbl.getQRCode().then(function(qrCodeSvg) {
-    $('#action-content').append(qrCodeSvg);
+    $('#qr-code').append(qrCodeSvg);
+    $('#qr-code').show();
     $('#action-modal').modal('show');
   });
 }
 
 function payAtTerminal() {
+  $('#qr-code').empty();
+  $('#qr-code').hide();
   // If a second terminal is setup and this is the initial click, let them choose
   if (adyenConfig.terminalPooidTwo && this.id == "pay-at-terminal") {
     $('#choose-terminal').show();
@@ -89,6 +98,10 @@ document.querySelector('#create-qr-code').addEventListener("click", generateQrCo
 $(".pay-at-terminal").on('click', payAtTerminal);
 document.querySelector('#send-sms').addEventListener("click", sendSms);
 document.querySelector('#send-email').addEventListener("click", sendEmail);
+
+// Would prefer a wider container for this page
+$('#main-container').addClass('container-fluid');
+$('#main-container').removeClass('container');
 
 // Listen for authorisation notifications
 Pusher.logToConsole = true;

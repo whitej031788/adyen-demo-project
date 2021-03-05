@@ -42,9 +42,9 @@ class AdyenController extends Controller
     $type = $request->type;
     $params = $request->data;
 
-    $curlUrl = "https://checkout-test.adyen.com/v52/paymentLinks";
+    $curlUrl = "https://checkout-test.adyen.com/v66/paymentLinks";
 
-    $result = $this->makeAdyenRequest($curlUrl, $params, true, false);
+    $result = $this->makeAdyenRequest($curlUrl, $this->sanitizePblParams($params), true, false);
 
     if ($type == 'sms') {
       \Nexmo::message()->send([
@@ -64,9 +64,9 @@ class AdyenController extends Controller
 
   public function getPaymentLinkQR(Request $request) {
     $params = $request->all();
-    $curlUrl = "https://checkout-test.adyen.com/v52/paymentLinks";
+    $curlUrl = "https://checkout-test.adyen.com/v66/paymentLinks";
 
-    $result = $this->makeAdyenRequest($curlUrl, $params, true, false);
+    $result = $this->makeAdyenRequest($curlUrl, $this->sanitizePblParams($params), true, false);
 
     $urlToQrEncode = $result->url;
     $qrSvg = \QrCode::size(250)->generate($urlToQrEncode);
@@ -133,6 +133,17 @@ class AdyenController extends Controller
     $result = $this->makeAdyenRequest("runTenderSync", $saleToPoiRequest, false, $terminalService);
 
     return response()->json($result);
+  }
+
+  private function sanitizePblParams($params) {
+    $returnData = $params;
+
+    // Remove any parameters not supported by the PBL endpoint, maybe app specific
+    unset($returnData['shopperInteraction']);
+    unset($returnData['shopperPhone']);
+    unset($returnData['merchantName']);
+
+    return $returnData;
   }
 
   private function generateRandomString($length = 10) {

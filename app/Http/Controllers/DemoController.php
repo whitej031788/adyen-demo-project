@@ -22,20 +22,36 @@ class DemoController extends Controller {
         'merchantName' => 'required',
         'merchantLogoUrl' => 'required|url'
       ]);
+
+      $params = $request->all();
+
+      // Check if they uploaded a screenshot
+      if ($request->hasFile('checkoutScreenshot')) {
+        if ($request->file('checkoutScreenshot')->isValid()) {
+          $validatedScreenshot = $request->validate([
+            'checkoutScreenshot' => 'mimes:jpeg,png|max:1014',
+          ]);
+          $storeAsName = $request->checkoutScreenshot->hashName();
+          Storage::disk('webpublic')->put("/screenshots/", $request->checkoutScreenshot);
+          $screenshotUrl = "/uploads/screenshots/" . $storeAsName;
+          $params['screenshotUrl'] = $screenshotUrl;
+          unset($params['checkoutScreenshot']);
+        }
+      }
       // Once we have validated all required fields, lets just put the demo settings into a JSON object
       // this will be easy to manage both server side and client side
-      $params = $request->all();
     }
-
-    $request->session()->put('demo_session', $params);
 
     // This token is not a part of the demo session, Laravel CSFR token, don't store it
     if (isset($params["_token"])) {
       unset($params["_token"]);
     }
 
+    $request->session()->put('demo_session', json_encode($params));
+
     $configJson = json_encode($params);
     Storage::disk('local')->put('demos/' . $params['merchantName'] . '.json', $configJson);
+
 
     return redirect('/');
   }
