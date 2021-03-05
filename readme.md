@@ -9,7 +9,7 @@
 - Generate a key `php artisan key:generate`
 - Run Laravel `php artisan serve`
 
-##ENV File
+## ENV File
 - The .env file contains Laravel application and environment variables
 - To get your demo working, you can scroll down to the ADYEN_API_KEY variable and fill out the ADYEN items
 
@@ -27,12 +27,12 @@
 | ADYEN_MERCHANT_ACCOUNT_ECOM | Merchant account for any ECOM demo transactions |
 | ADYEN_MERCHANT_ACCOUNT_PLATFORMS | Merchant account for any AFP demo transactions |
 
-##Application Structure
+## Application Structure
 The application is Laravel, with an individual "module" per page. IE, the Custom Call Center has an HTML view, paired with a JS file. You can find these in directories:
 - resources/views
 - public/js
 
 `custom-call-center.blade.php` is the HTML view, and `custom-call-center.js` is automatically imported into that page. The project also supports Preact (yet to be documented how that builds). You can look at the `routes/web.php` file to find which URLs launch which modules.
 
-##Customizing
+## Customizing
 Please don't commit or push any merchant specific code to the `master` branch. If you want to do local customization for a demo, that is fine. And if you want to persist those changes in case you may want them in future, feel free to create a new branch and commit / push to said branch. The master branch should be entirely merchant agnostic.
