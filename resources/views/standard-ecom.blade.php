@@ -71,6 +71,8 @@
 					</div>
 					<div class="p-3" id="qr-code" style="display: none;">
 					</div>
+					<div class="p-3" id="success-or-failure" style="display: none;">
+					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

@@ -8,7 +8,7 @@ let pblDataObj = {
   "reference": Math.floor(Math.random() * 10000000).toString(),
   "shopperEmail": "jamie.white@adyen.com",
   "amount": {
-    "value": 37998,
+    "value": 2500,
     "currency": "GBP"
   },
 };
@@ -52,7 +52,9 @@ checkoutApi.getPaymentMethods(payMethodObj).then(function(paymentMethodsResponse
 });
 
 function generateQrCode() {
+  $('#qr-code').empty();
   $('#choose-terminal').hide();
+  $('#success-or-failure').hide();
   newPbl.getQRCode().then(function(qrCodeSvg) {
     $('#qr-code').append(qrCodeSvg);
     $('#qr-code').show();
@@ -63,10 +65,12 @@ function generateQrCode() {
 function payAtTerminal() {
   $('#qr-code').empty();
   $('#qr-code').hide();
+  $('#success-or-failure').hide();
   // If a second terminal is setup and this is the initial click, let them choose
   if (adyenConfig.terminalPooidTwo && this.id == "pay-at-terminal") {
     $('#choose-terminal').show();
   } else {
+    $('#choose-terminal').hide();
     let terminal = "";
     // Check if this is already the second choice, IE have they selected pooidOne or Two already
     if (this.id == "terminalPooid" || this.id == "terminalPooidTwo") {
@@ -75,7 +79,8 @@ function payAtTerminal() {
       terminal = "terminalPooid";
     }
 
-    $('#action-content').html('<div class="p-3">The customers payment for order #' + terminalApi.data.reference + ' has been sent to the terminal, waiting for result...</div>');
+    $('#success-or-failure').show();
+    $('#success-or-failure').html('<div class="p-3">The customers payment for order #' + terminalApi.data.reference + ' has been sent to the terminal, waiting for result...</div>');
     terminalApi.cloudApiRequest(terminal)(function(result) {
       console.log(result);
     });
@@ -114,6 +119,10 @@ var channel = pusher.subscribe('adyen-demo');
 
 channel.bind('payment-success', function(data) {
   if (newPbl.data.reference == data.merchantReference) {
-    $('#action-content').html('<div class="alert-success p-3"><div class="text-center"><i class="fas fa-check-circle" style="font-size: 40px;"></i></div><div>The customers payment for order #' + data.merchantReference + ' has been processed successfully</div></div>');
+    $('#qr-code').empty();
+    $('#qr-code').hide();
+    $('#choose-terminal').hide();
+    $('#success-or-failure').show();
+    $('#success-or-failure').html('<div class="alert-success p-3"><div class="text-center"><i class="fas fa-check-circle" style="font-size: 40px;"></i></div><div>The customers payment for order #' + data.merchantReference + ' has been processed successfully</div></div>');
   }
 });
