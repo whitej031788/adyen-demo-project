@@ -61,3 +61,18 @@ img.merchant-checkout, img.merchant-checkout-noreplace {
   max-width: 100%;
   height: auto;
 }
+
+.success-order {
+	height: 60px;
+	width: 60px;
+	line-height: 60px;
+
+	-moz-border-radius: 30px; /* or 50% */
+	border-radius: 30px; /* or 50% */
+
+	background-color: white;
+	color: white;
+	text-align: center;
+	font-size: 2em;
+	border: 3px solid green;
+}

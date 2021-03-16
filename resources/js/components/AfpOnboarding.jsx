@@ -12,6 +12,7 @@ export default function AfpOnboarding() {
     <div>
       Counter: {value}
       <button onClick={increment}>Increment</button>
+      <div>jsut</div>
     </div>
   );
 }

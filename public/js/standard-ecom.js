@@ -102,7 +102,8 @@ function countryChange() {
     "US": "USD",
     "DE": "EUR",
     "IE": "EUR",
-    "ES": "EUR"
+    "ES": "EUR",
+    "NL": "EUR"
   };
 
   let countryCode = this.value;
