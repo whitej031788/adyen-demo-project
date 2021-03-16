@@ -2,54 +2,61 @@ import { PayByLink } from './components/pay-by-link.js';
 import { TerminalApi } from './components/terminal-api.js';
 import { CheckoutApi } from './components/checkout-api.js';
 
-let pblDataObj = {
+// If you want to demo emailing a PBL, add shopperEmail and merchantName below
+let paymentDataObj = {
   "countryCode": "GB",
   "merchantAccount": adyenConfig.merchantAccount,
   "reference": Math.floor(Math.random() * 10000000).toString(),
-  "shopperEmail": "jamie.white@adyen.com",
+  // "shopperEmail": "jamie.white@adyen.com",
+  // "merchantName": demoSession.merchantName,
   "amount": {
-    "value": 2500,
+    "value": 5000,
     "currency": "GBP"
   },
 };
 
-let newPbl = new PayByLink(pblDataObj);
-let terminalApi = new TerminalApi(pblDataObj);
-let checkoutApi = new CheckoutApi(pblDataObj);
+let newPbl = new PayByLink(paymentDataObj);
+let terminalApi = new TerminalApi(paymentDataObj);
+let checkoutApi = new CheckoutApi(paymentDataObj);
 
-let payMethodObj = {
-  "merchantAccount": checkoutApi.data.merchantAccount,
-  "countryCode": checkoutApi.data.countryCode,
-  "blockedPaymentMethods": ['sepa', 'klarna_account', 'alipay', 'givex', 'svs']
-};
-
-checkoutApi.getPaymentMethods(payMethodObj).then(function(paymentMethodsResponse) {
-  let configuration = {
-    environment: "test",
-    clientKey: adyenConfig.clientKey,
-    paymentMethodsResponse: paymentMethodsResponse,
-    onSubmit: function(state, component) {
-      component.setStatus('loading');
-      checkoutApi.submitPayment(state, component).then(function(result) {
-        console.log(result);
-        if (result.action) {
-          component.handleAction(result.action);
-        } else {
-          component.setStatus('success');
-        }
-      });
-    },
-    paymentMethodsConfiguration: {
-      paywithgoogle: {
-        environment: "TEST",
-        amount: newPbl.data.amount
-      }
-    }
+function getPaymentMethods() {
+  $('#dropin-container').empty();
+  let payMethodObj = {
+    "merchantAccount": checkoutApi.data.merchantAccount,
+    "countryCode": checkoutApi.data.countryCode
   };
 
-  var checkout = new AdyenCheckout(configuration);
-  var dropin = checkout.create('dropin').mount('#dropin-container');
-});
+  checkoutApi.getPaymentMethods(payMethodObj).then(function(paymentMethodsResponse) {
+    let configuration = {
+      environment: "test",
+      clientKey: adyenConfig.clientKey,
+      paymentMethodsResponse: paymentMethodsResponse,
+      onSubmit: function(state, component) {
+        component.setStatus('loading');
+        checkoutApi.submitPayment(state, component).then(function(result) {
+          if (result.action) {
+            component.handleAction(result.action);
+          } else {
+            component.setStatus('success');
+          }
+        });
+      },
+      paymentMethodsConfiguration: {
+        paywithgoogle: {
+          environment: "TEST",
+          amount: newPbl.data.amount
+        }
+      }
+    };
+
+    let checkout = new AdyenCheckout(configuration);
+    let dropin = checkout.create('dropin');
+    dropin.mount('#dropin-container');
+    dropin.update();
+  });
+}
+
+getPaymentMethods();
 
 function generateQrCode() {
   $('#qr-code').empty();
@@ -88,21 +95,38 @@ function payAtTerminal() {
   $('#action-modal').modal('show');
 }
 
-// TO DO
-function sendSms() {
+function countryChange() {
+  let countryToCurrencyMap = {
+    "GB": "GBP",
+    "FR": "EUR",
+    "US": "USD",
+    "DE": "EUR",
+    "IE": "EUR",
+    "ES": "EUR"
+  };
 
+  let countryCode = this.value;
+  let currencyCode = countryToCurrencyMap[countryCode];
+
+  paymentDataObj.countryCode = countryCode;
+  paymentDataObj.amount.currency = currencyCode;
+  newPbl = new PayByLink(paymentDataObj);
+  terminalApi = new TerminalApi(paymentDataObj);
+  checkoutApi = new CheckoutApi(paymentDataObj);
+  getPaymentMethods();
 }
 
-// TO DO
 function sendEmail() {
-
+  newPbl.sendLinkEmail().then(function(result) {
+    alert("The link has been sent to the shopper's email address");
+  });
 }
 
 // Event Handlers for page
 document.querySelector('#create-qr-code').addEventListener("click", generateQrCode);
 $(".pay-at-terminal").on('click', payAtTerminal);
-document.querySelector('#send-sms').addEventListener("click", sendSms);
 document.querySelector('#send-email').addEventListener("click", sendEmail);
+document.querySelector('#country-selector').addEventListener("change", countryChange);
 
 // Would prefer a wider container for this page
 $('#main-container').addClass('container-fluid');

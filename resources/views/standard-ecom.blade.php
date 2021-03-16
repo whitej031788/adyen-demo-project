@@ -24,6 +24,16 @@
 				</div>
 			</div>
 		</div>
+		<div class="country-dropdown">
+			<select class="form-control" id="country-selector">
+				<option value="GB">United Kingdom</option>
+				<option value="FR">France</option>
+				<option value="US">USA</option>
+				<option value="DE">Germany</option>
+				<option value="IE">Ireland</option>
+				<option value="ES">Spain</option>
+			</select>
+		</div>
 	</div>
 	</br>
 	<div class="row">
@@ -44,7 +54,6 @@
 					<div class="btn-group-vertical">
 						<button type="button" class="btn btn-primary txt-brand-color-one bkg-brand-color-two bdr-brand-color-two" id="create-qr-code">QR Code</button>
 						<button type="button" class="btn btn-secondary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two pay-at-terminal" id="pay-at-terminal">Pay @ Terminal</button>
-						<button type="button" class="btn btn-secondary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two" id="send-sms">Send SMS</button>
 						<button type="button" class="btn btn-secondary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two" id="send-email">Send Email</button>
 					</div>
 				</div>
