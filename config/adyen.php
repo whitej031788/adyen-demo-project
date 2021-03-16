@@ -12,5 +12,5 @@ return [
     'posMerchantAccount' => env('ADYEN_MERCHANT_ACCOUNT_POS', null),
     'ecomMerchantAccount' => env('ADYEN_MERCHANT_ACCOUNT_ECOM', null),
     'platformsMerchantAccount' => env('ADYEN_MERCHANT_ACCOUNT_PLATFORMS', null),
-    'checkoutApiVersion' => env('ADYEN_CHECKOUT_API_VERSION', null)
+    'checkoutApiVersion' => env('ADYEN_CHECKOUT_API_VERSION', 'v66')
 ];
