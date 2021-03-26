@@ -58,6 +58,62 @@ body {
 
 img.merchant-checkout, img.merchant-checkout-noreplace {
   display: block;
-  max-width: 100%;
+  max-width: 85%;
   height: auto;
+}
+
+.chat {
+
+  margin-bottom: 5px;
+  background-color:#ffffff;
+  margin-top:10px;
+  width: 100%;
+}
+.chat1 {
+
+  margin-bottom: 10px;
+  background-color:#ffffff;
+  margin-top:10px;
+  width:100%;
+}
+
+#chat {
+  margin-bottom: 5px;
+  background-color:#ffffff;
+  margin-top:10px;
+  width:100%;
+}
+
+#chat0 {
+  margin-bottom: 10px;
+  background-color:#ffffff;
+  margin-top:10px;
+  width:100%;
+}
+
+#chat1 {
+  margin-bottom: 10px;
+  background-color:#ffffff;
+  margin-top:10px;
+  width:100%;
+}
+
+#chat2 {
+  margin-bottom: 10px;
+  background-color:#ffffff;
+  margin-top:10px;
+  width:100%;
+}
+#chat3 {
+  margin-bottom: 10px;
+  background-color:#ffffff;
+  margin-top:10px;
+  width:100%;
+}
+
+#chat4 {
+  margin-bottom: 10px;
+  background-color:#ffffff;
+  margin-top:10px;
+  width:100%;
 }

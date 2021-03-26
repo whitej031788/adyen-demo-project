@@ -66,8 +66,10 @@ class AdyenController extends Controller
     $params = $request->all();
     $curlUrl = "https://checkout-test.adyen.com/v66/paymentLinks";
 
-    $result = $this->makeAdyenRequest($curlUrl, $this->sanitizePblParams($params), true, false);
 
+    $result = $this->makeAdyenRequest($curlUrl, $this->sanitizePblParams($params), true, false);
+  //   var_dump($result);
+  // exit();
     $urlToQrEncode = $result->url;
     $qrSvg = \QrCode::size(250)->generate($urlToQrEncode);
 

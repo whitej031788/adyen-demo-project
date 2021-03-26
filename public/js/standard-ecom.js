@@ -1,31 +1,59 @@
 import { PayByLink } from './components/pay-by-link.js';
 import { TerminalApi } from './components/terminal-api.js';
 import { CheckoutApi } from './components/checkout-api.js';
+//import { ChatBot } from './components/chatbotwidget.js';
 
 let pblDataObj = {
   "countryCode": "GB",
   "merchantAccount": adyenConfig.merchantAccount,
   "reference": Math.floor(Math.random() * 10000000).toString(),
-  "shopperEmail": "jamie.white@adyen.com",
+  "shopperEmail": "test@test.com",
+  "shopperReference": "test123",
   "amount": {
-    "value": 2500,
+    "value": 10000,
     "currency": "GBP"
   },
+  "lineItems": [
+      {
+          "id": '1',
+          "description": 'Test Item 1',
+          "amountExcludingTax": 10000,
+          "taxAmount": 0,
+          "taxPercentage": 0,
+          "quantity": 1,
+          "taxCategory": 'High'
+      }
+  ],
+  //"channel": 'web',
+  //"origin":'https://your-company.com',
+  "returnUrl":"https://your-company.com",
+  "billingAddress": {
+     "street": "Broadway, Westminster,",
+     "houseNumberOrName": "8-10",
+     "postalCode": "SW1H 0BG",
+     "city": "London",
+     "stateOrProvince": "",
+     "country": "GB"
+}
 };
 
 let newPbl = new PayByLink(pblDataObj);
 let terminalApi = new TerminalApi(pblDataObj);
 let checkoutApi = new CheckoutApi(pblDataObj);
+//let ChatBot = new ChatBot();
 
 let payMethodObj = {
   "merchantAccount": checkoutApi.data.merchantAccount,
   "countryCode": checkoutApi.data.countryCode,
-  "blockedPaymentMethods": ['sepa', 'klarna_account', 'alipay', 'givex', 'svs']
+  "shopperReference": "test123"
+//  "blockedPaymentMethods": ['sepa', 'klarna_account', 'alipay', 'givex', 'svs']
 };
 
 checkoutApi.getPaymentMethods(payMethodObj).then(function(paymentMethodsResponse) {
   let configuration = {
+    amount:{value:10000,currency:'GBP'},
     environment: "test",
+    showRemovePaymentMethodButton:true,
     clientKey: adyenConfig.clientKey,
     paymentMethodsResponse: paymentMethodsResponse,
     onSubmit: function(state, component) {
@@ -40,6 +68,28 @@ checkoutApi.getPaymentMethods(payMethodObj).then(function(paymentMethodsResponse
       });
     },
     paymentMethodsConfiguration: {
+        card: {
+          hasHolderName: true,
+          holderNameRequired: true,
+          enableStoreDetails: true,
+          showStoredPaymentMethods: true,
+          billingAddressRequired:true,
+          //billingAddressAllowedCountries:['US', 'CA', 'BR','FR','DE','SE','NO','ES','IT','AU','NZ','GB','UK','EN'],
+          data:  {
+               "billingAddress": {
+               "street": "Broadway, Westminster,",
+               "houseNumberOrName": "8-10",
+               "postalCode": "SW1H 0BG",
+               "city": "London",
+               "stateOrProvince": "",
+               "country": "GB"
+             }
+        },
+          name: 'Credit or debit card'
+        },
+        giftcard:{
+          pinRequired:false
+        },
       paywithgoogle: {
         environment: "TEST",
         amount: newPbl.data.amount
@@ -93,15 +143,91 @@ function sendSms() {
 
 }
 
-// TO DO
+ //TO DO
 function sendEmail() {
+}
 
+// TO DO
+function chatBot() {
+    $('#chat-modal').modal('show');
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function chat1() {
+  await sleep(1000);
+  var para = document.createElement("P");
+  para.innerHTML = "HelpBot: Hello, how can I help?";
+  document.getElementById("chat1").appendChild(para);
+  var input1 = document.createElement('input');
+  input1.setAttribute('type', 'text');
+  input1.placeholder="e.g. Save my basket";
+  input1.setAttribute('class', 'chat');
+  document.getElementById("chat1").appendChild(input1);
+}
+
+async function chat2() {
+  await sleep(1000);
+  var para = document.createElement("P");
+  para.innerHTML = "HelpBot: OK let me help you with that. Can you please let me know your name and email?";
+  document.getElementById("chat2").appendChild(para);
+  var input2 = document.createElement('input');
+  input2.setAttribute('type', 'text');
+  input2.setAttribute('class', 'chat');
+  input2.setAttribute('name', 'email');
+  document.getElementById("chat2").appendChild(input2).value;
+}
+
+async function chat3() {
+  await sleep(1000);
+  var para = document.createElement("P");
+  para.innerHTML = "HelpBot: Thank you. I'll save your basket and give you a QR Code to pay for the items later. Is that ok?";
+  document.getElementById("chat3").appendChild(para);
+  var input3 = document.createElement('input');
+  input3.setAttribute('type', 'text');
+  input3.setAttribute('class', 'chat');
+  document.getElementById("chat3").appendChild(input3);
+}
+
+async function chat4() {
+  await sleep(1000);
+  var para = document.createElement("P");
+  para.innerHTML = "HelpBot: No problem, Here's a QR Code. If you would also like the link for later, please hit send email";
+  document.getElementById("chat4").appendChild(para);
+  await sleep(2000);
+  var para = document.createElement("P");
+  para.setAttribute('type', 'url');
+  para.innerHTML ="Please scan. Thank you.";
+  document.getElementById("chat4").appendChild(para);
+  await sleep(3000);
+
+generateQrCode();
+function generateQrCode() {
+  $('#qr-code').empty();
+  $('#choose-terminal').hide();
+  $('#success-or-failure').hide();
+  newPbl.getQRCode().then(function(qrCodeSvg) {
+    $('#qr-code').append(qrCodeSvg);
+    $('#qr-code').show();
+    $('#chat-modal').modal('hide');
+    $('#action-modal').modal('show');
+  });
+}
 }
 
 // Event Handlers for page
 document.querySelector('#create-qr-code').addEventListener("click", generateQrCode);
 $(".pay-at-terminal").on('click', payAtTerminal);
 document.querySelector('#send-sms').addEventListener("click", sendSms);
+
+document.querySelector('#chatbot').addEventListener("click", chatBot);
+document.querySelector('#chat0').addEventListener("change", chat1);
+document.querySelector('#chat1').addEventListener("change", chat2);
+document.querySelector('#chat2').addEventListener("change", chat3);
+document.querySelector('#chat3').addEventListener("change", chat4);
+
 document.querySelector('#send-email').addEventListener("click", sendEmail);
 
 // Would prefer a wider container for this page
