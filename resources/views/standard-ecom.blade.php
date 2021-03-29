@@ -106,11 +106,6 @@
 				<div class="modal-body text-center" id="chat-content">
 					<div id="chatBot">
 						<p>Welcome to the <span class="merchant-name"></span> ChatBot</p>
-						{{-- <input id="chatBot-0" type="text" class="form-control" placeholder="Start typing if you need help" onchange="chat1()">
-						<div id="chatBot-1" input type="text" onchange="chat2()"></div>
-						<div id="chatBot-2" input type="text" onchange="chat3()"></div>
-						<div id="chatBot-3" input type="text" onchange="chat4()"></div>
-						<div id="chatBot-4" input type="text" oninput="qrcode()"></div> --}}
 					</div>
 				</div>
 				<div class="modal-footer">

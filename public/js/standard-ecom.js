@@ -32,7 +32,10 @@ function generateQrCode() {
 let newPbl = new PayByLink(paymentDataObj);
 let terminalApi = new TerminalApi(paymentDataObj);
 let checkoutApi = new CheckoutApi(paymentDataObj);
-let chatBotWidget = new ChatBot("chatBot", function() {$('#chat-modal').modal('hide'); generateQrCode()});
+let chatBotWidget = new ChatBot("chatBot", function() {
+  $('#chat-modal').modal('hide');
+  generateQrCode()
+});
 
 // Wrap all of this in a function we we can easily call payment methods again for country change
 function getPaymentMethods() {
