@@ -73,12 +73,16 @@ checkoutApi.getPaymentMethods(payMethodObj).then(function(paymentMethodsResponse
         environment: "TEST",
         amount: newPbl.data.amount
       }
-    }
-  };
+    };
 
-  var checkout = new AdyenCheckout(configuration);
-  var dropin = checkout.create('dropin').mount('#dropin-container');
-});
+    let checkout = new AdyenCheckout(configuration);
+    let dropin = checkout.create('dropin');
+    dropin.mount('#dropin-container');
+    dropin.update();
+  });
+}
+
+getPaymentMethods();
 
 function generateQrCode() {
   $('#qr-code').empty();
@@ -117,9 +121,26 @@ function payAtTerminal() {
   $('#action-modal').modal('show');
 }
 
-// TO DO
-function sendSms() {
+function countryChange() {
+  let countryToCurrencyMap = {
+    "GB": "GBP",
+    "FR": "EUR",
+    "US": "USD",
+    "DE": "EUR",
+    "IE": "EUR",
+    "ES": "EUR",
+    "NL": "EUR"
+  };
 
+  let countryCode = this.value;
+  let currencyCode = countryToCurrencyMap[countryCode];
+
+  paymentDataObj.countryCode = countryCode;
+  paymentDataObj.amount.currency = currencyCode;
+  newPbl = new PayByLink(paymentDataObj);
+  terminalApi = new TerminalApi(paymentDataObj);
+  checkoutApi = new CheckoutApi(paymentDataObj);
+  getPaymentMethods();
 }
 
  //TO DO
@@ -208,6 +229,7 @@ document.querySelector('#chat2').addEventListener("change", chat3);
 document.querySelector('#chat3').addEventListener("change", chat4);
 
 document.querySelector('#send-email').addEventListener("click", sendEmail);
+document.querySelector('#country-selector').addEventListener("change", countryChange);
 
 // Would prefer a wider container for this page
 $('#main-container').addClass('container-fluid');

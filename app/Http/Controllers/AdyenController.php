@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\AdyenPayByLink;
+use Illuminate\Support\Facades\Cache;
 
 class AdyenController extends Controller
 {
@@ -29,11 +30,22 @@ class AdyenController extends Controller
     $checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
     $params = $request->all();
 
-    $cacheKeyRedirect = "http://localhost:8000/normal-redirect/" . "-" . $request->reference;
+    $cacheKeyRedirect = "http://" . $_SERVER['HTTP_HOST'] . "/return-url/" . $request->reference;
 
     $params["returnUrl"] = $cacheKeyRedirect;
 
+    // For Klarna, add some extra placeholder data to the API call
+    if (isset($params['paymentMethod']['type']) &&
+        (strpos($params['paymentMethod']['type'], 'klarna') !== false)) {
+      $this->addKlarnaData($params);
+    }
+
     $result = $this->makeAdyenRequest("payments", $params, false, $checkoutService);
+
+    if ($result['resultCode'] == 'RedirectShopper') {
+      // Store the payment data for 15 minutes
+      $cache = Cache::put($request->reference, $result['paymentData'], now()->addMinutes(15));
+    }
 
     return response()->json($result);
   }
@@ -42,10 +54,11 @@ class AdyenController extends Controller
     $type = $request->type;
     $params = $request->data;
 
-    $curlUrl = "https://checkout-test.adyen.com/v66/paymentLinks";
+    $curlUrl = "https://checkout-test.adyen.com/" . \Config::get('adyen.checkoutApiVersion') . "/paymentLinks";
 
     $result = $this->makeAdyenRequest($curlUrl, $this->sanitizePblParams($params), true, false);
 
+    // SMS will only work if you have setup Nexmo
     if ($type == 'sms') {
       \Nexmo::message()->send([
         'to' => $params['shopperPhone'],
@@ -53,6 +66,7 @@ class AdyenController extends Controller
         'text' => "Please click the below to link to pay for your order:\n\n" . $result->url . " ||| "
       ]);
     } elseif ($type == 'email') {
+      // Mail will only work if you have setup AWS SES
       Mail::to($params['shopperEmail'])
         ->send(new AdyenPayByLink($result->url, $params['merchantName'], $params['reference']));
     }
@@ -64,7 +78,7 @@ class AdyenController extends Controller
 
   public function getPaymentLinkQR(Request $request) {
     $params = $request->all();
-    $curlUrl = "https://checkout-test.adyen.com/v66/paymentLinks";
+    $curlUrl = "https://checkout-test.adyen.com/" . \Config::get('adyen.checkoutApiVersion') . "/paymentLinks";
 
 
     $result = $this->makeAdyenRequest($curlUrl, $this->sanitizePblParams($params), true, false);
@@ -136,6 +150,19 @@ class AdyenController extends Controller
     return response()->json($result);
   }
 
+  public function redirPayDet($details, $paymentData) {
+    $checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
+
+    $params = array(
+      'paymentData' => $paymentData,
+      'details' => $details
+    );
+
+    $result = $this->makeAdyenRequest("paymentsDetails", $params, false, $checkoutService);
+
+    return $result;
+  }
+
   private function sanitizePblParams($params) {
     $returnData = $params;
 
@@ -155,6 +182,61 @@ class AdyenController extends Controller
       $randomString .= $characters[rand(0, $charactersLength - 1)];
     }
     return $randomString;
+  }
+
+  private function addKlarnaData(&$params) {
+    // Let's just add fake data, we only need to make sure the amount all add up
+    $params['shopperEmail'] = 'testdemoemail@testdemo.com';
+    $params['telephoneNumber'] = '+441234567890';
+    $params['billingAddress'] = $this->fakeBillingAddressArray();
+    $params['deliveryAddress'] = $this->fakeDeliveryAddressArray();
+    $params['shopperName'] = $this->fakeShopperName();
+    $params['lineItems'] = $this->fakeKlarnaLineItems($params['amount']);
+  }
+
+  private function fakeBillingAddressArray() {
+    return [
+      "city" => "London",
+      "country" => "GB",
+      "houseNumberOrName" => "",
+      "postalCode" => "N1",
+      "street" => "123 Main St"
+    ];
+  }
+
+  private function fakeDeliveryAddressArray() {
+    return [
+      "city" => "London",
+      "country" => "GB",
+      "houseNumberOrName" => "",
+      "postalCode" => "N1",
+      "street" => "123 Main St"
+    ];
+  }
+
+  private function fakeShopperName() {
+    return [
+      'firstName' => 'Test',
+      'lastName' => 'Demo'
+    ];
+  }
+
+  private function fakeKlarnaLineItems($amount) {
+    $retArr = array();
+
+    $tmpArr = array(
+      'quantity' => 1,
+      'amountExcludingTax' => $amount['value'],
+      'taxPercentage' => 0,
+      'description' => 'Demo Checkout Item',
+      'id' => 100,
+      'taxAmount' => 0,
+      'amountIncludingTax' => $amount['value']
+    );
+
+    array_push($retArr, $tmpArr);
+
+    return $retArr;
   }
 
   private function makeAdyenRequest($methodOrUrl, $params, $isClassic, $service) {

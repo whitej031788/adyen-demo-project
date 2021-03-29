@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ShowController extends Controller
 {
@@ -25,6 +26,22 @@ class ShowController extends Controller
       'clientKey' => \Config::get('adyen.clientKey'),
       'terminalPooid' => \Config::get('adyen.terminalPooid'),
       'terminalPooidTwo' => \Config::get('adyen.terminalPooidTwo')
+    ]);
+  }
+
+  public function returnUrl(Request $request, $payRef) {
+    $postback = $request->all();
+    // We are going to call paymentDetails
+    $adyenController = new AdyenController();
+    // We stored the payment data in the file storage, go get it
+    $paymentData = Cache::store('file')->get($payRef);
+
+    $response = $adyenController->redirPayDet($postback, $paymentData);
+
+    return view('return-url', [
+      'merchantAccount' => \Config::get('adyen.ecomMerchantAccount'),
+      'clientKey' => \Config::get('adyen.clientKey'),
+      'paymentResult' => $response
     ]);
   }
 
