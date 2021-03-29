@@ -1,59 +1,38 @@
 import { PayByLink } from './components/pay-by-link.js';
 import { TerminalApi } from './components/terminal-api.js';
 import { CheckoutApi } from './components/checkout-api.js';
-//import { ChatBot } from './components/chatbotwidget.js';
+import { ChatBot } from './components/chatbot-widget.js';
 
+// Uncomment shopperEmail and merchantName for email PBL
 let pblDataObj = {
   "countryCode": "GB",
   "merchantAccount": adyenConfig.merchantAccount,
   "reference": Math.floor(Math.random() * 10000000).toString(),
-  "shopperEmail": "test@test.com",
-  "shopperReference": "test123",
+  // "shopperEmail": "test@test.com",
+  // "merchantName": demoSession.merchantName,
+  "shopperReference": Math.floor(Math.random() * 10000000).toString(),
   "amount": {
     "value": 10000,
     "currency": "GBP"
-  },
-  "lineItems": [
-      {
-          "id": '1',
-          "description": 'Test Item 1',
-          "amountExcludingTax": 10000,
-          "taxAmount": 0,
-          "taxPercentage": 0,
-          "quantity": 1,
-          "taxCategory": 'High'
-      }
-  ],
-  //"channel": 'web',
-  //"origin":'https://your-company.com',
-  "returnUrl":"https://your-company.com",
-  "billingAddress": {
-     "street": "Broadway, Westminster,",
-     "houseNumberOrName": "8-10",
-     "postalCode": "SW1H 0BG",
-     "city": "London",
-     "stateOrProvince": "",
-     "country": "GB"
-}
+  }
 };
 
 let newPbl = new PayByLink(pblDataObj);
 let terminalApi = new TerminalApi(pblDataObj);
 let checkoutApi = new CheckoutApi(pblDataObj);
-//let ChatBot = new ChatBot();
+let ChatBot = new ChatBot();
 
 let payMethodObj = {
   "merchantAccount": checkoutApi.data.merchantAccount,
   "countryCode": checkoutApi.data.countryCode,
-  "shopperReference": "test123"
-//  "blockedPaymentMethods": ['sepa', 'klarna_account', 'alipay', 'givex', 'svs']
+  "shopperReference": checkoutApi.data.shopperReference
 };
 
 checkoutApi.getPaymentMethods(payMethodObj).then(function(paymentMethodsResponse) {
   let configuration = {
-    amount:{value:10000,currency:'GBP'},
+    amount: checkoutApi.data.amount,
     environment: "test",
-    showRemovePaymentMethodButton:true,
+    showRemovePaymentMethodButton: true,
     clientKey: adyenConfig.clientKey,
     paymentMethodsResponse: paymentMethodsResponse,
     onSubmit: function(state, component) {
@@ -68,28 +47,28 @@ checkoutApi.getPaymentMethods(payMethodObj).then(function(paymentMethodsResponse
       });
     },
     paymentMethodsConfiguration: {
-        card: {
-          hasHolderName: true,
-          holderNameRequired: true,
-          enableStoreDetails: true,
-          showStoredPaymentMethods: true,
-          billingAddressRequired:true,
-          //billingAddressAllowedCountries:['US', 'CA', 'BR','FR','DE','SE','NO','ES','IT','AU','NZ','GB','UK','EN'],
-          data:  {
-               "billingAddress": {
-               "street": "Broadway, Westminster,",
-               "houseNumberOrName": "8-10",
-               "postalCode": "SW1H 0BG",
-               "city": "London",
-               "stateOrProvince": "",
-               "country": "GB"
-             }
+      card: {
+        hasHolderName: true,
+        holderNameRequired: true,
+        enableStoreDetails: true,
+        showStoredPaymentMethods: true,
+        //billingAddressRequired:true,
+        //billingAddressAllowedCountries:['US', 'CA', 'BR','FR','DE','SE','NO','ES','IT','AU','NZ','GB','UK','EN'],
+        data: {
+          billingAddress: {
+            "street": "Broadway, Westminster,",
+            "houseNumberOrName": "8-10",
+            "postalCode": "SW1H 0BG",
+            "city": "London",
+            "stateOrProvince": "",
+            "country": "GB"
+          }
         },
-          name: 'Credit or debit card'
-        },
-        giftcard:{
-          pinRequired:false
-        },
+        name: 'Credit or debit card'
+      },
+      giftcard:{
+        pinRequired:false
+      },
       paywithgoogle: {
         environment: "TEST",
         amount: newPbl.data.amount

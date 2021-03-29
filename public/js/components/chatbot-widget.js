@@ -18,7 +18,7 @@
 //                        !
 
 
-export function ChatBot() {
+export class ChatBot() {
 //export class ChatBot {
   // Pass all data needed for the chatbot API to set in the constructor
 //   constructor(data) {
