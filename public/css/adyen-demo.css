@@ -62,15 +62,29 @@ img.merchant-checkout, img.merchant-checkout-noreplace {
   height: auto;
 }
 
-.chat {
+.success-order {
+	height: 60px;
+	width: 60px;
+	line-height: 60px;
 
+	-moz-border-radius: 30px; /* or 50% */
+	border-radius: 30px; /* or 50% */
+
+	background-color: white;
+	color: white;
+	text-align: center;
+	font-size: 2em;
+	border: 3px solid green;
+}
+
+/* CHAT BOT STYLING */
+.chat {
   margin-bottom: 5px;
   background-color:#ffffff;
   margin-top:10px;
   width: 100%;
 }
 .chat1 {
-
   margin-bottom: 10px;
   background-color:#ffffff;
   margin-top:10px;
@@ -117,3 +131,4 @@ img.merchant-checkout, img.merchant-checkout-noreplace {
   margin-top:10px;
   width:100%;
 }
+/* END BOT STYLING */

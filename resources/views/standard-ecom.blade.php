@@ -49,19 +49,6 @@
 			</div>
 		</div>
 
-<!--		<div  id="chat" >
-			<h4 class="d-flex justify-content-between align-items-center mb-9">
-				<a><span><font color="#bd1a8d">Chat</font></span></a>
-			</h4>
-			<div class="col-md-11" id="chat" >
-			<input  id="chat1" type="text" placeholder="Start typing if you need help" onchange="chat1()">
-			<div  id="chat2"input type="text" onchange="chat2()"></div>
-			<div  id="chat3"  input type="text"  onchange="chat3()"></div>
-			<div  id="chat4"input type="text"  onchange="chat4()"></div>
-			<iframe name="iFrame"width="200" height="200" style=border:0></iframe>
-			</div>
-		</div>
--->
 		<div class="col-md-1">
 			<div class="card" style="width: 12em;">
 				<div class="card-body" style="align-self: center;">
@@ -70,9 +57,8 @@
 						<button type="button" class="btn btn-primary txt-brand-color-one bkg-brand-color-two bdr-brand-color-two" id="create-qr-code">QR Code</button>
 						<button type="button" class="btn btn-secondary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two pay-at-terminal" id="pay-at-terminal">Pay @ Terminal</button>
 						<button type="button" class="btn btn-secondary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two" id="send-email">Send Email</button>
-						<button type="button" class="btn btn-secondary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two" id="chatbot">Chat</button>
+						<button type="button" class="btn btn-secondary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two" id="chat-show">Chat</button>
 						<a type="button" class="btn btn-secondary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two" href="https://ca-test.adyen.com/ca/ca/pos/posoverview.shtml">Customer Area</a>
-
 					</div>
 				</div>
 			</div>
@@ -117,19 +103,20 @@
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
-						<div class="modal-body text-center" id="chat-content">
-							<div  id="chat">
-									<p>Welcome</p>
-										<input id="chat0" type="text" placeholder="Start typing if you need help" onchange="chat1()">
-										<div id="chat1" input type="text" onchange="chat2()"></div>
-										<div id="chat2" input type="text" onchange="chat3()"></div>
-										<div id="chat3" input type="text" onchange="chat4()"></div>
-										<div id="chat4" input type="text" oninput="qrcode()"></div>
-									<div class="modal-footer">
-								<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-							</div>
-						</div>
+				<div class="modal-body text-center" id="chat-content">
+					<div id="chatBot">
+						<p>Welcome to the <span class="merchant-name"></span> ChatBot</p>
+						{{-- <input id="chatBot-0" type="text" class="form-control" placeholder="Start typing if you need help" onchange="chat1()">
+						<div id="chatBot-1" input type="text" onchange="chat2()"></div>
+						<div id="chatBot-2" input type="text" onchange="chat3()"></div>
+						<div id="chatBot-3" input type="text" onchange="chat4()"></div>
+						<div id="chatBot-4" input type="text" oninput="qrcode()"></div> --}}
 					</div>
 				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				</div>
 			</div>
+		</div>
+	</div>
 @endsection

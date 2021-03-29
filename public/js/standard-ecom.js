@@ -4,11 +4,12 @@ import { CheckoutApi } from './components/checkout-api.js';
 import { ChatBot } from './components/chatbot-widget.js';
 
 // Uncomment shopperEmail and merchantName for email PBL
-let pblDataObj = {
+// Email will not work unless you are whitelisted in AWS (AWS being used for SMTP server)
+let paymentDataObj = {
   "countryCode": "GB",
   "merchantAccount": adyenConfig.merchantAccount,
   "reference": Math.floor(Math.random() * 10000000).toString(),
-  // "shopperEmail": "test@test.com",
+  // "shopperEmail": "whitej031788@gmail.com",
   // "merchantName": demoSession.merchantName,
   "shopperReference": Math.floor(Math.random() * 10000000).toString(),
   "amount": {
@@ -16,73 +17,6 @@ let pblDataObj = {
     "currency": "GBP"
   }
 };
-
-let newPbl = new PayByLink(pblDataObj);
-let terminalApi = new TerminalApi(pblDataObj);
-let checkoutApi = new CheckoutApi(pblDataObj);
-let ChatBot = new ChatBot();
-
-let payMethodObj = {
-  "merchantAccount": checkoutApi.data.merchantAccount,
-  "countryCode": checkoutApi.data.countryCode,
-  "shopperReference": checkoutApi.data.shopperReference
-};
-
-checkoutApi.getPaymentMethods(payMethodObj).then(function(paymentMethodsResponse) {
-  let configuration = {
-    amount: checkoutApi.data.amount,
-    environment: "test",
-    showRemovePaymentMethodButton: true,
-    clientKey: adyenConfig.clientKey,
-    paymentMethodsResponse: paymentMethodsResponse,
-    onSubmit: function(state, component) {
-      component.setStatus('loading');
-      checkoutApi.submitPayment(state, component).then(function(result) {
-        console.log(result);
-        if (result.action) {
-          component.handleAction(result.action);
-        } else {
-          component.setStatus('success');
-        }
-      });
-    },
-    paymentMethodsConfiguration: {
-      card: {
-        hasHolderName: true,
-        holderNameRequired: true,
-        enableStoreDetails: true,
-        showStoredPaymentMethods: true,
-        //billingAddressRequired:true,
-        //billingAddressAllowedCountries:['US', 'CA', 'BR','FR','DE','SE','NO','ES','IT','AU','NZ','GB','UK','EN'],
-        data: {
-          billingAddress: {
-            "street": "Broadway, Westminster,",
-            "houseNumberOrName": "8-10",
-            "postalCode": "SW1H 0BG",
-            "city": "London",
-            "stateOrProvince": "",
-            "country": "GB"
-          }
-        },
-        name: 'Credit or debit card'
-      },
-      giftcard:{
-        pinRequired:false
-      },
-      paywithgoogle: {
-        environment: "TEST",
-        amount: newPbl.data.amount
-      }
-    };
-
-    let checkout = new AdyenCheckout(configuration);
-    let dropin = checkout.create('dropin');
-    dropin.mount('#dropin-container');
-    dropin.update();
-  });
-}
-
-getPaymentMethods();
 
 function generateQrCode() {
   $('#qr-code').empty();
@@ -94,6 +28,71 @@ function generateQrCode() {
     $('#action-modal').modal('show');
   });
 }
+
+let newPbl = new PayByLink(paymentDataObj);
+let terminalApi = new TerminalApi(paymentDataObj);
+let checkoutApi = new CheckoutApi(paymentDataObj);
+let chatBotWidget = new ChatBot("chatBot", function() {$('#chat-modal').modal('hide'); generateQrCode()});
+
+// Wrap all of this in a function we we can easily call payment methods again for country change
+function getPaymentMethods() {
+  checkoutApi.getPaymentMethods(paymentDataObj).then(function(paymentMethodsResponse) {
+    let configuration = {
+      amount: checkoutApi.data.amount,
+      environment: "test",
+      showRemovePaymentMethodButton: true,
+      clientKey: adyenConfig.clientKey,
+      paymentMethodsResponse: paymentMethodsResponse,
+      onSubmit: function(state, component) {
+        component.setStatus('loading');
+        checkoutApi.submitPayment(state, component).then(function(result) {
+          console.log(result);
+          if (result.action) {
+            component.handleAction(result.action);
+          } else {
+            component.setStatus('success');
+          }
+        });
+      },
+      paymentMethodsConfiguration: {
+        card: {
+          hasHolderName: true,
+          holderNameRequired: true,
+          enableStoreDetails: true,
+          showStoredPaymentMethods: true,
+          /* Add addresss to drop-in and able to prefill it with data */
+          //billingAddressRequired:true,
+          //billingAddressAllowedCountries:['US', 'CA', 'BR','FR','DE','SE','NO','ES','IT','AU','NZ','GB','UK','EN'],
+          // data: {
+          //   billingAddress: {
+          //     "street": "Broadway, Westminster,",
+          //     "houseNumberOrName": "8-10",
+          //     "postalCode": "SW1H 0BG",
+          //     "city": "London",
+          //     "stateOrProvince": "",
+          //     "country": "GB"
+          //   }
+          // },
+          name: 'Credit or debit card'
+        },
+        giftcard: {
+          pinRequired:false
+        },
+        paywithgoogle: {
+          environment: "TEST",
+          amount: newPbl.data.amount
+        }
+      }
+    };
+
+    let checkout = new AdyenCheckout(configuration);
+    let dropin = checkout.create('dropin');
+    dropin.mount('#dropin-container');
+    dropin.update();
+  });
+}
+
+getPaymentMethods();
 
 function payAtTerminal() {
   $('#qr-code').empty();
@@ -143,92 +142,25 @@ function countryChange() {
   getPaymentMethods();
 }
 
- //TO DO
 function sendEmail() {
-}
-
-// TO DO
-function chatBot() {
-    $('#chat-modal').modal('show');
-}
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function chat1() {
-  await sleep(1000);
-  var para = document.createElement("P");
-  para.innerHTML = "HelpBot: Hello, how can I help?";
-  document.getElementById("chat1").appendChild(para);
-  var input1 = document.createElement('input');
-  input1.setAttribute('type', 'text');
-  input1.placeholder="e.g. Save my basket";
-  input1.setAttribute('class', 'chat');
-  document.getElementById("chat1").appendChild(input1);
-}
-
-async function chat2() {
-  await sleep(1000);
-  var para = document.createElement("P");
-  para.innerHTML = "HelpBot: OK let me help you with that. Can you please let me know your name and email?";
-  document.getElementById("chat2").appendChild(para);
-  var input2 = document.createElement('input');
-  input2.setAttribute('type', 'text');
-  input2.setAttribute('class', 'chat');
-  input2.setAttribute('name', 'email');
-  document.getElementById("chat2").appendChild(input2).value;
-}
-
-async function chat3() {
-  await sleep(1000);
-  var para = document.createElement("P");
-  para.innerHTML = "HelpBot: Thank you. I'll save your basket and give you a QR Code to pay for the items later. Is that ok?";
-  document.getElementById("chat3").appendChild(para);
-  var input3 = document.createElement('input');
-  input3.setAttribute('type', 'text');
-  input3.setAttribute('class', 'chat');
-  document.getElementById("chat3").appendChild(input3);
-}
-
-async function chat4() {
-  await sleep(1000);
-  var para = document.createElement("P");
-  para.innerHTML = "HelpBot: No problem, Here's a QR Code. If you would also like the link for later, please hit send email";
-  document.getElementById("chat4").appendChild(para);
-  await sleep(2000);
-  var para = document.createElement("P");
-  para.setAttribute('type', 'url');
-  para.innerHTML ="Please scan. Thank you.";
-  document.getElementById("chat4").appendChild(para);
-  await sleep(3000);
-
-generateQrCode();
-function generateQrCode() {
-  $('#qr-code').empty();
-  $('#choose-terminal').hide();
-  $('#success-or-failure').hide();
-  newPbl.getQRCode().then(function(qrCodeSvg) {
-    $('#qr-code').append(qrCodeSvg);
-    $('#qr-code').show();
-    $('#chat-modal').modal('hide');
-    $('#action-modal').modal('show');
+  newPbl.sendLinkEmail().then(function(result) {
+    alert("The link has been sent to the shopper's email address");
   });
 }
+
+function chatShow() {
+  $('#chat-modal').modal('show');
 }
 
 // Event Handlers for page
 document.querySelector('#create-qr-code').addEventListener("click", generateQrCode);
 $(".pay-at-terminal").on('click', payAtTerminal);
-document.querySelector('#send-sms').addEventListener("click", sendSms);
-
-document.querySelector('#chatbot').addEventListener("click", chatBot);
-document.querySelector('#chat0').addEventListener("change", chat1);
-document.querySelector('#chat1').addEventListener("change", chat2);
-document.querySelector('#chat2').addEventListener("change", chat3);
-document.querySelector('#chat3').addEventListener("change", chat4);
-
 document.querySelector('#send-email').addEventListener("click", sendEmail);
+
+
+// Chatbot
+document.querySelector('#chat-show').addEventListener("click", chatShow);
+
 document.querySelector('#country-selector').addEventListener("change", countryChange);
 
 // Would prefer a wider container for this page
