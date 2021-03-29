@@ -7,6 +7,7 @@
     "test": "tests"
   },
   "scripts": {
+      "serve": "php artisan serve",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack --watch & php artisan serve",
     "build": "webpack"

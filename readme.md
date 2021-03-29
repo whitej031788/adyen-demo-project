@@ -9,6 +9,16 @@
 - Generate a key `php artisan key:generate`
 - Run Laravel `php artisan serve`
 
+## Contributing
+
+- Do not contribute directly to the `main` or `master` branch
+- Create a new branch (see naming convention below) and create a `pull request` to the `master` branch
+
+### Branch Naming Convention
+
+When creating a branch, use the naming convention `@name` followed by `/subject`
+ie: `@luke/chatbot_stuff`
+
 ## ENV File
 - The .env file contains Laravel application and environment variables
 - To get your demo working, you can scroll down to the ADYEN_API_KEY variable and fill out the ADYEN items
