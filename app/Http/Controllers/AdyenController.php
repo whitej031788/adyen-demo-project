@@ -80,6 +80,7 @@ class AdyenController extends Controller
     $params = $request->all();
     $curlUrl = "https://checkout-test.adyen.com/" . \Config::get('adyen.checkoutApiVersion') . "/paymentLinks";
 
+
     $result = $this->makeAdyenRequest($curlUrl, $this->sanitizePblParams($params), true, false);
 
     $urlToQrEncode = $result->url;

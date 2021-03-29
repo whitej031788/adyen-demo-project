@@ -66,7 +66,7 @@ function handleSendPaymentLink(e) {
 
 var configuration = {
   environment: "test", // When you're ready to accept live payments, change the value to one of our live environments https://docs.adyen.com/checkout/components-web#testing-your-integration.
-  clientKey: "test_26ROBT3X3NDAXJW4KQPVMOOIUACJULB4", // Your client key. To find out how to generate one, see https://docs.adyen.com/development-resources/client-side-authentication. Web Components versions before 3.10.1 use originKey instead of clientKey.
+  clientKey: adyenConfig.clientKey, // Your client key. To find out how to generate one, see https://docs.adyen.com/development-resources/client-side-authentication. Web Components versions before 3.10.1 use originKey instead of clientKey.
   // The payment methods response that can be fetched using server side Java SDK, https://docs.adyen.com/checkout/components-web?tab=script_2#step-1-get-available-payment-methods, // The payment methods response returned in step 1.
   paymentMethodsResponse: {
     "groups": [{
