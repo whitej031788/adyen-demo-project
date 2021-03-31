@@ -38,19 +38,19 @@
 	</div>
 	</br>
 	<div class="row">
-		<div class="col-md-9 offset-md-1 col-sm-12">
+		<div class="col-md-8 offset-md-1 col-sm-12">
 			<div class="card" style="width: auto;">
 				<div class="card-body">
-					<img class="merchant-checkout mx-auto" src="" />
+					<img class="merchant-checkout mx-auto mt-4" src="" />
 					<div class="row justify-content-center">
-						<div id="dropin-container" class=" col-md-10 col-sm-12 mt-3"></div>
+						<div id="dropin-container" class=" col-md-11 col-sm-12 mt-3"></div>
 					</div>
 				</div>
 			</div>
 		</div>
 
 		<div class="col-md-1">
-			<div class="card" style="width: 12em;">
+			<div class="card" style="width: 14em;">
 				<div class="card-body" style="align-self: center;">
 					<h5 style="text-decoration: underline;">Functions</h5>
 					<div class="btn-group-vertical">
