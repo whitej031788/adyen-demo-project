@@ -16,3 +16,4 @@ yarn-error.log
 composer.phar
 .installer
 ./public/css/adyen-demo-custom.css
+/.idea
