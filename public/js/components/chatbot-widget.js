@@ -67,7 +67,7 @@ export class ChatBot {
         text = "HelpBot: OK let me help you with that. Can you please let me know your name and email?";
         break;
       case 2:
-        text = "HelpBot: Thank you. I'll save your basket and give you a QR Code to pay for the items later. Is that ok?";
+        text = "HelpBot: Thank you. I'll save your booking and give you a QR Code to pay for the reservation later. Is that ok?";
         break;
       case 3:
         text = "HelpBot: No problem, Here's a QR Code. If you would also like the link for later, please hit send email";

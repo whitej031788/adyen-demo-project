@@ -150,6 +150,70 @@ class AdyenController extends Controller
     return response()->json($result);
   }
 
+
+  public function terminalCloudApiRequestInput(Request $request) {
+    if ($request->has('terminal')) {
+      $requestTerminal = $request->terminal;
+    } else {
+      $requestTerminal = "terminalPooid";
+    }
+    // If there is a second pooid setup, and a second api key, AND the request is for the second pooid, then we need a new client
+    if ($requestTerminal == "terminalPooidTwo" && !empty(\Config::get('adyen.apiKeyTwo'))) {
+      $newAdyenClient = new \Adyen\Client();
+      $newAdyenClient->setXApiKey(\Config::get('adyen.apiKeyTwo'));
+      $newAdyenClient->setEnvironment(\Adyen\Environment::TEST);
+      $terminalService = new \Adyen\Service\PosPayment($newAdyenClient);
+    } else {
+      $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
+    }
+
+    $params = $request->all();
+
+    $requestData = $params['data'];
+    $pooid = \Config::get('adyen.' . $requestTerminal);
+
+    $saleToPoiRequest = array (
+      'SaleToPOIRequest' =>
+        array (
+          'MessageHeader' =>
+          array (
+            'ProtocolVersion' => '3.0',
+            'MessageClass' => 'Service',
+            'MessageCategory' => 'Payment',
+            'MessageType' => 'Request',
+            'ServiceID' => $this->generateRandomString(),
+            'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
+            'POIID' => $pooid,
+          ),
+          'PaymentRequest' =>
+          array (
+            'SaleData' =>
+            array (
+              'SaleTransactionID' =>
+              array (
+                'TransactionID' => $requestData['reference'],
+                'TimeStamp' => date("c"),
+              ),
+            ),
+            'PaymentTransaction' =>
+            array (
+              'AmountsReq' =>
+              array (
+                'Currency' => $requestData['amount']['currency'],
+                'RequestedAmount' => (float)($requestData['amount']['value'] / 100),
+              ),
+            ),
+          ),
+        ),
+      );
+
+    $result = $this->makeAdyenRequest("runTenderSync", $saleToPoiRequest, false, $terminalService);
+
+    return response()->json($result);
+  }
+
+
+
   public function redirPayDet($details, $paymentData) {
     $checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
 
@@ -161,6 +225,20 @@ class AdyenController extends Controller
     $result = $this->makeAdyenRequest("paymentsDetails", $params, false, $checkoutService);
 
     return $result;
+  }
+
+  public function adjustPayment(Request $request) {
+    $params = $request->all();
+    $curlUrl = "https://pal-test.adyen.com/pal/servlet/Payment/v64/adjustAuthorisation";
+    $result = $this->makeAdyenRequest($curlUrl, $params, true, false);
+    return response()->json($result);
+  }
+
+  public function capturePayment(Request $request) {
+    $params = $request->all();
+    $curlUrl = "https://pal-test.adyen.com/pal/servlet/Payment/v64/capture";
+    $result = $this->makeAdyenRequest($curlUrl, $params, true, false);
+    return response()->json($result);
   }
 
   private function sanitizePblParams($params) {
@@ -267,4 +345,5 @@ class AdyenController extends Controller
 
     return $result;
   }
+
 }

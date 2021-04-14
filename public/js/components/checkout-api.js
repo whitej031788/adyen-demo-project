@@ -23,12 +23,29 @@ export class CheckoutApi {
 
   submitPayment(state, component) {
     let combinedData = Object.assign(this.data, state.data);
-
     return $.ajax({
       url: '/api/adyen/makePayment',
       dataType: 'json',
       type: 'post',
       data: combinedData
+    });
+  }
+
+  adjustPayment(data) {
+    return $.ajax({
+      url: '/api/adyen/adjustPayment',
+      dataType: 'json',
+      type: 'post',
+      data: data
+    });
+  }
+
+  capturePayment(data) {
+    return $.ajax({
+      url: '/api/adyen/capturePayment',
+      dataType: 'json',
+      type: 'post',
+      data: data
     });
   }
 }

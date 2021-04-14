@@ -11,4 +11,14 @@ export class TerminalApi {
       data: {data: this.data, terminal: terminal}
     });
   }
+
+  cloudApiRequestInput(terminal) {
+    return $.ajax({
+      url: '/api/adyen/terminalCloudApiRequestInput',
+      dataType: 'json',
+      type: 'post',
+      data: {data: this.data, terminal: terminal}
+    });
+  }
+
 }

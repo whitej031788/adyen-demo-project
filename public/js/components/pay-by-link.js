@@ -33,12 +33,21 @@ export class PayByLink {
     });
   }
 
+  // sendLinkEmail() {
+  //   return $.ajax({
+  //     url: '/api/adyen/generateAndSendPaymentLink',
+  //     dataType: 'json',
+  //     type: 'post',
+  //     data: {type: 'email', data: this.data}
+  //   });
+  // }
+
   sendLinkEmail() {
     return $.ajax({
-      url: '/api/adyen/generateAndSendPaymentLink',
-      dataType: 'json',
-      type: 'post',
-      data: {type: 'email', data: this.data}
+      url: 'resources/views/sendmail.php',
+      //dataType: 'json',
+      type: 'post'
+      //data: {type: 'email', data: this.data}
     });
   }
 }

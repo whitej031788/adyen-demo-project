@@ -6,22 +6,71 @@ import { ChatBot } from './components/chatbot-widget.js';
 // Uncomment shopperEmail and merchantName for email PBL
 // Email will not work unless you are whitelisted in AWS (AWS being used for SMTP server)
 
-
 let paymentDataObj = {
   "countryCode": "GB",
   "merchantAccount": adyenConfig.merchantAccount,
   "reference": Math.floor(Math.random() * 10000000).toString(),
    "shopperEmail": "luke.strudwick@adyen.com",
    "shopperReference": "luke.strudwick@adyen.com",
-   "additionalData":{
-   "authorisationType":"PreAuth"
-},
-  // "merchantName": demoSession.merchantName,
-  //"shopperReference": Math.floor(Math.random() * 10000000).toString(),
+   "allowedPaymentMethods":["scheme"],
+   "blockedPaymentMethods":["applepay","paywithgoogle"],
   "amount": {
-    "value": 10000,
+    "value": 20000,
     "currency": "GBP"
   }
+};
+
+function adjustAuth(){
+  adjustAuthData.modificationAmount.value = $('#valueUpdate').val()
+  checkoutApi.adjustPayment(adjustAuthData).then(function(adjustData){
+    console.log(adjustData)
+  })
+  adjustAuthData.originalReference = $('#bookingReference').val()
+checkoutApi.adjustPayment(adjustAuthData).then(function(adjustData){
+  console.log(adjustData);
+})
+{
+  window.alert("Authorised amount adjusted!");
+}
+};
+
+let adjustAuthData = {
+  "originalReference":"",
+  "merchantAccount": adyenConfig.merchantAccount,
+  "reference": Math.floor(Math.random() * 10000000).toString(),
+   "additionalData":{
+       "industryUsage":"DelayedCharge"
+   },
+  "modificationAmount": {
+    "value": 20000,
+    "currency": "GBP"
+  }
+};
+
+
+function captureAuth(){
+  captureAuthData.modificationAmount.value = $('#valueUpdate').val()
+  checkoutApi.capturePayment(captureAuthData).then(function(captureData){
+    console.log(captureData)
+  })
+  captureAuthData.originalReference = $('#bookingReference').val()
+checkoutApi.capturePayment(captureAuthData).then(function(captureData){
+  console.log(captureData);
+})
+{
+  window.alert("Authorised amount captured!");
+}
+};
+
+let captureAuthData = {
+    "originalReference": "",
+    "modificationAmount": {
+      "value": 5000,
+      "currency": "GBP"
+    },
+    "reference": Math.floor(Math.random() * 10000000).toString(),
+    "merchantAccount": adyenConfig.merchantAccount
+
 };
 
 function generateQrCode() {
@@ -45,8 +94,8 @@ let chatBotWidget = new ChatBot("chatBot", function() {
 
 const translations = {
   "en-GB": {
-  "confirmPreauthorization": "Book now, Pay at hotel",
-  "payButton": "Pay Deposit now of "
+  "confirmPreauthorization": "Charge tokenised card",
+  "payButton": "Charge "
 }
 };
 // Wrap all of this in a function we we can easily call payment methods again for country change
@@ -56,11 +105,13 @@ function getPaymentMethods() {
       amount: checkoutApi.data.amount,
       environment: "test",
       showRemovePaymentMethodButton: true,
-      showStoredPaymentMethods: false,
-      clientKey: adyenConfig.clientKey,
+      showPaymentMethods:false,
+      showPayButton:false,
       locale: "en-GB",
       translations: translations,
+      clientKey: adyenConfig.clientKey,
       paymentMethodsResponse: paymentMethodsResponse,
+      allowedPaymentMethods:["scheme"],
       onSubmit: function(state, component) {
         component.setStatus('loading');
         checkoutApi.submitPayment(state, component).then(function(result) {
@@ -77,7 +128,9 @@ function getPaymentMethods() {
           hasHolderName: true,
           holderNameRequired: true,
           enableStoreDetails: true,
-          showStoredPaymentMethods: false,
+          showStoredPaymentMethods: true,
+          hideCVC:true,
+
           /* Add addresss to drop-in and able to prefill it with data */
           //billingAddressRequired:true,
           //billingAddressAllowedCountries:['US', 'CA', 'BR','FR','DE','SE','NO','ES','IT','AU','NZ','GB','UK','EN'],
@@ -138,6 +191,8 @@ function payAtTerminal() {
   $('#action-modal').modal('show');
 }
 
+
+
 function countryChange() {
   let countryToCurrencyMap = {
     "GB": "GBP",
@@ -151,7 +206,6 @@ function countryChange() {
 
   let countryCode = this.value;
   let currencyCode = countryToCurrencyMap[countryCode];
-
   paymentDataObj.countryCode = countryCode;
   paymentDataObj.amount.currency = currencyCode;
   newPbl = new PayByLink(paymentDataObj);
@@ -173,13 +227,10 @@ function chatShow() {
 // Event Handlers for page
 document.querySelector('#create-qr-code').addEventListener("click", generateQrCode);
 $(".pay-at-terminal").on('click', payAtTerminal);
-document.querySelector('#send-email').addEventListener("click", sendEmail);
+// document.querySelector('#send-email').addEventListener("click", sendEmail);
 
-
-// Chatbot
-document.querySelector('#chat-show').addEventListener("click", chatShow);
-
-document.querySelector('#country-selector').addEventListener("change", countryChange);
+document.querySelector('#adjustAuth').addEventListener("click", adjustAuth);
+document.querySelector('#captureAuth').addEventListener("click", captureAuth);
 
 // Would prefer a wider container for this page
 $('#main-container').addClass('container-fluid');
