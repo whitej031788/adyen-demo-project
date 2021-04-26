@@ -26,6 +26,23 @@ class AdyenController extends Controller
     return response()->json($result);
   }
 
+//endpoint for the additional details for paypal
+public function submitAdditionalDetails(Request $request) {
+$checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
+
+   $params = $request->all();
+
+       $result = $this->makeAdyenRequest("paymentsDetails", $params, false, $checkoutService);
+
+       if ($result['resultCode'] == 'RedirectShopper') {
+
+             $cache = Cache::put($request->reference, $result['paymentData'], now()->addMinutes(15));
+           }
+
+         return response()->json($result);
+}
+
+
   public function makePayment(Request $request) {
     $checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
     $params = $request->all();

@@ -3,6 +3,9 @@ import { TerminalApi } from './components/terminal-api.js';
 import { CheckoutApi } from './components/checkout-api.js';
 import { ChatBot } from './components/chatbot-widget.js';
 
+
+
+
 // Uncomment shopperEmail and merchantName for email PBL
 // Email will not work unless you are whitelisted in AWS (AWS being used for SMTP server)
 let paymentDataObj = {
@@ -11,9 +14,10 @@ let paymentDataObj = {
   "reference": Math.floor(Math.random() * 10000000).toString(),
   // "shopperEmail": "whitej031788@gmail.com",
   // "merchantName": demoSession.merchantName,
+    //"merchantId": "sb-ol6wv5786557@business.example.com",
   "shopperReference": Math.floor(Math.random() * 10000000).toString(),
   "amount": {
-    "value": 10000,
+    "value": 50,
     "currency": "GBP"
   }
 };
@@ -57,6 +61,14 @@ function getPaymentMethods() {
           }
         });
       },
+//Submit additional details for paypal
+        onAdditionalDetails: function(state, component) {
+          checkoutApi.submitDetails(state.data).then(function(result) {
+              //console.log(response);
+              component.setStatus(result);
+          })
+        },
+
       paymentMethodsConfiguration: {
         card: {
           hasHolderName: true,
@@ -84,6 +96,11 @@ function getPaymentMethods() {
         paywithgoogle: {
           environment: "TEST",
           amount: newPbl.data.amount
+        },
+        paypal: {
+            //adding your own PayPal test business account merchant ID
+            merchantId: "AD74FQNVXQY5E",
+            environment: "test"
         }
       }
     };
@@ -155,11 +172,11 @@ function chatShow() {
   $('#chat-modal').modal('show');
 }
 
+
 // Event Handlers for page
 document.querySelector('#create-qr-code').addEventListener("click", generateQrCode);
 $(".pay-at-terminal").on('click', payAtTerminal);
 document.querySelector('#send-email').addEventListener("click", sendEmail);
-
 
 // Chatbot
 document.querySelector('#chat-show').addEventListener("click", chatShow);
