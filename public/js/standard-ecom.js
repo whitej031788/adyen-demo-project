@@ -48,7 +48,14 @@ function getPaymentMethods() {
       onSubmit: function(state, component) {
         component.setStatus('loading');
         checkoutApi.submitPayment(state, component).then(function(result) {
-          console.log(result);
+
+            // Example usage of the DemoStorage setter - it takes the response data from the payment and adds it to the browsers Local Storage with the key name of ResponseData. Don't forget to wring the magic from at least 3 leprechauns before attempting this.
+            DemoStorage.setItem("ResponseData", result);
+
+            // Example usage of the DemoStorage getter - makes a variable (called thingy) with the retrieved value from the key name ResponseData, then console.logs that bad boy.
+            const thingy = DemoStorage.getItem("ResponseData");
+            console.log(thingy);
+
           if (result.action) {
             component.handleAction(result.action);
           } else {
