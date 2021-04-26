@@ -27,5 +27,9 @@ class AppServiceProvider extends ServiceProvider
         $view_name = str_replace('.', '-', $view->getName());
         view()->share('view_name', $view_name);
       });
+
+      if (\Config::get('app.env') == 'production') {
+        \URL::forceScheme('https');
+      }
     }
 }

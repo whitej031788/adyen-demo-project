@@ -203,8 +203,8 @@ $checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
 
   private function addKlarnaData(&$params) {
     // Let's just add fake data, we only need to make sure the amount all add up
-    $params['shopperEmail'] = 'testdemoemail@testdemo.com';
-    $params['telephoneNumber'] = '+441234567890';
+    $params['shopperEmail'] = 'testdemoemail+pend-accept-01@testdemo.com';
+    $params['telephoneNumber'] = '+447711567890';
     $params['billingAddress'] = $this->fakeBillingAddressArray();
     $params['deliveryAddress'] = $this->fakeDeliveryAddressArray();
     $params['shopperName'] = $this->fakeShopperName();
