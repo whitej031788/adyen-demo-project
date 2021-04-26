@@ -2,6 +2,7 @@ import { PayByLink } from './components/pay-by-link.js';
 import { TerminalApi } from './components/terminal-api.js';
 import { CheckoutApi } from './components/checkout-api.js';
 import { ChatBot } from './components/chatbot-widget.js';
+import { DemoStorage } from "./components/demo-storage.js";
 
 // Add shopperEmail and merchantName for email PBL
 // Email will not work unless you are whitelisted in AWS (AWS being used for SMTP server)
@@ -11,7 +12,7 @@ let paymentDataObj = {
   "reference": Math.floor(Math.random() * 10000000).toString(),
   "shopperReference": Math.floor(Math.random() * 10000000).toString(),
   "amount": {
-    "value": 10000,
+    "value": 3299,
     "currency": "GBP"
   }
 };
@@ -26,7 +27,6 @@ function generateQrCode() {
     $('#action-modal').modal('show');
   });
 }
-
 let newPbl = new PayByLink(paymentDataObj);
 let terminalApi = new TerminalApi(paymentDataObj);
 let checkoutApi = new CheckoutApi(paymentDataObj);
@@ -47,7 +47,14 @@ function getPaymentMethods() {
       onSubmit: function(state, component) {
         component.setStatus('loading');
         checkoutApi.submitPayment(state, component).then(function(result) {
-          console.log(result);
+
+          // Example usage of the DemoStorage setter - it takes the response data from the payment and adds it to the browsers Local Storage with the key name of ResponseData. Don't forget to wring the magic from at least 3 leprechauns before attempting this.
+          DemoStorage.setItem("ResponseData", result);
+
+          // Example usage of the DemoStorage getter - makes a variable (called thingy) with the retrieved value from the key name ResponseData, then console.logs that bad boy.
+          const thingy = DemoStorage.getItem("ResponseData");
+          console.log(thingy);
+
           if (result.action) {
             component.handleAction(result.action);
           } else {
