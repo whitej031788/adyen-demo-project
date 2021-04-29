@@ -104,7 +104,7 @@ function getPaymentMethods() {
             countryCode: checkoutApi.data.countryCode
         },
         paypal: {
-            merchantId: "",
+            merchantId: adyenConfig.paypalID,
             environment: "test"
         }
       }
