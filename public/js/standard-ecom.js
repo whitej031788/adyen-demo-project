@@ -89,6 +89,10 @@ function getPaymentMethods() {
         paywithgoogle: {
           environment: "TEST",
           amount: newPbl.data.amount
+        },
+        applepay: {
+            amount: checkoutApi.data.amount,
+            countryCode: checkoutApi.data.countryCode
         }
       }
     };
