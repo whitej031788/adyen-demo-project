@@ -30,5 +30,29 @@ export class CheckoutApi {
       type: 'post',
       data: combinedData
     });
+
   }
+
+//for paypal stuff
+    submitDetails(data) {
+       // let data = Object.assign(this.data, state.data);
+ if(!data) {
+     data = {
+         "details": this.data.details,
+         "paymentData": this.data.paymentData,
+         "returnUrl" : this.data
+     }
+ }
+        return $.ajax({
+            url: '/api/adyen/submitAdditionalDetails',
+            dataType: 'json',
+            type: 'post',
+            data: data,
+            error: function (req, textStatus,errorThrown) {
+                alert('oops ' + textStatus + '' + errorThrown);
+            }
+        });
+    }
+
 }
+
