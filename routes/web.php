@@ -21,6 +21,7 @@ Route::group(['middleware' => 'demosession'], function () {
   // End Preact Routes
 
   // Normal JS Routes
+
   Route::get('/custom-call-center', 'ShowController@customCallCenter');
   Route::get('/standard-ecom', 'ShowController@standardEcom');
   Route::any('/return-url/{payRef}', 'ShowController@returnUrl');
