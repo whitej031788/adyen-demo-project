@@ -1,6 +1,5 @@
-import { PayByLink } from './components/pay-by-link.js';
 import { AccountNumber, BranchCode, AccountHolderCode } from './components/predefined-fakes.js'
-import * as faker from 'https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.min.js';
+import * as faker from 'https://rawgit.com/Marak/faker.js/master/examples/browser/js/faker.js';
 
 function createAccountHolder(e) {
   e.preventDefault();
@@ -58,7 +57,7 @@ function createAccountHolder(e) {
     type: 'post',
     data: data,
     success: function(retData, textStatus, jQxhr) {
-      if (retData.accountHolderStatus.status == "Active") {
+      if (retData.accountHolderStatus.status === "Active") {
         $('#onboardingForm').addClass("d-none");
         $("#accountCreated").removeClass("d-none");
         $("#nextButton").removeClass("d-none");
@@ -71,7 +70,7 @@ function createAccountHolder(e) {
       console.log(errorThrown);
     }
   });
-};
+}
 
 function createSellerId(){
   const firstName = $('#firstName').val();
