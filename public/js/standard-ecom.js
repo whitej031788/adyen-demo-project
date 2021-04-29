@@ -12,7 +12,7 @@ let paymentDataObj = {
   "reference": Math.floor(Math.random() * 10000000).toString(),
   "shopperReference": Math.floor(Math.random() * 10000000).toString(),
   "amount": {
-    "value": 10000,
+    "value": 3299,
     "currency": "GBP"
   }
 };
@@ -27,7 +27,6 @@ function generateQrCode() {
     $('#action-modal').modal('show');
   });
 }
-
 let newPbl = new PayByLink(paymentDataObj);
 let terminalApi = new TerminalApi(paymentDataObj);
 let checkoutApi = new CheckoutApi(paymentDataObj);
@@ -49,12 +48,12 @@ function getPaymentMethods() {
         component.setStatus('loading');
         checkoutApi.submitPayment(state, component).then(function(result) {
 
-            // Example usage of the DemoStorage setter - it takes the response data from the payment and adds it to the browsers Local Storage with the key name of ResponseData. Don't forget to wring the magic from at least 3 leprechauns before attempting this.
-            DemoStorage.setItem("ResponseData", result);
+          // Example usage of the DemoStorage setter - it takes the response data from the payment and adds it to the browsers Local Storage with the key name of ResponseData. Don't forget to wring the magic from at least 3 leprechauns before attempting this.
+          DemoStorage.setItem("ResponseData", result);
 
-            // Example usage of the DemoStorage getter - makes a variable (called thingy) with the retrieved value from the key name ResponseData, then console.logs that bad boy.
-            const thingy = DemoStorage.getItem("ResponseData");
-            console.log(thingy);
+          // Example usage of the DemoStorage getter - makes a variable (called thingy) with the retrieved value from the key name ResponseData, then console.logs that bad boy.
+          const thingy = DemoStorage.getItem("ResponseData");
+          console.log(thingy);
 
           if (result.action) {
             component.handleAction(result.action);
@@ -63,14 +62,6 @@ function getPaymentMethods() {
           }
         });
       },
-//Submit additional details for paypal
-        onAdditionalDetails: function(state, component) {
-          checkoutApi.submitDetails(state.data).then(function(result) {
-              //console.log(response);
-              component.setStatus(result);
-          })
-        },
-
       paymentMethodsConfiguration: {
         card: {
           hasHolderName: true,
@@ -99,10 +90,9 @@ function getPaymentMethods() {
           environment: "TEST",
           amount: newPbl.data.amount
         },
-        paypal: {
-            //adding your own PayPal test business account merchant ID
-            merchantId: "AD74FQNVXQY5E",
-            environment: "test"
+        applepay: {
+            amount: checkoutApi.data.amount,
+            countryCode: checkoutApi.data.countryCode
         }
       }
     };
