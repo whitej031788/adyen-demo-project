@@ -27,6 +27,7 @@ function generateQrCode() {
     $('#action-modal').modal('show');
   });
 }
+
 let newPbl = new PayByLink(paymentDataObj);
 let terminalApi = new TerminalApi(paymentDataObj);
 let checkoutApi = new CheckoutApi(paymentDataObj);
@@ -62,6 +63,14 @@ function getPaymentMethods() {
           }
         });
       },
+//Submit additional details for paypal
+        onAdditionalDetails: function(state, component) {
+          checkoutApi.submitDetails(state.data).then(function(result) {
+              //console.log(response);
+              component.setStatus(result);
+          })
+        },
+
       paymentMethodsConfiguration: {
         card: {
           hasHolderName: true,
@@ -93,6 +102,10 @@ function getPaymentMethods() {
         applepay: {
             amount: checkoutApi.data.amount,
             countryCode: checkoutApi.data.countryCode
+        },
+        paypal: {
+            merchantId: "",
+            environment: "test"
         }
       }
     };
