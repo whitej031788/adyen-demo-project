@@ -3,16 +3,18 @@ import { TerminalApi } from './components/terminal-api.js';
 import { CheckoutApi } from './components/checkout-api.js';
 import { ChatBot } from './components/chatbot-widget.js';
 import { DemoStorage } from "./components/demo-storage.js";
+import { ProductValue, Faker, NumberBetween } from './components/predefined-fakes.js';
+
 
 // Add shopperEmail and merchantName for email PBL
 // Email will not work unless you are whitelisted in AWS (AWS being used for SMTP server)
 let paymentDataObj = {
   "countryCode": "GB",
   "merchantAccount": adyenConfig.merchantAccount,
-  "reference": Math.floor(Math.random() * 10000000).toString(),
-  "shopperReference": Math.floor(Math.random() * 10000000).toString(),
+  "reference": Faker().datatype.uuid(),
+  "shopperReference": Faker().datatype.uuid(),
   "amount": {
-    "value": 3299,
+    "value": ProductValue(),
     "currency": "GBP"
   }
 };
@@ -69,18 +71,18 @@ function getPaymentMethods() {
           enableStoreDetails: true,
           showStoredPaymentMethods: true,
           /* Add addresss to drop-in and able to prefill it with data */
-          //billingAddressRequired:true,
-          //billingAddressAllowedCountries:['US', 'CA', 'BR','FR','DE','SE','NO','ES','IT','AU','NZ','GB','UK','EN'],
-          // data: {
-          //   billingAddress: {
-          //     "street": "Broadway, Westminster,",
-          //     "houseNumberOrName": "8-10",
-          //     "postalCode": "SW1H 0BG",
-          //     "city": "London",
-          //     "stateOrProvince": "",
-          //     "country": "GB"
-          //   }
-          // },
+          billingAddressRequired:true,
+          billingAddressAllowedCountries:['GB'],
+          data: {
+            billingAddress: {
+              "street": Faker().address.streetName(),
+              "houseNumberOrName": NumberBetween(1,30),
+              "postalCode": Faker().address.zipCode(),
+              "city": "London",
+              "stateOrProvince": Faker().address.county(),
+              "country": "GB"
+            }
+          },
           name: 'Credit or debit card'
         },
         giftcard: {
