@@ -23,6 +23,7 @@ Route::group(['middleware' => 'demosession'], function () {
   // Normal JS Routes
   Route::get('/custom-call-center', 'ShowController@customCallCenter');
   Route::get('/standard-ecom', 'ShowController@standardEcom');
+  Route::get('/hotel-checkin', 'ShowController@hotelCheckin');
   Route::any('/return-url/{payRef}', 'ShowController@returnUrl');
   Route::post('/delete-demo', 'DemoController@delete');
   // End Normal JS Routes

@@ -1,27 +1,80 @@
 import { PayByLink } from './components/pay-by-link.js';
 import { TerminalApi } from './components/terminal-api.js';
 import { CheckoutApi } from './components/checkout-api.js';
-import { ChatBot } from './components/chatbot-widget.js';
 import { DemoStorage } from "./components/demo-storage.js";
-import { ProductValue, Faker, NumberBetween } from './components/predefined-fakes.js';
 
+// Let's try and get a PSP from local storage for the booking reference
+const existingData = DemoStorage.getItem("ResponseData");
+if (existingData && existingData.resultCode == "Authorised") {
+  $('#bookingReference').val(existingData.pspReference);
+}
 
-// Uncomment shopperEmail and put in your email for email PBL
-
+// Uncomment shopperEmail for email PBL
 let paymentDataObj = {
   "countryCode": "GB",
   "merchantAccount": adyenConfig.merchantAccount,
-  "reference": Faker().datatype.uuid(),
-  "shopperReference": Faker().datatype.uuid(),
-  "shopperEmail": "jamie.white@adyen.com",
-  "additionalData":{
-    // Leave this here, doesn't really hurt anything and can help with certain demo use cases
-    "authorisationType":"PreAuth"
-  },
-  "amount": {
-    "value": ProductValue(),
+  "reference": Math.floor(Math.random() * 10000000).toString(),
+   "shopperEmail": "luke.strudwick@adyen.com",
+   "shopperReference": "luke.strudwick@adyen.com",
+   "allowedPaymentMethods":["scheme"],
+   "blockedPaymentMethods":["applepay","paywithgoogle"],
+    "amount": {
+      "value": 20000,
+      "currency": "GBP"
+    }
+};
+
+function adjustAuth(){
+  adjustAuthData.modificationAmount.value = $('#valueUpdate').val()
+  checkoutApi.adjustPayment(adjustAuthData).then(function(adjustData){
+    console.log(adjustData)
+  })
+  adjustAuthData.originalReference = $('#bookingReference').val()
+checkoutApi.adjustPayment(adjustAuthData).then(function(adjustData){
+  console.log(adjustData);
+})
+{
+  window.alert("Authorised amount adjusted!");
+}
+};
+
+let adjustAuthData = {
+  "originalReference":"",
+  "merchantAccount": adyenConfig.merchantAccount,
+  "reference": Math.floor(Math.random() * 10000000).toString(),
+   "additionalData":{
+       "industryUsage":"DelayedCharge"
+   },
+  "modificationAmount": {
+    "value": 20000,
     "currency": "GBP"
   }
+};
+
+
+function captureAuth(){
+  captureAuthData.modificationAmount.value = $('#valueUpdate').val()
+  checkoutApi.capturePayment(captureAuthData).then(function(captureData){
+    console.log(captureData)
+  })
+  captureAuthData.originalReference = $('#bookingReference').val()
+checkoutApi.capturePayment(captureAuthData).then(function(captureData){
+  console.log(captureData);
+})
+{
+  window.alert("Authorised amount captured!");
+}
+};
+
+let captureAuthData = {
+    "originalReference": "",
+    "modificationAmount": {
+      "value": 5000,
+      "currency": "GBP"
+    },
+    "reference": Math.floor(Math.random() * 10000000).toString(),
+    "merchantAccount": adyenConfig.merchantAccount
+
 };
 
 function generateQrCode() {
@@ -38,11 +91,13 @@ function generateQrCode() {
 let newPbl = new PayByLink(paymentDataObj);
 let terminalApi = new TerminalApi(paymentDataObj);
 let checkoutApi = new CheckoutApi(paymentDataObj);
-let chatBotWidget = new ChatBot("chatBot", function() {
-  $('#chat-modal').modal('hide');
-  generateQrCode();
-});
 
+const translations = {
+  "en-GB": {
+  "confirmPreauthorization": "Charge tokenised card",
+  "payButton": "Charge "
+}
+};
 // Wrap all of this in a function we we can easily call payment methods again for country change
 function getPaymentMethods() {
   checkoutApi.getPaymentMethods(paymentDataObj).then(function(paymentMethodsResponse) {
@@ -50,18 +105,17 @@ function getPaymentMethods() {
       amount: checkoutApi.data.amount,
       environment: "test",
       showRemovePaymentMethodButton: true,
-      showStoredPaymentMethods: true,
-      clientKey: adyenConfig.clientKey,
+      showPaymentMethods:false,
+      showPayButton:false,
       locale: "en-GB",
+      translations: translations,
+      clientKey: adyenConfig.clientKey,
       paymentMethodsResponse: paymentMethodsResponse,
+      allowedPaymentMethods:["scheme"],
       onSubmit: function(state, component) {
         component.setStatus('loading');
         checkoutApi.submitPayment(state, component).then(function(result) {
-          // Example usage of the DemoStorage setter - it takes the response data from the payment and adds it to the browsers Local Storage with the key name of ResponseData. Don't forget to wring the magic from at least 3 leprechauns before attempting this.
-          DemoStorage.setItem("ResponseData", result);
-          // Example usage of the DemoStorage getter - makes a variable (called thingy) with the retrieved value from the key name ResponseData, then console.logs that bad boy.
-          const thingy = DemoStorage.getItem("ResponseData");
-          console.log(thingy);
+          console.log(result);
           if (result.action) {
             component.handleAction(result.action);
           } else {
@@ -69,32 +123,27 @@ function getPaymentMethods() {
           }
         });
       },
-      //Submit additional details for paypal
-      onAdditionalDetails: function(state, component) {
-        checkoutApi.submitDetails(state.data).then(function(result) {
-            //console.log(response);
-            component.setStatus(result);
-        })
-      },
       paymentMethodsConfiguration: {
         card: {
           hasHolderName: true,
           holderNameRequired: true,
           enableStoreDetails: true,
-          showStoredPaymentMethods: false,
+          showStoredPaymentMethods: true,
+          hideCVC:true,
+
           /* Add addresss to drop-in and able to prefill it with data */
-          billingAddressRequired:true,
-          billingAddressAllowedCountries:['GB'],
-          data: {
-            billingAddress: {
-              "street": Faker().address.streetName(),
-              "houseNumberOrName": NumberBetween(1,30),
-              "postalCode": Faker().address.zipCode(),
-              "city": "London",
-              "stateOrProvince": Faker().address.county(),
-              "country": "GB"
-            }
-          },
+          //billingAddressRequired:true,
+          //billingAddressAllowedCountries:['US', 'CA', 'BR','FR','DE','SE','NO','ES','IT','AU','NZ','GB','UK','EN'],
+          // data: {
+          //   billingAddress: {
+          //     "street": "Broadway, Westminster,",
+          //     "houseNumberOrName": "8-10",
+          //     "postalCode": "SW1H 0BG",
+          //     "city": "London",
+          //     "stateOrProvince": "",
+          //     "country": "GB"
+          //   }
+          // },
           name: 'Credit or debit card'
         },
         giftcard: {
@@ -103,14 +152,6 @@ function getPaymentMethods() {
         paywithgoogle: {
           environment: "TEST",
           amount: newPbl.data.amount
-        },
-        applepay: {
-            amount: checkoutApi.data.amount,
-            countryCode: checkoutApi.data.countryCode
-        },
-        paypal: {
-            merchantId: adyenConfig.paypalID,
-            environment: "test"
         }
       }
     };
@@ -150,6 +191,8 @@ function payAtTerminal() {
   $('#action-modal').modal('show');
 }
 
+
+
 function countryChange() {
   let countryToCurrencyMap = {
     "GB": "GBP",
@@ -163,7 +206,6 @@ function countryChange() {
 
   let countryCode = this.value;
   let currencyCode = countryToCurrencyMap[countryCode];
-
   paymentDataObj.countryCode = countryCode;
   paymentDataObj.amount.currency = currencyCode;
   newPbl = new PayByLink(paymentDataObj);
@@ -185,13 +227,10 @@ function chatShow() {
 // Event Handlers for page
 document.querySelector('#create-qr-code').addEventListener("click", generateQrCode);
 $(".pay-at-terminal").on('click', payAtTerminal);
-document.querySelector('#send-email').addEventListener("click", sendEmail);
+// document.querySelector('#send-email').addEventListener("click", sendEmail);
 
-
-// Chatbot
-document.querySelector('#chat-show').addEventListener("click", chatShow);
-
-document.querySelector('#country-selector').addEventListener("change", countryChange);
+document.querySelector('#adjustAuth').addEventListener("click", adjustAuth);
+document.querySelector('#captureAuth').addEventListener("click", captureAuth);
 
 // Would prefer a wider container for this page
 $('#main-container').addClass('container-fluid');
