@@ -29,6 +29,7 @@
       adyenConfig.clientKey = '{{isset($clientKey) ? $clientKey : ""}}';
       adyenConfig.terminalPooid = '{{isset($terminalPooid) ? $terminalPooid : ""}}';
       adyenConfig.terminalPooidTwo = '{{isset($terminalPooidTwo) ? $terminalPooidTwo : ""}}';
+      adyenConfig.paypalID = '{{isset($paypalID) ? $paypalID : ""}}';
 
       for (const property in adyenConfig) {
         if (!adyenConfig[property]) {

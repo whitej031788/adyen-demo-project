@@ -54,6 +54,9 @@ class AdyenController extends Controller
     $type = $request->type;
     $params = $request->data;
 
+    $demo = $request->session()->get('demo_session');
+    $merchantName = json_decode($demo)->merchantName;
+
     $curlUrl = "https://checkout-test.adyen.com/" . \Config::get('adyen.checkoutApiVersion') . "/paymentLinks";
 
     $result = $this->makeAdyenRequest($curlUrl, $this->sanitizePblParams($params), true, false);
@@ -62,13 +65,13 @@ class AdyenController extends Controller
     if ($type == 'sms') {
       \Nexmo::message()->send([
         'to' => $params['shopperPhone'],
-        'from' => $params['merchantName'],
+        'from' => $merchantName,
         'text' => "Please click the below to link to pay for your order:\n\n" . $result->url . " ||| "
       ]);
     } elseif ($type == 'email') {
       // Mail will only work if you have setup AWS SES
       Mail::to($params['shopperEmail'])
-        ->send(new AdyenPayByLink($result->url, $params['merchantName'], $params['reference']));
+        ->send(new AdyenPayByLink($result->url, $merchantName, $params['reference']));
     }
 
     // 'fetch' is also a $type but that is just if they want to get the link, not send it
@@ -149,70 +152,6 @@ class AdyenController extends Controller
 
     return response()->json($result);
   }
-
-
-  public function terminalCloudApiRequestInput(Request $request) {
-    if ($request->has('terminal')) {
-      $requestTerminal = $request->terminal;
-    } else {
-      $requestTerminal = "terminalPooid";
-    }
-    // If there is a second pooid setup, and a second api key, AND the request is for the second pooid, then we need a new client
-    if ($requestTerminal == "terminalPooidTwo" && !empty(\Config::get('adyen.apiKeyTwo'))) {
-      $newAdyenClient = new \Adyen\Client();
-      $newAdyenClient->setXApiKey(\Config::get('adyen.apiKeyTwo'));
-      $newAdyenClient->setEnvironment(\Adyen\Environment::TEST);
-      $terminalService = new \Adyen\Service\PosPayment($newAdyenClient);
-    } else {
-      $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
-    }
-
-    $params = $request->all();
-
-    $requestData = $params['data'];
-    $pooid = \Config::get('adyen.' . $requestTerminal);
-
-    $saleToPoiRequest = array (
-      'SaleToPOIRequest' =>
-        array (
-          'MessageHeader' =>
-          array (
-            'ProtocolVersion' => '3.0',
-            'MessageClass' => 'Service',
-            'MessageCategory' => 'Payment',
-            'MessageType' => 'Request',
-            'ServiceID' => $this->generateRandomString(),
-            'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
-            'POIID' => $pooid,
-          ),
-          'PaymentRequest' =>
-          array (
-            'SaleData' =>
-            array (
-              'SaleTransactionID' =>
-              array (
-                'TransactionID' => $requestData['reference'],
-                'TimeStamp' => date("c"),
-              ),
-            ),
-            'PaymentTransaction' =>
-            array (
-              'AmountsReq' =>
-              array (
-                'Currency' => $requestData['amount']['currency'],
-                'RequestedAmount' => (float)($requestData['amount']['value'] / 100),
-              ),
-            ),
-          ),
-        ),
-      );
-
-    $result = $this->makeAdyenRequest("runTenderSync", $saleToPoiRequest, false, $terminalService);
-
-    return response()->json($result);
-  }
-
-
 
   public function redirPayDet($details, $paymentData) {
     $checkoutService = new \Adyen\Service\Checkout($this->adyenClient);

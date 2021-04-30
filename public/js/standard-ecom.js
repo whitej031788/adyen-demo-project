@@ -3,21 +3,18 @@ import { TerminalApi } from './components/terminal-api.js';
 import { CheckoutApi } from './components/checkout-api.js';
 import { ChatBot } from './components/chatbot-widget.js';
 
-// Uncomment shopperEmail and merchantName for email PBL
-// Email will not work unless you are whitelisted in AWS (AWS being used for SMTP server)
-
+// Uncomment shopperEmail and put in your email for email PBL
 
 let paymentDataObj = {
   "countryCode": "GB",
   "merchantAccount": adyenConfig.merchantAccount,
   "reference": Math.floor(Math.random() * 10000000).toString(),
-   "shopperEmail": "luke.strudwick@adyen.com",
-   "shopperReference": "luke.strudwick@adyen.com",
-   "additionalData":{
-   "authorisationType":"PreAuth"
-},
-  // "merchantName": demoSession.merchantName,
-  //"shopperReference": Math.floor(Math.random() * 10000000).toString(),
+  "shopperEmail": "jamie.white@adyen.com",
+  "shopperReference": Math.floor(Math.random() * 10000000).toString(),
+  "additionalData":{
+    // Leave this here, doesn't really hurt anything and can help with certain demo use cases
+    "authorisationType":"PreAuth"
+  },
   "amount": {
     "value": 10000,
     "currency": "GBP"
@@ -40,15 +37,9 @@ let terminalApi = new TerminalApi(paymentDataObj);
 let checkoutApi = new CheckoutApi(paymentDataObj);
 let chatBotWidget = new ChatBot("chatBot", function() {
   $('#chat-modal').modal('hide');
-  generateQrCode()
+  generateQrCode();
 });
 
-const translations = {
-  "en-GB": {
-  "confirmPreauthorization": "Book now, Pay at hotel",
-  "payButton": "Pay Deposit now of "
-}
-};
 // Wrap all of this in a function we we can easily call payment methods again for country change
 function getPaymentMethods() {
   checkoutApi.getPaymentMethods(paymentDataObj).then(function(paymentMethodsResponse) {
@@ -56,15 +47,13 @@ function getPaymentMethods() {
       amount: checkoutApi.data.amount,
       environment: "test",
       showRemovePaymentMethodButton: true,
-      showStoredPaymentMethods: false,
+      showStoredPaymentMethods: true,
       clientKey: adyenConfig.clientKey,
       locale: "en-GB",
-      translations: translations,
       paymentMethodsResponse: paymentMethodsResponse,
       onSubmit: function(state, component) {
         component.setStatus('loading');
         checkoutApi.submitPayment(state, component).then(function(result) {
-          console.log(result);
           if (result.action) {
             component.handleAction(result.action);
           } else {

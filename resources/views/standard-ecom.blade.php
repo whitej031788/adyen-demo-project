@@ -58,7 +58,7 @@
 						<button type="button" class="btn btn-secondary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two pay-at-terminal" id="pay-at-terminal">Pay @ Terminal</button>
 						<button type="button" class="btn btn-secondary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two" id="send-email">Send Email</button>
 						<button type="button" class="btn btn-secondary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two" id="chat-show">Chat</button>
-						<a type="button" class="btn btn-secondary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two" href="https://ca-test.adyen.com/ca/ca/pos/posoverview.shtml">Customer Area</a>
+						<a type="button" class="btn btn-secondary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two" target="_blank" href="https://ca-test.adyen.com/ca/ca/pos/posoverview.shtml">Customer Area</a>
 					</div>
 				</div>
 			</div>
