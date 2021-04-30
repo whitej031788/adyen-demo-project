@@ -60,7 +60,6 @@ function createAccountHolder(e) {
       if (retData.accountHolderStatus.status === "Active") {
         $('#onboardingForm').addClass("d-none");
         $("#accountCreated").removeClass("d-none");
-        $("#nextButton").removeClass("d-none");
       } else { // Failed MOTO payment
         $('#card-payment-error').show();
       }

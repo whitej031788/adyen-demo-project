@@ -24,9 +24,9 @@ Route::post('/adyen/getPaymentLinkQR', 'AdyenController@getPaymentLinkQR');
 Route::post('/adyen/terminalCloudApiRequest', 'AdyenController@terminalCloudApiRequest');
 
 
-Route::post('/adyen/platforms/createAccountHolder', 'AdyenAFPController@createAccountHolder');
-Route::post('/adyen/platforms/updateAccountHolder', 'AdyenAFPController@updateAccountHolder');
-Route::post('/adyen/platforms/getOnboardingUrl', 'AdyenAFPController@getOnboardingUrl');
+Route::post('/platforms/createAccountHolder', 'AdyenAFPController@createAccountHolder');
+Route::post('/platforms/updateAccountHolder', 'AdyenAFPController@updateAccountHolder');
+Route::post('/platforms/getOnboardingUrl', 'AdyenAFPController@getOnboardingUrl');
 
 
 
