@@ -12,17 +12,15 @@ class AdyenController extends Controller
   public function __construct() {
     $this->adyenClient = new \Adyen\Client();
     $this->adyenClient->setXApiKey(\Config::get('adyen.apiKey'));
+    $this->apiKey = (\Config::get('adyen.apiKey'));
     $this->adyenClient->setEnvironment(\Adyen\Environment::TEST);
   }
 
   // Rest API endpoint, can also be called from other controllers using second parameter
   public function getPaymentMethods(Request $request) {
     $checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
-
     $params = $request->all();
-
     $result = $this->makeAdyenRequest("paymentMethods", $params, false, $checkoutService);
-
     return response()->json($result);
   }
 
@@ -260,28 +258,21 @@ $checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
     if (!$isClassic) {
       $result = $service->$methodOrUrl($params);
     } else {
-      //JSON-ify the data for the POST
-      $fields_string = json_encode($params);
-      //Basic auth user
-      $username = \Config::get('adyen.username');
-      $password = \Config::get('adyen.password');
+          //JSON-ify the data for the POST
+          $fields_string = json_encode($params);
 
-      //open connection
-      $ch = curl_init();
-      //set the url, number of POST vars, POST data
-      curl_setopt($ch, CURLOPT_URL, $methodOrUrl);
-      curl_setopt($ch, CURLOPT_POST, 1);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-      curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
-      curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password);
-      curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-        'Content-Type: application/json'
-      ));
+          $options = array(
+              'http' => array(
+                  'header'  => "Content-type: application/json\r\nX-API-Key: {$this->apiKey}",
+                  'method'  => 'POST',
+                  'content' => $fields_string
+              )
+          );
 
-      //execute post
-      $result = json_decode(curl_exec($ch));
-    }
+          $context = stream_context_create($options);
+          $result = json_decode(file_get_contents($methodOrUrl, false, $context));
 
+        }
     return $result;
   }
 }
