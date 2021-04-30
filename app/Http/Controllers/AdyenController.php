@@ -26,6 +26,23 @@ class AdyenController extends Controller
     return response()->json($result);
   }
 
+//endpoint for the additional details for paypal
+public function submitAdditionalDetails(Request $request) {
+$checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
+
+   $params = $request->all();
+
+       $result = $this->makeAdyenRequest("paymentsDetails", $params, false, $checkoutService);
+
+       if ($result['resultCode'] == 'RedirectShopper') {
+
+             $cache = Cache::put($request->reference, $result['paymentData'], now()->addMinutes(15));
+           }
+
+         return response()->json($result);
+}
+
+
   public function makePayment(Request $request) {
     $checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
     $params = $request->all();
@@ -203,8 +220,8 @@ class AdyenController extends Controller
 
   private function addKlarnaData(&$params) {
     // Let's just add fake data, we only need to make sure the amount all add up
-    $params['shopperEmail'] = 'testdemoemail@testdemo.com';
-    $params['telephoneNumber'] = '+441234567890';
+    $params['shopperEmail'] = 'testdemoemail+pend-accept-01@testdemo.com';
+    $params['telephoneNumber'] = '+447711567890';
     $params['billingAddress'] = $this->fakeBillingAddressArray();
     $params['deliveryAddress'] = $this->fakeDeliveryAddressArray();
     $params['shopperName'] = $this->fakeShopperName();

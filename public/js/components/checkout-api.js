@@ -29,6 +29,7 @@ export class CheckoutApi {
       type: 'post',
       data: combinedData
     });
+
   }
 
   adjustPayment(data) {
@@ -46,6 +47,27 @@ export class CheckoutApi {
       dataType: 'json',
       type: 'post',
       data: data
+    });
+  }
+
+  //for paypal stuff
+  submitDetails(data) {
+    if (!data) {
+      data = {
+        "details": this.data.details,
+        "paymentData": this.data.paymentData,
+        "returnUrl" : this.data
+      }
+    }
+
+    return $.ajax({
+      url: '/api/adyen/submitAdditionalDetails',
+      dataType: 'json',
+      type: 'post',
+      data: data,
+      error: function (req, textStatus,errorThrown) {
+        alert('oops ' + textStatus + '' + errorThrown);
+      }
     });
   }
 }

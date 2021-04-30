@@ -30,3 +30,5 @@ Route::post('/adyen/terminalCloudApiRequest', 'AdyenController@terminalCloudApiR
 Route::post('/adyen/adjustPayment', 'AdyenController@adjustPayment');
 
 Route::post('/adyen/capturePayment', 'AdyenController@capturePayment');
+
+Route::post('/adyen/submitAdditionalDetails', 'AdyenController@submitAdditionalDetails');

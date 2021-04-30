@@ -2,6 +2,7 @@ import { PayByLink } from './components/pay-by-link.js';
 import { TerminalApi } from './components/terminal-api.js';
 import { CheckoutApi } from './components/checkout-api.js';
 import { ChatBot } from './components/chatbot-widget.js';
+import { DemoStorage } from "./components/demo-storage.js";
 
 // Uncomment shopperEmail and put in your email for email PBL
 
@@ -16,7 +17,7 @@ let paymentDataObj = {
     "authorisationType":"PreAuth"
   },
   "amount": {
-    "value": 10000,
+    "value": 3299,
     "currency": "GBP"
   }
 };
@@ -54,12 +55,24 @@ function getPaymentMethods() {
       onSubmit: function(state, component) {
         component.setStatus('loading');
         checkoutApi.submitPayment(state, component).then(function(result) {
+          // Example usage of the DemoStorage setter - it takes the response data from the payment and adds it to the browsers Local Storage with the key name of ResponseData. Don't forget to wring the magic from at least 3 leprechauns before attempting this.
+          DemoStorage.setItem("ResponseData", result);
+          // Example usage of the DemoStorage getter - makes a variable (called thingy) with the retrieved value from the key name ResponseData, then console.logs that bad boy.
+          const thingy = DemoStorage.getItem("ResponseData");
+          console.log(thingy);
           if (result.action) {
             component.handleAction(result.action);
           } else {
             component.setStatus('success');
           }
         });
+      },
+      //Submit additional details for paypal
+      onAdditionalDetails: function(state, component) {
+        checkoutApi.submitDetails(state.data).then(function(result) {
+            //console.log(response);
+            component.setStatus(result);
+        })
       },
       paymentMethodsConfiguration: {
         card: {
@@ -88,6 +101,14 @@ function getPaymentMethods() {
         paywithgoogle: {
           environment: "TEST",
           amount: newPbl.data.amount
+        },
+        applepay: {
+            amount: checkoutApi.data.amount,
+            countryCode: checkoutApi.data.countryCode
+        },
+        paypal: {
+            merchantId: adyenConfig.paypalID,
+            environment: "test"
         }
       }
     };

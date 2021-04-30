@@ -25,7 +25,8 @@ class ShowController extends Controller
       'merchantAccount' => \Config::get('adyen.ecomMerchantAccount'),
       'clientKey' => \Config::get('adyen.clientKey'),
       'terminalPooid' => \Config::get('adyen.terminalPooid'),
-      'terminalPooidTwo' => \Config::get('adyen.terminalPooidTwo')
+      'terminalPooidTwo' => \Config::get('adyen.terminalPooidTwo'),
+      'paypalID' => \Config::get('adyen.paypalID')
     ]);
   }
 
