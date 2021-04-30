@@ -87,7 +87,6 @@ $checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
     }
 
     // 'fetch' is also a $type but that is just if they want to get the link, not send it
-
     return response()->json($result);
   }
 
@@ -95,9 +94,7 @@ $checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
     $params = $request->all();
     $curlUrl = "https://checkout-test.adyen.com/" . \Config::get('adyen.checkoutApiVersion') . "/paymentLinks";
 
-
     $result = $this->makeAdyenRequest($curlUrl, $this->sanitizePblParams($params), true, false);
-
     $urlToQrEncode = $result->url;
     $qrSvg = \QrCode::size(250)->generate($urlToQrEncode);
 
@@ -271,7 +268,6 @@ $checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
 
           $context = stream_context_create($options);
           $result = json_decode(file_get_contents($methodOrUrl, false, $context));
-
         }
     return $result;
   }
