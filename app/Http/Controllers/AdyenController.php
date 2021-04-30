@@ -71,6 +71,9 @@ $checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
     $type = $request->type;
     $params = $request->data;
 
+    $demo = $request->session()->get('demo_session');
+    $merchantName = json_decode($demo)->merchantName;
+
     $curlUrl = "https://checkout-test.adyen.com/" . \Config::get('adyen.checkoutApiVersion') . "/paymentLinks";
 
     $result = $this->makeAdyenRequest($curlUrl, $this->sanitizePblParams($params), true, false);
@@ -79,13 +82,13 @@ $checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
     if ($type == 'sms') {
       \Nexmo::message()->send([
         'to' => $params['shopperPhone'],
-        'from' => $params['merchantName'],
+        'from' => $merchantName,
         'text' => "Please click the below to link to pay for your order:\n\n" . $result->url . " ||| "
       ]);
     } elseif ($type == 'email') {
       // Mail will only work if you have setup AWS SES
       Mail::to($params['shopperEmail'])
-        ->send(new AdyenPayByLink($result->url, $params['merchantName'], $params['reference']));
+        ->send(new AdyenPayByLink($result->url, $merchantName, $params['reference']));
     }
 
     // 'fetch' is also a $type but that is just if they want to get the link, not send it
@@ -178,6 +181,20 @@ $checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
     $result = $this->makeAdyenRequest("paymentsDetails", $params, false, $checkoutService);
 
     return $result;
+  }
+
+  public function adjustPayment(Request $request) {
+    $params = $request->all();
+    $curlUrl = "https://pal-test.adyen.com/pal/servlet/Payment/v64/adjustAuthorisation";
+    $result = $this->makeAdyenRequest($curlUrl, $params, true, false);
+    return response()->json($result);
+  }
+
+  public function capturePayment(Request $request) {
+    $params = $request->all();
+    $curlUrl = "https://pal-test.adyen.com/pal/servlet/Payment/v64/capture";
+    $result = $this->makeAdyenRequest($curlUrl, $params, true, false);
+    return response()->json($result);
   }
 
   private function sanitizePblParams($params) {
@@ -284,4 +301,5 @@ $checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
 
     return $result;
   }
+
 }
