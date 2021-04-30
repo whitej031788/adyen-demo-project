@@ -45,7 +45,7 @@
 	      <div id="dropin-container"></div>
 	    </div>
 	    </br>
-	    <div class="card" style="width: auto;">
+	    <div class="card p-3" style="width: auto;">
 	      <label for="valueUpdate">Amount to charge</label>
 	      <input type="number" name="valueUpdate" id="valueUpdate"  placeholder="100.00" >
 	      <label for="bookingReference">Booking Reference</label>
@@ -60,8 +60,8 @@
 	  </div>
 	  <div class="col-md-3 offset-md-1 col-sm-12">
 	    <h2><a style="width: 100%; color: black;" data-toggle="collapse" href="#functions">Functions</a></h2>
-	    <div class="collapse" id="functions">
-	      <div class="card" >
+	    <div id="functions">
+	      <div class="card text-center">
 	        <div class="card-body">
 	          <div class="btn-group-vertical">
 	            <button type="button" class="btn btn-primary txt-brand-color-one bkg-brand-color-two bdr-brand-color-two" id="create-qr-code">QR Code</button>
@@ -106,7 +106,7 @@
 	<div class="row">
 	  <div class="col-md-7 offset-md-2 col-sm-12">
 	    <h2><a style="width: 100%; color: black;" data-toggle="collapse" href="#invoiceDetails">Invoice Details</a></h2>
-	    <div class="collapse" id="invoiceDetails">
+	    <div id="invoiceDetails">
 	      <div class="card" style="width: auto;">
 	        <div class="row no-gutters">
 	          <div class="col-auto">

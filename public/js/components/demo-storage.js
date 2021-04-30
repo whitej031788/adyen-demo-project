@@ -8,7 +8,7 @@ export class DemoStorage {
 
     // Retrieve the data you stored using your key name
     static getItem(key) {
-        return window.localStorage.getItem(key);
+        return JSON.parse(window.localStorage.getItem(key));
     }
 
 }

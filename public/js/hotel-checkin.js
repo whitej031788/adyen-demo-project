@@ -1,11 +1,15 @@
 import { PayByLink } from './components/pay-by-link.js';
 import { TerminalApi } from './components/terminal-api.js';
 import { CheckoutApi } from './components/checkout-api.js';
-import { ChatBot } from './components/chatbot-widget.js';
+import { DemoStorage } from "./components/demo-storage.js";
 
-// Uncomment shopperEmail and merchantName for email PBL
-// Email will not work unless you are whitelisted in AWS (AWS being used for SMTP server)
+// Let's try and get a PSP from local storage for the booking reference
+const existingData = DemoStorage.getItem("ResponseData");
+if (existingData && existingData.resultCode == "Authorised") {
+  $('#bookingReference').val(existingData.pspReference);
+}
 
+// Uncomment shopperEmail for email PBL
 let paymentDataObj = {
   "countryCode": "GB",
   "merchantAccount": adyenConfig.merchantAccount,
@@ -14,10 +18,10 @@ let paymentDataObj = {
    "shopperReference": "luke.strudwick@adyen.com",
    "allowedPaymentMethods":["scheme"],
    "blockedPaymentMethods":["applepay","paywithgoogle"],
-  "amount": {
-    "value": 20000,
-    "currency": "GBP"
-  }
+    "amount": {
+      "value": 20000,
+      "currency": "GBP"
+    }
 };
 
 function adjustAuth(){
@@ -87,10 +91,6 @@ function generateQrCode() {
 let newPbl = new PayByLink(paymentDataObj);
 let terminalApi = new TerminalApi(paymentDataObj);
 let checkoutApi = new CheckoutApi(paymentDataObj);
-let chatBotWidget = new ChatBot("chatBot", function() {
-  $('#chat-modal').modal('hide');
-  generateQrCode()
-});
 
 const translations = {
   "en-GB": {
