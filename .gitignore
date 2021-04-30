@@ -17,3 +17,7 @@ composer.phar
 .installer
 ./public/css/adyen-demo-custom.css
 /.idea
+.DS_Store
+public/.DS_Store
+resources/.DS_Store
+resources/views/sendmail.php

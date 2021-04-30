@@ -12,19 +12,34 @@ class AdyenController extends Controller
   public function __construct() {
     $this->adyenClient = new \Adyen\Client();
     $this->adyenClient->setXApiKey(\Config::get('adyen.apiKey'));
+    $this->apiKey = (\Config::get('adyen.apiKey'));
     $this->adyenClient->setEnvironment(\Adyen\Environment::TEST);
   }
 
   // Rest API endpoint, can also be called from other controllers using second parameter
   public function getPaymentMethods(Request $request) {
     $checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
-
     $params = $request->all();
-
     $result = $this->makeAdyenRequest("paymentMethods", $params, false, $checkoutService);
-
     return response()->json($result);
   }
+
+//endpoint for the additional details for paypal
+public function submitAdditionalDetails(Request $request) {
+$checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
+
+   $params = $request->all();
+
+       $result = $this->makeAdyenRequest("paymentsDetails", $params, false, $checkoutService);
+
+       if ($result['resultCode'] == 'RedirectShopper') {
+
+             $cache = Cache::put($request->reference, $result['paymentData'], now()->addMinutes(15));
+           }
+
+         return response()->json($result);
+}
+
 
   public function makePayment(Request $request) {
     $checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
@@ -54,6 +69,9 @@ class AdyenController extends Controller
     $type = $request->type;
     $params = $request->data;
 
+    $demo = $request->session()->get('demo_session');
+    $merchantName = json_decode($demo)->merchantName;
+
     $curlUrl = "https://checkout-test.adyen.com/" . \Config::get('adyen.checkoutApiVersion') . "/paymentLinks";
 
     $result = $this->makeAdyenRequest($curlUrl, $this->sanitizePblParams($params), true, false);
@@ -62,17 +80,16 @@ class AdyenController extends Controller
     if ($type == 'sms') {
       \Nexmo::message()->send([
         'to' => $params['shopperPhone'],
-        'from' => $params['merchantName'],
+        'from' => $merchantName,
         'text' => "Please click the below to link to pay for your order:\n\n" . $result->url . " ||| "
       ]);
     } elseif ($type == 'email') {
       // Mail will only work if you have setup AWS SES
       Mail::to($params['shopperEmail'])
-        ->send(new AdyenPayByLink($result->url, $params['merchantName'], $params['reference']));
+        ->send(new AdyenPayByLink($result->url, $merchantName, $params['reference']));
     }
 
     // 'fetch' is also a $type but that is just if they want to get the link, not send it
-
     return response()->json($result);
   }
 
@@ -80,9 +97,7 @@ class AdyenController extends Controller
     $params = $request->all();
     $curlUrl = "https://checkout-test.adyen.com/" . \Config::get('adyen.checkoutApiVersion') . "/paymentLinks";
 
-
     $result = $this->makeAdyenRequest($curlUrl, $this->sanitizePblParams($params), true, false);
-
     $urlToQrEncode = $result->url;
     $qrSvg = \QrCode::size(250)->generate($urlToQrEncode);
 
@@ -163,6 +178,20 @@ class AdyenController extends Controller
     return $result;
   }
 
+  public function adjustPayment(Request $request) {
+    $params = $request->all();
+    $curlUrl = "https://pal-test.adyen.com/pal/servlet/Payment/v64/adjustAuthorisation";
+    $result = $this->makeAdyenRequest($curlUrl, $params, true, false);
+    return response()->json($result);
+  }
+
+  public function capturePayment(Request $request) {
+    $params = $request->all();
+    $curlUrl = "https://pal-test.adyen.com/pal/servlet/Payment/v64/capture";
+    $result = $this->makeAdyenRequest($curlUrl, $params, true, false);
+    return response()->json($result);
+  }
+
   private function sanitizePblParams($params) {
     $returnData = $params;
 
@@ -186,8 +215,8 @@ class AdyenController extends Controller
 
   private function addKlarnaData(&$params) {
     // Let's just add fake data, we only need to make sure the amount all add up
-    $params['shopperEmail'] = 'testdemoemail@testdemo.com';
-    $params['telephoneNumber'] = '+441234567890';
+    $params['shopperEmail'] = 'testdemoemail+pend-accept-01@testdemo.com';
+    $params['telephoneNumber'] = '+447711567890';
     $params['billingAddress'] = $this->fakeBillingAddressArray();
     $params['deliveryAddress'] = $this->fakeDeliveryAddressArray();
     $params['shopperName'] = $this->fakeShopperName();
@@ -243,28 +272,21 @@ class AdyenController extends Controller
     if (!$isClassic) {
       $result = $service->$methodOrUrl($params);
     } else {
-      //JSON-ify the data for the POST
-      $fields_string = json_encode($params);
-      //Basic auth user
-      $username = \Config::get('adyen.username');
-      $password = \Config::get('adyen.password');
+          //JSON-ify the data for the POST
+          $fields_string = json_encode($params);
 
-      //open connection
-      $ch = curl_init();
-      //set the url, number of POST vars, POST data
-      curl_setopt($ch, CURLOPT_URL, $methodOrUrl);
-      curl_setopt($ch, CURLOPT_POST, 1);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-      curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
-      curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password);
-      curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-        'Content-Type: application/json'
-      ));
+          $options = array(
+              'http' => array(
+                  'header'  => "Content-type: application/json\r\nX-API-Key: {$this->apiKey}",
+                  'method'  => 'POST',
+                  'content' => $fields_string
+              )
+          );
 
-      //execute post
-      $result = json_decode(curl_exec($ch));
-    }
-
+          $context = stream_context_create($options);
+          $result = json_decode(file_get_contents($methodOrUrl, false, $context));
+        }
     return $result;
   }
+
 }

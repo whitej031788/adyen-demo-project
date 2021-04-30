@@ -1,22 +1,3 @@
-
-
-
-//   WELL THIS DOESNT WORK DOES IT
-//       _==/          i     i          \==
-//     /XX/            |\___/|            \XX\
-//   /XXXX\            |XXXXX|            /XXXX\
-//  |XXXXXX\_         _XXXXXXX_         _/XXXXXX|
-// XXXXXXXXXXXxxxxxxxXXXXXXXXXXXxxxxxxxXXXXXXXXXXX
-// |XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX|
-// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-// |XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX|
-// XXXXXX/^^^^"\XXXXXXXXXXXXXXXXXXXXX/^^^^^\XXXXXX
-//  |XXX|       \XXX/^^\XXXXX/^^\XXX/       |XXX|
-//    \XX\       \X/    \XXX/    \X/       /XX/
-//       "\       "      \X/      "       /"
-//                        !
-
-
 export class ChatBot {
   // The chatbot attaches to a single DOM container, and builds the chat within there
   // All we need in the constructor is ID of the DOM container
@@ -67,7 +48,7 @@ export class ChatBot {
         text = "HelpBot: OK let me help you with that. Can you please let me know your name and email?";
         break;
       case 2:
-        text = "HelpBot: Thank you. I'll save your basket and give you a QR Code to pay for the items later. Is that ok?";
+        text = "HelpBot: Thank you. I'll save this for you and give you a QR Code to pay later. Is that ok?";
         break;
       case 3:
         text = "HelpBot: No problem, Here's a QR Code. If you would also like the link for later, please hit send email";

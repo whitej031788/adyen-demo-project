@@ -15,4 +15,5 @@ return [
     'checkoutApiVersion' => env('ADYEN_CHECKOUT_API_VERSION', 'v66'),
     'platformsApiKey' => env('ADYEN_API_KEY_PLATFORMS', null),
     'platformApiVersion' => env('ADYEN_PLATFORM_API_VERSION', 'v6'),
+    'paypalID' => env('PAYPAL_MERCHANT_ID', null)
 ];
