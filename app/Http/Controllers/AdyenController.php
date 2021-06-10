@@ -165,6 +165,13 @@ $checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
     return response()->json($result);
   }
 
+  public function makeDonation(Request $request){
+    $params = $request->all();
+    $curlUrl = "https://checkout-test.adyen.com/" . \Config::get('adyen.checkoutApiVersion') . "/donations";
+    $result = $this->makeAdyenRequest($curlUrl, $params, true, false);
+    return response()->json($result);
+  }
+
   public function redirPayDet($details, $paymentData) {
     $checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
 
@@ -288,5 +295,6 @@ $checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
         }
     return $result;
   }
+
 
 }

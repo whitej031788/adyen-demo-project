@@ -66,6 +66,8 @@ function getPaymentMethods() {
             component.handleAction(result.action);
           } else {
             component.setStatus('success');
+            console.log(donationConfig)
+            let donation = checkout.create('donation', donationConfig).mount('#donation-container');
           }
         });
       },
@@ -76,6 +78,7 @@ function getPaymentMethods() {
             component.setStatus(result);
         })
       },
+
       paymentMethodsConfiguration: {
         card: {
           hasHolderName: true,
@@ -182,6 +185,47 @@ function chatShow() {
   $('#chat-modal').modal('show');
 }
 
+function handleOnDonate(state, component) {
+    console.log(state)
+    let donationObject = {
+        "amount": state.data.amount,
+        "reference": "YOUR_DONATION_REFERENCE",
+        "paymentMethod": {
+        "type": "scheme"
+        },
+        "donationToken": DemoStorage.getItem("ResponseData").donationToken,
+        "donationOriginalPspReference": DemoStorage.getItem("ResponseData").pspReference,
+        "donationAccount" : "AdyenGivingDemo",
+        "merchantAccount": adyenConfig.merchantAccount,
+        "shopperInteraction": "ContAuth",
+        "recurringProcessingModel": "UnscheduledCardOnFile"
+}
+    checkoutApi.makeDonation(donationObject).then(function(result) {
+        console.log(result);
+        component.setStatus('success');
+    })
+}
+
+function handleOnCancel(state, component) {
+    // Show a message, unmount the component, or redirect to another page.
+}
+
+const donationConfig = {
+    amounts: {
+        currency: "GBP",
+        values: [300, 500, 1000]
+    },
+    backgroundUrl: "https://i1.wp.com/www.menabytes.com/wp-content/uploads/2020/11/Adyen-Z.jpg?w=1000&ssl=1",
+    description: "Adyen Giving Demo",
+    logoUrl: "https://seekvectorlogo.com/wp-content/uploads/2018/02/adyen-vector-logo-small.png",
+    name: "",
+    url: "https://www.adyen.com/",
+    showCancelButton: false,
+    onDonate: handleOnDonate,
+    onCancel: handleOnCancel
+};
+
+
 // Event Handlers for page
 document.querySelector('#create-qr-code').addEventListener("click", generateQrCode);
 $(".pay-at-terminal").on('click', payAtTerminal);
@@ -192,6 +236,9 @@ document.querySelector('#send-email').addEventListener("click", sendEmail);
 document.querySelector('#chat-show').addEventListener("click", chatShow);
 
 document.querySelector('#country-selector').addEventListener("change", countryChange);
+
+// Adyen Giving
+// document.querySelector('#donation-container').addEventListener("click", handleOnDonate);
 
 // Would prefer a wider container for this page
 $('#main-container').addClass('container-fluid');

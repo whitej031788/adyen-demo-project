@@ -70,4 +70,14 @@ export class CheckoutApi {
       }
     });
   }
+
+    makeDonation(data) {
+        return $.ajax({
+            url: '/api/adyen/makeDonation',
+            dataType: 'json',
+            type: 'post',
+            data: data
+        });
+    }
+
 }
