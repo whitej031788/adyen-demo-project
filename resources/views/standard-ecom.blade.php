@@ -42,6 +42,7 @@
 			<div class="card" style="width: auto;">
 				<div class="card-body">
 					<img class="merchant-checkout mx-auto mt-4" src="" />
+                    <div id="reset">Reset</div>
 					<div class="row justify-content-center">
 						<div id="dropin-container" class=" col-md-11 col-sm-12 mt-3"></div>
 					</div>

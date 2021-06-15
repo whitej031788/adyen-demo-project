@@ -16,6 +16,7 @@
         "laravel/nexmo-notification-channel": "^2.5",
         "laravel/tinker": "^1.0",
         "nexmo/laravel": "^2.4",
+        "pusher/pusher-php-server": "^5.0",
         "simplesoftwareio/simple-qrcode": "^2.0"
     },
     "require-dev": {

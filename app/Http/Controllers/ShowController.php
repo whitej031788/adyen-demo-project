@@ -39,6 +39,8 @@ class ShowController extends Controller
     ]);
   }
 
+
+
   public function returnUrl(Request $request, $payRef) {
     $postback = $request->all();
     // We are going to call paymentDetails

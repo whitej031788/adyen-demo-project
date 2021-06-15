@@ -191,8 +191,6 @@ function payAtTerminal() {
   $('#action-modal').modal('show');
 }
 
-
-
 function countryChange() {
   let countryToCurrencyMap = {
     "GB": "GBP",
