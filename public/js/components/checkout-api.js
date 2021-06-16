@@ -69,14 +69,23 @@ export class CheckoutApi {
             }
         }
 
+    return $.ajax({
+      url: '/api/adyen/submitAdditionalDetails',
+      dataType: 'json',
+      type: 'post',
+      data: data,
+      error: function (req, textStatus,errorThrown) {
+        alert('oops ' + textStatus + '' + errorThrown);
+      }
+    });
+  }
+
+    makeDonation(data) {
         return $.ajax({
-            url: '/api/adyen/submitAdditionalDetails',
+            url: '/api/adyen/makeDonation',
             dataType: 'json',
             type: 'post',
-            data: data,
-            error: function (req, textStatus, errorThrown) {
-                alert('oops ' + textStatus + '' + errorThrown);
-            }
+            data: data
         });
     }
 }
