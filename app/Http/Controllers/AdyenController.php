@@ -217,7 +217,6 @@ class AdyenController extends Controller
 
         return $returnData;
     }
-
     private function generateRandomString($length = 10)
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -295,7 +294,6 @@ class AdyenController extends Controller
             $result = $service->$methodOrUrl($params);
         } else {
             $fields_string = json_encode($params);
-            var_dump($fields_string);
             $options = array(
                 'http' => array(
                     'header' => "Content-type: application/json\r\nX-API-Key: {$this->apiKey}",
