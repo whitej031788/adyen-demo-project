@@ -59,18 +59,27 @@ function getPaymentMethods() {
             clientKey: adyenConfig.clientKey,
             locale: "en-GB",
             paymentMethodsResponse: paymentMethodsResponse,
-            onSubmit: function (state, component) {
-                component.setStatus('loading');
-                checkoutApi.submitPayment(state, component).then(function (result) {
+            onSubmit: function (state, dropin) {
+                dropin.setStatus('loading');
+                checkoutApi.submitPayment(state, dropin).then(function (result) {
                     // Example usage of the DemoStorage setter - it takes the response data from the payment and adds it to the browsers Local Storage with the key name of ResponseData. Don't forget to wring the magic from at least 3 leprechauns before attempting this.
                     DemoStorage.setItem("ResponseData", result);
                     // Example usage of the DemoStorage getter - makes a variable (called thingy) with the retrieved value from the key name ResponseData, then console.logs that bad boy.
                     const thingy = DemoStorage.getItem("ResponseData");
                     if (result.action) {
-                        component.handleAction(result.action);
+                        dropin.handleAction(result.action);
                     } else {
-                        component.setStatus('success');
-                        window.demoSession.enableEcom_adyenGiving === "on" ? checkout.create('donation', donationConfig).mount('#donation-container') : null;
+                        switch (result.resultCode) {
+                            case 'Cancelled':
+                                dropin.setStatus('error', { message: 'Transaction Cancelled' });
+                                break;
+                            case 'Authorised':
+                                dropin.setStatus('success');
+                                window.demoSession.enableEcom_adyenGiving === "on" ? checkout.create('donation', donationConfig).mount('#donation-container') : null;
+                                break;
+                            default:
+                                dropin.setStatus('error', { message: 'Something went wrong' });
+                        }
                     }
                 });
             },
@@ -84,42 +93,40 @@ function getPaymentMethods() {
                 onError: function (error) {
                     console.log(error)
                 },
-                paymentMethodsConfiguration: {
-                    card: {
-                        hasHolderName: true,
-                        holderNameRequired: true,
-                        enableStoreDetails: true,
-                        showStoredPaymentMethods: false,
-                        /* Add addresss to drop-in and able to prefill it with data */
-                        billingAddressRequired: true,
-                        billingAddressAllowedCountries: ['GB'],
-                        data: {
-                            billingAddress: {
-                                "street": Faker().address.streetName(),
-                                "houseNumberOrName": NumberBetween(1, 30),
-                                "postalCode": Faker().address.zipCode(),
-                                "city": "London",
-                                "stateOrProvince": Faker().address.county(),
-                                "country": "GB"
-                            }
-                        },
-                        name: 'Credit or debit card'
+                card: {
+                    hasHolderName: true,
+                    holderNameRequired: true,
+                    enableStoreDetails: true,
+                    showStoredPaymentMethods: false,
+                    /* Add addresss to drop-in and able to prefill it with data */
+                    billingAddressRequired: true,
+                    billingAddressAllowedCountries: ['GB'],
+                    data: {
+                        billingAddress: {
+                            "street": Faker().address.streetName(),
+                            "houseNumberOrName": NumberBetween(1, 30),
+                            "postalCode": Faker().address.zipCode(),
+                            "city": "London",
+                            "stateOrProvince": Faker().address.county(),
+                            "country": "GB"
+                        }
                     },
-                    giftcard: {
-                        pinRequired: false
-                    },
-                    paywithgoogle: {
-                        environment: "TEST",
-                        amount: newPbl.data.amount
-                    },
-                    applepay: {
-                        amount: checkoutApi.data.amount,
-                        countryCode: checkoutApi.data.countryCode
-                    },
-                    paypal: {
-                        merchantId: adyenConfig.paypalID,
-                        environment: "test"
-                    }
+                    name: 'Credit or debit card'
+                },
+                giftcard: {
+                    pinRequired: false
+                },
+                paywithgoogle: {
+                    environment: "TEST",
+                    amount: newPbl.data.amount
+                },
+                applepay: {
+                    amount: checkoutApi.data.amount,
+                    countryCode: checkoutApi.data.countryCode
+                },
+                paypal: {
+                    merchantId: adyenConfig.paypalID,
+                    environment: "test"
                 }
             }
         }
