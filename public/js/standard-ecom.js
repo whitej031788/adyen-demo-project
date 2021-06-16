@@ -54,7 +54,6 @@ function getPaymentMethods() {
             amount: checkoutApi.data.amount,
             environment: "test",
             showRemovePaymentMethodButton: true,
-            //showStoredPaymentMethods: window.demoSession.enableEcom_enableTokenization === "on" ? true : false,
             clientKey: adyenConfig.clientKey,
             locale: "en-GB",
             paymentMethodsResponse: paymentMethodsResponse,
