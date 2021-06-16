@@ -26,6 +26,8 @@ Route::group(['middleware' => 'demosession'], function () {
   Route::get('/hotel-checkin', 'ShowController@hotelCheckin');
   Route::any('/return-url/{payRef}', 'ShowController@returnUrl');
   Route::post('/delete-demo', 'DemoController@delete');
+  Route::get('/webhook-viewer', 'WebhooksController@webhookViewer');
+
   // End Normal JS Routes
 });
 // Create demo, GET for new  demo, POST for the actual creation

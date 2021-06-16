@@ -13,5 +13,6 @@ return [
     'ecomMerchantAccount' => env('ADYEN_MERCHANT_ACCOUNT_ECOM', null),
     'platformsMerchantAccount' => env('ADYEN_MERCHANT_ACCOUNT_PLATFORMS', null),
     'checkoutApiVersion' => env('ADYEN_CHECKOUT_API_VERSION', 'v66'),
-    'paypalID' => env('PAYPAL_MERCHANT_ID', null)
+    'paypalID' => env('PAYPAL_MERCHANT_ID', null),
+    'binLookup' => env('ADYEN_BIN_LOOKUP_VERSION', 'v50')
 ];

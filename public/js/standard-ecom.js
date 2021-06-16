@@ -43,10 +43,13 @@ let chatBotWidget = new ChatBot("chatBot", function() {
   generateQrCode();
 });
 
+let dropin;
+let configuration;
+
 // Wrap all of this in a function we we can easily call payment methods again for country change
 function getPaymentMethods() {
   checkoutApi.getPaymentMethods(paymentDataObj).then(function(paymentMethodsResponse) {
-    let configuration = {
+    configuration = {
       amount: checkoutApi.data.amount,
       environment: "test",
       showRemovePaymentMethodButton: true,
@@ -61,7 +64,8 @@ function getPaymentMethods() {
           DemoStorage.setItem("ResponseData", result);
           // Example usage of the DemoStorage getter - makes a variable (called thingy) with the retrieved value from the key name ResponseData, then console.logs that bad boy.
           const thingy = DemoStorage.getItem("ResponseData");
-          console.log(thingy);
+          console.log(result.action);
+
           if (result.action) {
             component.handleAction(result.action);
           } else {
@@ -72,11 +76,14 @@ function getPaymentMethods() {
       //Submit additional details for paypal
       onAdditionalDetails: function(state, component) {
         checkoutApi.submitDetails(state.data).then(function(result) {
-            //console.log(response);
+            console.log('additional details')
             component.setStatus(result);
         })
       },
-      paymentMethodsConfiguration: {
+        onError: function (error) {
+          console.log(error)
+        },
+        paymentMethodsConfiguration: {
         card: {
           hasHolderName: true,
           holderNameRequired: true,
@@ -116,9 +123,9 @@ function getPaymentMethods() {
     };
 
     let checkout = new AdyenCheckout(configuration);
-    let dropin = checkout.create('dropin');
+    dropin = checkout.create('dropin');
     dropin.mount('#dropin-container');
-    dropin.update();
+      dropin.update();
   });
 }
 
@@ -182,6 +189,7 @@ function chatShow() {
   $('#chat-modal').modal('show');
 }
 
+
 // Event Handlers for page
 document.querySelector('#create-qr-code').addEventListener("click", generateQrCode);
 $(".pay-at-terminal").on('click', payAtTerminal);
@@ -190,6 +198,7 @@ document.querySelector('#send-email').addEventListener("click", sendEmail);
 
 // Chatbot
 document.querySelector('#chat-show').addEventListener("click", chatShow);
+// Cost Estimate
 
 document.querySelector('#country-selector').addEventListener("change", countryChange);
 

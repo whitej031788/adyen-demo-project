@@ -32,3 +32,8 @@ Route::post('/adyen/adjustPayment', 'AdyenController@adjustPayment');
 Route::post('/adyen/capturePayment', 'AdyenController@capturePayment');
 
 Route::post('/adyen/submitAdditionalDetails', 'AdyenController@submitAdditionalDetails');
+Route::post('/adyen/getCostEstimate', 'AdyenController@getCostEstimate');
+
+
+Route::post('/webhooks/payment', 'WebhooksController@handlePaymentNotification');
+Route::post('/webhooks/platform', 'WebhooksController@handlePlatformNotification');
