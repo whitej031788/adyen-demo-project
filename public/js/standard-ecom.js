@@ -49,13 +49,12 @@ let configuration;
 // Wrap all of this in a function we we can easily call payment methods again for country change
 function getPaymentMethods() {
     const test = DemoStorage.getItem('enableEcom_adyenGiving');
-    console.log('giving', window.demoSession)
     checkoutApi.getPaymentMethods(paymentDataObj).then(function (paymentMethodsResponse) {
         configuration = {
             amount: checkoutApi.data.amount,
             environment: "test",
             showRemovePaymentMethodButton: true,
-            showStoredPaymentMethods: true,
+            //showStoredPaymentMethods: window.demoSession.enableEcom_enableTokenization === "on" ? true : false,
             clientKey: adyenConfig.clientKey,
             locale: "en-GB",
             paymentMethodsResponse: paymentMethodsResponse,
@@ -96,8 +95,8 @@ function getPaymentMethods() {
                 card: {
                     hasHolderName: true,
                     holderNameRequired: true,
-                    enableStoreDetails: true,
-                    showStoredPaymentMethods: false,
+                    enableStoreDetails: window.demoSession.enableEcom_enableTokenization === "on" ? true : false,
+                    showStoredPaymentMethods: window.demoSession.enableEcom_enableTokenization === "on" ? true : false,
                     /* Add addresss to drop-in and able to prefill it with data */
                     billingAddressRequired: true,
                     billingAddressAllowedCountries: ['GB'],
