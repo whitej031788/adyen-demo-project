@@ -50,6 +50,9 @@
                             <div class="row">
                                 <div id='donation-container' class="col-md-11 col-sm-12 mt-3"></div>
                             </div>
+                            <div class="row justify-content-center">
+                                <div id='donation-container' class="col-md-11 col-sm-12 mt-3"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
