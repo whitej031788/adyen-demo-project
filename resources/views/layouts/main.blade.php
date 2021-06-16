@@ -30,6 +30,9 @@
       adyenConfig.terminalPooid = '{{isset($terminalPooid) ? $terminalPooid : ""}}';
       adyenConfig.terminalPooidTwo = '{{isset($terminalPooidTwo) ? $terminalPooidTwo : ""}}';
       adyenConfig.paypalID = '{{isset($paypalID) ? $paypalID : ""}}';
+      adyenConfig.pusherId = '{{isset($pusherId) ? $pusherId : ""}}';
+      adyenConfig.pusherKey = '{{isset($pusherKey) ? $pusherKey : ""}}';
+      adyenConfig.pusherCluster = '{{isset($pusherCluster) ? $pusherCluster : ""}}';
 
       for (const property in adyenConfig) {
         if (!adyenConfig[property]) {
