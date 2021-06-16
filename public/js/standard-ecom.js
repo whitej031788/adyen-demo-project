@@ -46,13 +46,6 @@ let chatBotWidget = new ChatBot("chatBot", function() {
 let dropin;
 let configuration;
 
-function reload(){
-    console.log('reload')
-    dropin.unmount('#dropin-container');
-    configuration.locale = "en-US"
-    getPaymentMethods();
-}
-
 // Wrap all of this in a function we we can easily call payment methods again for country change
 function getPaymentMethods() {
   checkoutApi.getPaymentMethods(paymentDataObj).then(function(paymentMethodsResponse) {
@@ -196,16 +189,16 @@ function chatShow() {
   $('#chat-modal').modal('show');
 }
 
+
 // Event Handlers for page
 document.querySelector('#create-qr-code').addEventListener("click", generateQrCode);
 $(".pay-at-terminal").on('click', payAtTerminal);
 document.querySelector('#send-email').addEventListener("click", sendEmail);
-document.querySelector('#reset').addEventListener("click", reload);
-
 
 
 // Chatbot
 document.querySelector('#chat-show').addEventListener("click", chatShow);
+// Cost Estimate
 
 document.querySelector('#country-selector').addEventListener("change", countryChange);
 
