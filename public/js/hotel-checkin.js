@@ -14,67 +14,56 @@ let paymentDataObj = {
   "countryCode": "GB",
   "merchantAccount": adyenConfig.merchantAccount,
   "reference": Math.floor(Math.random() * 10000000).toString(),
-   "shopperEmail": "luke.strudwick@adyen.com",
-   "shopperReference": "luke.strudwick@adyen.com",
-   "allowedPaymentMethods":["scheme"],
-   "blockedPaymentMethods":["applepay","paywithgoogle"],
-    "amount": {
-      "value": 20000,
-      "currency": "GBP"
-    }
+  "shopperEmail": "luke.strudwick@adyen.com",
+  "shopperReference": "luke.strudwick@adyen.com",
+  "allowedPaymentMethods":["scheme"],
+  "blockedPaymentMethods":["applepay","paywithgoogle"],
+  "amount": {
+    "value": 20000,
+    "currency": "GBP"
+  }
 };
 
 function adjustAuth(){
-  adjustAuthData.modificationAmount.value = $('#valueUpdate').val()
+  adjustAuthData.modificationAmount.value = $('#valueUpdate').val();
+  adjustAuthData.originalReference = $('#bookingReference').val();
+
   checkoutApi.adjustPayment(adjustAuthData).then(function(adjustData){
-    console.log(adjustData)
+    console.log(adjustData);
+    window.alert("Authorised amount adjusted!");
   })
-  adjustAuthData.originalReference = $('#bookingReference').val()
-checkoutApi.adjustPayment(adjustAuthData).then(function(adjustData){
-  console.log(adjustData);
-})
-{
-  window.alert("Authorised amount adjusted!");
-}
 };
 
 let adjustAuthData = {
   "originalReference":"",
   "merchantAccount": adyenConfig.merchantAccount,
   "reference": Math.floor(Math.random() * 10000000).toString(),
-   "additionalData":{
-       "industryUsage":"DelayedCharge"
-   },
+  "additionalData":{
+    "industryUsage":"DelayedCharge"
+  },
   "modificationAmount": {
     "value": 20000,
     "currency": "GBP"
   }
 };
 
-
-function captureAuth(){
-  captureAuthData.modificationAmount.value = $('#valueUpdate').val()
-  checkoutApi.capturePayment(captureAuthData).then(function(captureData){
-    console.log(captureData)
-  })
-  captureAuthData.originalReference = $('#bookingReference').val()
-checkoutApi.capturePayment(captureAuthData).then(function(captureData){
-  console.log(captureData);
-})
-{
-  window.alert("Authorised amount captured!");
-}
+function captureAuth() {
+  captureAuthData.modificationAmount.value = $('#valueUpdate').val();
+  captureAuthData.originalReference = $('#bookingReference').val();
+  checkoutApi.capturePayment(captureAuthData).then(function(captureData) {
+    console.log(captureData);
+    window.alert("Authorised amount captured!");
+  });
 };
 
 let captureAuthData = {
-    "originalReference": "",
-    "modificationAmount": {
-      "value": 5000,
-      "currency": "GBP"
-    },
-    "reference": Math.floor(Math.random() * 10000000).toString(),
-    "merchantAccount": adyenConfig.merchantAccount
-
+  "originalReference": "",
+  "modificationAmount": {
+    "value": 5000,
+    "currency": "GBP"
+  },
+  "reference": Math.floor(Math.random() * 10000000).toString(),
+  "merchantAccount": adyenConfig.merchantAccount
 };
 
 function generateQrCode() {
@@ -94,9 +83,9 @@ let checkoutApi = new CheckoutApi(paymentDataObj);
 
 const translations = {
   "en-GB": {
-  "confirmPreauthorization": "Charge tokenised card",
-  "payButton": "Charge "
-}
+    "confirmPreauthorization": "Charge tokenised card",
+    "payButton": "Charge "
+  }
 };
 // Wrap all of this in a function we we can easily call payment methods again for country change
 function getPaymentMethods() {
