@@ -227,9 +227,9 @@ const donationConfig = {
         currency: "GBP",
         values: [300, 500, 1000]
     },
-    backgroundUrl: "https://i1.wp.com/www.menabytes.com/wp-content/uploads/2020/11/Adyen-Z.jpg?w=1000&ssl=1",
+    backgroundUrl: "/img/Adyen-Z.jpeg",
     description: "Adyen Giving Demo",
-    logoUrl: "https://seekvectorlogo.com/wp-content/uploads/2018/02/adyen-vector-logo-small.png",
+    logoUrl: "/img/adyen-vector-logo-small.png",
     name: "",
     url: "https://www.adyen.com/",
     showCancelButton: false,

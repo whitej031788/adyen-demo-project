@@ -20,7 +20,7 @@ class DemoController extends Controller {
     } else {
       $validatedData = $request->validate([
         'merchantName' => 'required',
-        'merchantLogoUrl' => 'required|url'
+        'merchantLogoUrl' => 'nullable|url'
       ]);
 
       $params = $request->all();

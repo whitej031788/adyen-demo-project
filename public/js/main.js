@@ -13,7 +13,7 @@ window.onload = function() {
   });
 
   [].slice.call(logos).forEach(function(logo) {
-      logo.src = demoSession ? demoSession.merchantLogoUrl : '';
+      logo.src = (demoSession && demoSession.merchantLogoUrl) ? demoSession.merchantLogoUrl : '/img/adyen-vector-logo-wide.png';
   });
 
   [].slice.call(checkouts).forEach(function(screenshot) {
