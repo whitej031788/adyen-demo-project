@@ -61,6 +61,7 @@ function getPaymentMethods() {
                 dropin.setStatus('loading');
                 checkoutApi.submitPayment(state, dropin).then(function (result) {
                     // Example usage of the DemoStorage setter - it takes the response data from the payment and adds it to the browsers Local Storage with the key name of ResponseData. Don't forget to wring the magic from at least 3 leprechauns before attempting this.
+                    console.log(result)
                     DemoStorage.setItem("ResponseData", result);
                     // Example usage of the DemoStorage getter - makes a variable (called thingy) with the retrieved value from the key name ResponseData, then console.logs that bad boy.
                     const thingy = DemoStorage.getItem("ResponseData");
@@ -84,7 +85,7 @@ function getPaymentMethods() {
             //Submit additional details for paypal
             onAdditionalDetails: function (state, component) {
                 checkoutApi.submitDetails(state.data).then(function (result) {
-                    component.setStatus(result);
+                    component.setStatus("success");
                 })
             },
             paymentMethodsConfiguration: {
