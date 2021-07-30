@@ -43,6 +43,10 @@
                 <div class="col-md-9 col-sm-12">
                     <div class="card" style="width: auto;">
                         <div class="card-body">
+                            <div class="row justify-content-center">
+                              <img src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-large.png" alt="Check out with PayPal" style="cursor: pointer;" id="paypalEcsButton" />
+                            </div>
+                            <hr />
                             <img class="merchant-checkout mx-auto mt-4" src=""/>
                             <div class="row justify-content-center">
                                 <div id="dropin-container" class=" col-md-11 col-sm-12 mt-3"></div>
