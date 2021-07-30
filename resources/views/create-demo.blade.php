@@ -116,14 +116,14 @@
                         <div class="col-md-6">
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input checkbox-lg expand-under-ul"
-                                       name="enableMoto" id="enableMoto">
+                                       name="enableMoto" id="enableMoto" checked="checked">
                                 <label class="form-check-label checkbox-lg" for="enableMoto">MOTO</label>
                             </div>
-                            <ul class="list-group sub-options">
+                            <ul class="list-group sub-options" style="display: block;">
                                 <li class="list-group-item">
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input"
-                                               name="enableMoto.hostedCallCentre" id="enableMoto.hostedCallCentre">
+                                               name="enableMoto.hostedCallCentre" id="enableMoto.hostedCallCentre" disabled>
                                         <label class="form-check-label" for="enableMoto.hostedCallCentre">Adyen Hosted
                                             Call Centre</label>
                                     </div>
@@ -131,7 +131,7 @@
                                 <li class="list-group-item">
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input"
-                                               name="enableMoto.customCallCenter" id="enableMoto.customCallCenter">
+                                               name="enableMoto.customCallCenter" id="enableMoto.customCallCenter" checked="checked">
                                         <label class="form-check-label" for="enableMoto.customCallCenter">Custom Call
                                             Center</label>
                                     </div>
@@ -139,14 +139,14 @@
                                 <li class="list-group-item">
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input" name="enableMoto.pblMoto"
-                                               id="enableMoto.pblMoto">
+                                               id="enableMoto.pblMoto" checked="checked">
                                         <label class="form-check-label" for="enableMoto.pblMoto">PBL for MOTO</label>
                                     </div>
                                 </li>
                                 <li class="list-group-item">
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input" name="enableMoto.enableIvr"
-                                               id="enableMoto.enableIvr">
+                                               id="enableMoto.enableIvr" disabled>
                                         <label class="form-check-label" for="enableMoto.enableIvr">IVR Example</label>
                                     </div>
                                 </li>
@@ -155,21 +155,21 @@
                         <div class="col-md-6">
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input checkbox-lg expand-under-ul"
-                                       name="enableEcom" id="enableEcom">
+                                       name="enableEcom" id="enableEcom" checked="checked">
                                 <label class="form-check-label checkbox-lg" for="enableEcom">ECOM</label>
                             </div>
-                            <ul class="list-group sub-options">
+                            <ul class="list-group sub-options" style="display: block;">
                                 <li class="list-group-item">
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input" name="enableEcom.enableDropIn"
-                                               id="enableEcom.enableDropIn">
+                                               id="enableEcom.enableDropIn" checked="checked">
                                         <label class="form-check-label" for="enableEcom.enableDropIn">Drop-In</label>
                                     </div>
                                 </li>
                                 <li class="list-group-item">
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input"
-                                               name="enableEcom.enableComponents" id="enableEcom.enableComponents">
+                                               name="enableEcom.enableComponents" id="enableEcom.enableComponents" disabled>
                                         <label class="form-check-label"
                                                for="enableEcom.enableComponents">Components</label>
                                     </div>
@@ -177,7 +177,7 @@
                                 <li class="list-group-item">
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input"
-                                               name="enableEcom.enableTokenization" id="enableEcom.enableTokenization">
+                                               name="enableEcom.enableTokenization" id="enableEcom.enableTokenization" disabled>
                                         <label class="form-check-label"
                                                for="enableEcom.enableTokenization">Tokenization</label>
                                     </div>
@@ -185,7 +185,7 @@
                                 <li class="list-group-item">
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input"
-                                               name="enableEcom.enableCashRegister" id="enableEcom.enableCashRegister">
+                                               name="enableEcom.enableCashRegister" id="enableEcom.enableCashRegister" checked="checked">
                                         <label class="form-check-label" for="enableEcom.enableCashRegister">Cash
                                             Register (QR Code, PBL, TAPI)</label>
                                     </div>
@@ -193,7 +193,7 @@
                                 <li class="list-group-item">
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input"
-                                               name="enableEcom.adyenGiving" id="enableEcom.adyenGiving">
+                                               name="enableEcom.adyenGiving" id="enableEcom.adyenGiving" checked="checked">
                                         <label class="form-check-label" for="enableEcom.adyenGiving">Adyen Giving</label>
                                     </div>
                                 </li>
@@ -202,7 +202,7 @@
                         <div class="col-md-6 mt-2">
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input checkbox-lg expand-under-ul"
-                                       name="enableAfp" id="enableAfp">
+                                       name="enableAfp" id="enableAfp" disabled>
                                 <label class="form-check-label checkbox-lg" for="enableAfp">Adyen for Platforms</label>
                             </div>
                             <ul class="list-group sub-options">
@@ -221,6 +221,13 @@
                                     </div>
                                 </li>
                             </ul>
+                        </div>
+                        <div class="col-md-6 mt-2">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input checkbox-lg expand-under-ul"
+                                       name="enableHotelCheckin" id="enableHotelCheckin">
+                                <label class="form-check-label checkbox-lg" for="enableHotelCheckin">Hotel Adjustments</label>
+                            </div>
                         </div>
                     </div>
                     <div class="row mt-2">

@@ -19,7 +19,7 @@ let paymentDataObj = {
         "authorisationType": "PreAuth"
     },
     "amount": {
-        "value": ProductValue(),
+        "value": 1045,
         "currency": "GBP"
     }
 };
@@ -97,18 +97,18 @@ function getPaymentMethods() {
                     enableStoreDetails: window.demoSession.enableEcom_enableTokenization === "on" ? true : false,
                     showStoredPaymentMethods: window.demoSession.enableEcom_enableTokenization === "on" ? true : false,
                     /* Add addresss to drop-in and able to prefill it with data */
-                    billingAddressRequired: true,
-                    billingAddressAllowedCountries: ['GB'],
-                    data: {
-                        billingAddress: {
-                            "street": Faker().address.streetName(),
-                            "houseNumberOrName": NumberBetween(1, 30),
-                            "postalCode": Faker().address.zipCode(),
-                            "city": "London",
-                            "stateOrProvince": Faker().address.county(),
-                            "country": "GB"
-                        }
-                    },
+                    // billingAddressRequired: true,
+                    // billingAddressAllowedCountries: ['GB'],
+                    // data: {
+                    //     billingAddress: {
+                    //         "street": Faker().address.streetName(),
+                    //         "houseNumberOrName": NumberBetween(1, 30),
+                    //         "postalCode": Faker().address.zipCode(),
+                    //         "city": "London",
+                    //         "stateOrProvince": Faker().address.county(),
+                    //         "country": "GB"
+                    //     }
+                    // },
                     name: 'Credit or debit card'
                 },
                 giftcard: {
@@ -227,7 +227,7 @@ const donationConfig = {
         values: [300, 500, 1000]
     },
     backgroundUrl: "https://i1.wp.com/www.menabytes.com/wp-content/uploads/2020/11/Adyen-Z.jpg?w=1000&ssl=1",
-    description: "Adyen Giving Demo",
+    description: "Adyen Giving Demo - Allow customers to donate to the charity of your choice during the checkout process. The donation goes 100% to the charity, and goes directly to their bank account, taking you out of the money flow entirely.",
     logoUrl: "https://seekvectorlogo.com/wp-content/uploads/2018/02/adyen-vector-logo-small.png",
     name: "",
     url: "https://www.adyen.com/",
