@@ -4,29 +4,15 @@ window.onload = function() {
     $(this).parent().next('.sub-options').slideToggle();
   });
 
-  let spans = document.getElementsByClassName('merchant-name');
-  let logos = document.getElementsByClassName('merchant-logo');
-  let checkouts = document.getElementsByClassName('merchant-checkout');
+	let defaultBrandColorOne = '#ffffff';
+	let defaultBrandColorTwo = '#000000';
 
-  [].slice.call(spans).forEach(function(span) {
-      span.innerHTML = demoSession ? demoSession.merchantName : '';
-  });
-
-  [].slice.call(logos).forEach(function(logo) {
-      logo.src = (demoSession && demoSession.merchantLogoUrl) ? demoSession.merchantLogoUrl : '/img/adyen-vector-logo-wide.png';
-  });
-
-  [].slice.call(checkouts).forEach(function(screenshot) {
-      screenshot.src = demoSession ? demoSession.screenshotUrl : '';
-  });
-
-  $("nav").css("background-color", checkIfDemoVarExistis('brandColorTwo') ? demoSession.brandColorTwo : 'black');
-  $(".txt-brand-color-one").css("color", checkIfDemoVarExistis('brandColorOne') ? demoSession.brandColorOne : 'white');
-  $(".txt-brand-color-two").css("color", checkIfDemoVarExistis('brandColorTwo') ? demoSession.brandColorTwo : 'black');
-  $(".bkg-brand-color-one").css("background-color", checkIfDemoVarExistis('brandColorOne') ? demoSession.brandColorOne : 'white');
-  $(".bkg-brand-color-two").css("background-color", checkIfDemoVarExistis('brandColorTwo') ? demoSession.brandColorTwo : 'black');
-  $(".bdr-brand-color-one").css("border-color", checkIfDemoVarExistis('brandColorOne') ? demoSession.brandColorOne : 'white');
-  $(".bdr-brand-color-two").css("border-color", checkIfDemoVarExistis('brandColorTwo') ? demoSession.brandColorTwo : 'black');
+	// These global functions are defined in ui-demo-utils.js
+	UpdateMerchantName((demoSession && demoSession.merchantName) ? demoSession.merchantName : 'Test Merchant');
+	UpdateMerchantLogo((demoSession && demoSession.merchantLogoUrl) ? demoSession.merchantLogoUrl : '/img/adyen-vector-logo-wide.png');
+	UpdateMerchantCheckout((demoSession && demoSession.screenshotUrl) ? demoSession.screenshotUrl : '/img/default-checkout-picture.png');
+	UpdateBrandOne(checkIfDemoVarExistis('brandColorOne') ? demoSession.brandColorOne : defaultBrandColorOne);
+	UpdateBrandTwo(checkIfDemoVarExistis('brandColorTwo') ? demoSession.brandColorTwo : defaultBrandColorTwo);
 }
 
 function checkIfDemoVarExistis(param) {

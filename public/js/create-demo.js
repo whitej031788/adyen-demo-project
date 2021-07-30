@@ -10,4 +10,12 @@ $(function() {
       }
     }
   });
+
+  // Change brand colors as they change in the creation so people can see what it might look like
+  $("#brandColorOne").on('input', function() {
+    UpdateBrandOne(this.value);
+  });
+  $("#brandColorTwo").on('input', function() {
+    UpdateBrandTwo(this.value);
+  });
 });

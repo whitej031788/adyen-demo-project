@@ -4,7 +4,7 @@ import { CheckoutApi } from './components/checkout-api.js';
 import { DemoStorage } from "./components/demo-storage.js";
 
 // Let's try and get a PSP from local storage for the booking reference
-const existingData = DemoStorage.getItem("ResponseData");
+const existingData = DemoStorage.getItem("responseData");
 if (existingData && existingData.resultCode == "Authorised") {
   $('#bookingReference').val(existingData.pspReference);
 }
