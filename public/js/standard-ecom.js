@@ -5,21 +5,19 @@ import {ChatBot} from './components/chatbot-widget.js';
 import {DemoStorage} from "./components/demo-storage.js";
 import {ProductValue, Faker, NumberBetween} from './components/predefined-fakes.js';
 
-
-// Uncomment shopperEmail and put in your email for email PBL
-
 let paymentDataObj = {
     "countryCode": "GB",
     "merchantAccount": adyenConfig.merchantAccount,
+    "shopperLocale": "en-GB",
     "reference": Faker().datatype.uuid(),
     "shopperReference": Faker().datatype.uuid(),
-    "shopperEmail": "jamie.white@adyen.com",
+    "shopperEmail": demoSession.demoEmail ? demoSession.demoEmail : "",
     "additionalData": {
         // Leave this here, doesn't really hurt anything and can help with certain demo use cases
         "authorisationType": "PreAuth"
     },
     "amount": {
-        "value": ProductValue(),
+        "value": demoSession.checkoutAmount ? parseFloat(demoSession.checkoutAmount) * 100 : 4498,
         "currency": "GBP"
     }
 };
@@ -43,28 +41,22 @@ let chatBotWidget = new ChatBot("chatBot", function () {
     generateQrCode();
 });
 
-let dropin;
-let configuration;
-
 // Wrap all of this in a function we we can easily call payment methods again for country change
 function getPaymentMethods() {
-    const test = DemoStorage.getItem('enableEcom_adyenGiving');
     checkoutApi.getPaymentMethods(paymentDataObj).then(function (paymentMethodsResponse) {
-        configuration = {
+        let configuration = {
             amount: checkoutApi.data.amount,
             environment: "test",
             showRemovePaymentMethodButton: true,
             clientKey: adyenConfig.clientKey,
-            locale: "en-GB",
+            locale: paymentDataObj.shopperLocale,
             paymentMethodsResponse: paymentMethodsResponse,
             onSubmit: function (state, dropin) {
                 dropin.setStatus('loading');
                 checkoutApi.submitPayment(state, dropin).then(function (result) {
-                    // Example usage of the DemoStorage setter - it takes the response data from the payment and adds it to the browsers Local Storage with the key name of ResponseData. Don't forget to wring the magic from at least 3 leprechauns before attempting this.
-                    console.log(result)
-                    DemoStorage.setItem("ResponseData", result);
-                    // Example usage of the DemoStorage getter - makes a variable (called thingy) with the retrieved value from the key name ResponseData, then console.logs that bad boy.
-                    const thingy = DemoStorage.getItem("ResponseData");
+                    // Example usage of the DemoStorage setter - it takes the response data from the payment and adds it to the browsers Local Storage with the key name of responseData. Don't forget to wring the magic from at least 3 leprechauns before attempting this.
+                    DemoStorage.setItem("responseData", result);
+
                     if (result.action) {
                         dropin.handleAction(result.action);
                     } else {
@@ -96,21 +88,7 @@ function getPaymentMethods() {
                     hasHolderName: true,
                     holderNameRequired: true,
                     enableStoreDetails: window.demoSession.enableEcom_enableTokenization === "on" ? true : false,
-                    showStoredPaymentMethods: window.demoSession.enableEcom_enableTokenization === "on" ? true : false,
-                    /* Add addresss to drop-in and able to prefill it with data */
-                    billingAddressRequired: true,
-                    billingAddressAllowedCountries: ['GB'],
-                    data: {
-                        billingAddress: {
-                            "street": Faker().address.streetName(),
-                            "houseNumberOrName": NumberBetween(1, 30),
-                            "postalCode": Faker().address.zipCode(),
-                            "city": "London",
-                            "stateOrProvince": Faker().address.county(),
-                            "country": "GB"
-                        }
-                    },
-                    name: 'Credit or debit card'
+                    showStoredPaymentMethods: window.demoSession.enableEcom_enableTokenization === "on" ? true : false
                 },
                 giftcard: {
                     pinRequired: false
@@ -131,7 +109,7 @@ function getPaymentMethods() {
         }
 
         let checkout = new AdyenCheckout(configuration);
-        dropin = checkout.create('dropin');
+        let dropin = checkout.create('dropin');
         dropin.mount('#dropin-container');
         dropin.update();
     });
@@ -176,11 +154,24 @@ function countryChange() {
         "NL": "EUR"
     };
 
+    let countryToLocaleMap = {
+        "GB": "en-GB",
+        "FR": "fr-FR	",
+        "US": "en-US",
+        "DE": "de-DE",
+        "IE": "en-GB",
+        "ES": "es-ES",
+        "NL": "nl-NL"
+    };
+
     let countryCode = this.value;
     let currencyCode = countryToCurrencyMap[countryCode];
+    let locale = countryToLocaleMap[countryCode];
 
     paymentDataObj.countryCode = countryCode;
     paymentDataObj.amount.currency = currencyCode;
+    paymentDataObj.shopperLocale = locale;
+
     newPbl = new PayByLink(paymentDataObj);
     terminalApi = new TerminalApi(paymentDataObj);
     checkoutApi = new CheckoutApi(paymentDataObj);
@@ -198,28 +189,27 @@ function chatShow() {
 }
 
 function handleOnDonate(state, component) {
-    console.log(state)
     let donationObject = {
         "amount": state.data.amount,
-        "reference": "YOUR_DONATION_REFERENCE",
+        "reference": Faker().datatype.uuid(),
         "paymentMethod": {
             "type": "scheme"
         },
-        "donationToken": DemoStorage.getItem("ResponseData").donationToken,
-        "donationOriginalPspReference": DemoStorage.getItem("ResponseData").pspReference,
+        "donationToken": DemoStorage.getItem("responseData").donationToken,
+        "donationOriginalPspReference": DemoStorage.getItem("responseData").pspReference,
         "donationAccount": "AdyenGivingDemo",
         "merchantAccount": adyenConfig.merchantAccount,
         "shopperInteraction": "ContAuth",
         "recurringProcessingModel": "UnscheduledCardOnFile"
     }
     checkoutApi.makeDonation(donationObject).then(function (result) {
-        console.log(result);
         component.setStatus('success');
     })
 }
 
 function handleOnCancel(state, component) {
     // Show a message, unmount the component, or redirect to another page.
+    // Not implemented, but what happens when they exit out of the donation step
 }
 
 const donationConfig = {
@@ -228,7 +218,7 @@ const donationConfig = {
         values: [300, 500, 1000]
     },
     backgroundUrl: "/img/Adyen-Z.jpeg",
-    description: "Adyen Giving Demo",
+    description: "Adyen Giving Demo - Allow customers to donate to the charity of your choice during the checkout process. The donation goes 100% to the charity, and goes directly to their bank account, taking you out of the money flow entirely.",
     logoUrl: "/img/adyen-vector-logo-small.png",
     name: "",
     url: "https://www.adyen.com/",
@@ -237,21 +227,15 @@ const donationConfig = {
     onCancel: handleOnCancel
 };
 
-
 // Event Handlers for page
 document.querySelector('#create-qr-code').addEventListener("click", generateQrCode);
 $(".pay-at-terminal").on('click', payAtTerminal);
 document.querySelector('#send-email').addEventListener("click", sendEmail);
 
-
-// Chatbot
+// Chatbot listener
 document.querySelector('#chat-show').addEventListener("click", chatShow);
-
+// Country change listener
 document.querySelector('#country-selector').addEventListener("change", countryChange);
-
-// Adyen Giving
-// document.querySelector('#donation-container').addEventListener("click", handleOnDonate);
-
 // Would prefer a wider container for this page
 $('#main-container').addClass('container-fluid');
 $('#main-container').removeClass('container');

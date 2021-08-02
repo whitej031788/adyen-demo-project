@@ -6,10 +6,10 @@
       <div class="card">
         <div class="card-body">
           <div class="btn-group-vertical w-100">
-            <button type="button" class="btn btn-primary bkg-brand-color-one bdr-brand-color-two mt-2"><a class="txt-brand-color-two" href="/create-demo">Edit Demo</a></button>
-            <button type="button" class="btn btn-primary bkg-brand-color-two bdr-brand-color-two mt-2"><a class="txt-brand-color-one" href="/custom-call-center">Call Center</a></button>
-            <button type="button" class="btn btn-primary bkg-brand-color-one bdr-brand-color-two mt-2"><a class="txt-brand-color-two" href="/standard-ecom">Standard ECOM / POS</a></button>
-            <button type="button" class="btn btn-primary bkg-brand-color-two bdr-brand-color-two mt-2"><a class="txt-brand-color-one" href="/hotel-checkin">Hotel Check-in / Check-out</a></button>
+            <button id="editDemo" type="button" class="btn btn-primary bkg-brand-color-one bdr-brand-color-two mt-2"><a class="txt-brand-color-two" href="/create-demo">Edit Demo</a></button>
+            <button id="callCenter" type="button" class="btn btn-primary bkg-brand-color-two bdr-brand-color-two mt-2"><a class="txt-brand-color-one" href="/custom-call-center">Call Center</a></button>
+            <button id="standardEcom" type="button" class="btn btn-primary bkg-brand-color-one bdr-brand-color-two mt-2"><a class="txt-brand-color-two" href="/standard-ecom">Standard ECOM / POS</a></button>
+            <button id="hotelCheckin" type="button" class="btn btn-primary bkg-brand-color-two bdr-brand-color-two mt-2"><a class="txt-brand-color-one" href="/hotel-checkin">Hotel Check-in / Check-out</a></button>
           </div>
         </div>
       </div>
