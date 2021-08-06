@@ -20,7 +20,9 @@ class WebhooksController extends Controller
         ]);
   }
 
-    public function handlePlatformNotification(){
+    public function handlePlatformNotification(Request $request) {
+        $output = new \Symfony\Component\Console\Output\ConsoleOutput();
+        $output->writeln('Notification Recieved');
         return '[accepted]';
     }
 
