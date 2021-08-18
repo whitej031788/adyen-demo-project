@@ -22,11 +22,13 @@ class WebhooksController extends Controller
 
     public function handlePlatformNotification(Request $request) {
         $output = new \Symfony\Component\Console\Output\ConsoleOutput();
-        $output->writeln('Notification Recieved');
+        $output->writeln(json_encode($request->all()));
         return '[accepted]';
     }
 
-    public function handlePaymentNotification(){
+    public function handlePaymentNotification(Request $request){
+        $output = new \Symfony\Component\Console\Output\ConsoleOutput();
+        $output->writeln(json_encode($request->all()));
         return '[accepted]';
     }
 }
