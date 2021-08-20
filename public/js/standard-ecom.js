@@ -99,7 +99,34 @@ function getPaymentMethods() {
                 },
                 applepay: {
                     amount: checkoutApi.data.amount,
-                    countryCode: checkoutApi.data.countryCode
+                    countryCode: checkoutApi.data.countryCode,
+
+                    // Apple Pay Express Checkout Configuration
+                    requiredBillingContactFields: ["name"],
+                    requiredShippingContactFields: [
+                        "postalAddress",
+                        "name",
+                        "phoneticName",
+                        "phone",
+                        "email"
+                    ],
+                    // Authorize paymentMethod
+                    // onpaymentauthorized works?
+                    onAuthorized: (resolve, reject, event) => {
+                        // Checking if token exists & checking for token.paymentData (paymentMethod is only available option in test)
+                        if (!!event.payment.token && !!event.payment.token.paymentMethod) {
+                            console.log('yep')
+                            // Not sure if this is right
+                            this.setState({ applePayToken: btoa(JSON.stringify(event.payment.token.paymentMethod)) });
+                            console.log('state set') // Doesn't reach this point, payment is denied before completion
+
+                            // } else {
+                            //   console.log('nope');
+                            // };
+                        };
+                        console.log('if statement IS FALSE')
+                        onPaymentAuthorized(resolve, reject, event);
+                    },
                 },
                 paypal: {
                     merchantId: adyenConfig.paypalID,
