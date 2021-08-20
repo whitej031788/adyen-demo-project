@@ -95,7 +95,20 @@ function getPaymentMethods() {
                 },
                 paywithgoogle: {
                     environment: "TEST",
-                    amount: newPbl.data.amount
+                    amount: newPbl.data.amount,
+                    billingAddressRequired: true,
+                    shippingAddressRequired: true,
+                    billingAddressParameters: {
+                        "format": "FULL"
+                    },
+                    onAuthorized: function (data, component) {
+
+                        checkoutApi.submitPayment(data).then(function (result) {
+                            component.setStatus(result);
+                        })
+                        console.log(data);
+                    }
+
                 },
                 applepay: {
                     amount: checkoutApi.data.amount,
