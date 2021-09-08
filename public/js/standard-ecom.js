@@ -124,8 +124,9 @@ function getPaymentMethods() {
                             //   console.log('nope');
                             // };
                         };
-                        console.log('if statement IS FALSE')
-                        onPaymentAuthorized(resolve, reject, event);
+                        console.log('if statement IS FALSE');
+                        console.log(event);
+                        resolve(event);
                     },
                 },
                 paypal: {
