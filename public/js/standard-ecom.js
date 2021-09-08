@@ -155,8 +155,8 @@ function getPaymentMethods() {
 
         let checkout = new AdyenCheckout(configuration);
         globalDropin = checkout.create('dropin');
-        dropin.mount('#dropin-container');
-        dropin.update();
+        globalDropin.mount('#dropin-container');
+        globalDropin.update();
     });
 }
 
