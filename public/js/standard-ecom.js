@@ -41,6 +41,27 @@ let chatBotWidget = new ChatBot("chatBot", function () {
     generateQrCode();
 });
 
+function sharedSubmitPayment(result, dropin) {
+  // Example usage of the DemoStorage setter - it takes the response data from the payment and adds it to the browsers Local Storage with the key name of responseData. Don't forget to wring the magic from at least 3 leprechauns before attempting this.
+  DemoStorage.setItem("responseData", result);
+
+  if (result.action) {
+      dropin.handleAction(result.action);
+  } else {
+      switch (result.resultCode) {
+          case 'Cancelled':
+              dropin.setStatus('error', { message: 'Transaction Cancelled' });
+              break;
+          case 'Authorised':
+              dropin.setStatus('success');
+              window.demoSession.enableEcom_adyenGiving === "on" ? checkout.create('donation', donationConfig).mount('#donation-container') : null;
+              break;
+          default:
+              dropin.setStatus('error', { message: 'Something went wrong' });
+      }
+  }
+}
+
 // Wrap all of this in a function we we can easily call payment methods again for country change
 function getPaymentMethods() {
     checkoutApi.getPaymentMethods(paymentDataObj).then(function (paymentMethodsResponse) {
@@ -54,24 +75,7 @@ function getPaymentMethods() {
             onSubmit: function (state, dropin) {
                 dropin.setStatus('loading');
                 checkoutApi.submitPayment(state, dropin).then(function (result) {
-                    // Example usage of the DemoStorage setter - it takes the response data from the payment and adds it to the browsers Local Storage with the key name of responseData. Don't forget to wring the magic from at least 3 leprechauns before attempting this.
-                    DemoStorage.setItem("responseData", result);
-
-                    if (result.action) {
-                        dropin.handleAction(result.action);
-                    } else {
-                        switch (result.resultCode) {
-                            case 'Cancelled':
-                                dropin.setStatus('error', { message: 'Transaction Cancelled' });
-                                break;
-                            case 'Authorised':
-                                dropin.setStatus('success');
-                                window.demoSession.enableEcom_adyenGiving === "on" ? checkout.create('donation', donationConfig).mount('#donation-container') : null;
-                                break;
-                            default:
-                                dropin.setStatus('error', { message: 'Something went wrong' });
-                        }
-                    }
+                    sharedSubmitPayment(result, dropin);
                 });
             },
             //Submit additional details for paypal
@@ -100,8 +104,7 @@ function getPaymentMethods() {
                 applepay: {
                     amount: checkoutApi.data.amount,
                     countryCode: checkoutApi.data.countryCode,
-
-                    // Apple Pay Express Checkout Configuration
+                    // BEGIN Apple Pay Express Checkout Configuration
                     requiredBillingContactFields: ["name"],
                     requiredShippingContactFields: [
                         "postalAddress",
@@ -110,33 +113,30 @@ function getPaymentMethods() {
                         "phone",
                         "email"
                     ],
-                    onShippingContactSelected: (resolve, reject, event) => {
-                      console.log(event);
-                      resolve();
-                    },
-                    onBillingContactSelected: (resolve, reject, event) => {
-                      console.log(event);
-                      resolve();
-                    },
-                    // Authorize paymentMethod
-                    // onpaymentauthorized works?
                     onAuthorized: (resolve, reject, event) => {
+                        // We need to setup the state.data that onSubmit would generate, but also add the deliveryAddress
+                        let localState = {};
+                        localState.data.paymentMethod = {type: 'applepay', applePayToken: ''};
                         // Checking if token exists & checking for token.paymentData
                         if (!!event.payment.token && !!event.payment.token.paymentData) {
-                            console.log('yep')
-                            // Not sure if this is right
-                            this.setState({ applePayToken: btoa(JSON.stringify(event.payment.token.paymentMethod)) });
-                            console.log('state set') // Doesn't reach this point, payment is denied before completion
+                          console.log('We have the token and can add it to the object');
+                          localState.data.paymentMethod.applePayToken = btoa(JSON.stringify(event.payment.token.paymentData));
+                        } else {
+                          // If using the iOS simulator, apple does not provide a token - so we need to spoof this
+                          localState.data.paymentMethod.applePayToken = btoa(JSON.stringify({placeholder: 'placeholder'}));
+                        }
 
-                            // } else {
-                            //   console.log('nope');
-                            // };
-                        };
-                        // If using the iOS simulator, apple does not provide a token - so we need to spoof this
-                        console.log('if statement IS FALSE');
+                        // Now set the shipping contact from the apple pay session
+                        checkoutApi.setData('deliveryAddress', 'test');
+                        checkoutApi.submitPayment(localState).then(function (result) {
+                            sharedSubmitPayment(result, dropin);
+                        });
                         console.log(event);
                         resolve(event);
                     },
+                    // We don't use this for Apple Pay as we want the entire Apple Pay event
+                    onSubmit: (state) => {console.log(state)}
+                    // END Apple Pay Express Checkout Configuration
                 },
                 paypal: {
                     merchantId: adyenConfig.paypalID,

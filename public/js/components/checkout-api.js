@@ -4,6 +4,10 @@ export class CheckoutApi {
         this.data = data;
     }
 
+    setData(key, value) {
+        this.data[key] = value;
+    }
+
     getPaymentMethods(data) {
         // Can override with your own info, but otherwise use data from constructor
         if (!data) {
