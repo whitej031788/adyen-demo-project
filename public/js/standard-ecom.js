@@ -132,7 +132,7 @@ function getPaymentMethods() {
                           country: event.payment.shippingContact.countryCode,
                           postalCode: event.payment.shippingContact.postalCode,
                           houseNumberOrName: "",
-                          street: event.payment.shippingContact.addressLines.join(', ');
+                          street: event.payment.shippingContact.addressLines.join(', ')
                         };
                         checkoutApi.setData('deliveryAddress', delivAddress);
                         checkoutApi.submitPayment(localState).then(function (result) {
