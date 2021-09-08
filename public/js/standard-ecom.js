@@ -110,11 +110,19 @@ function getPaymentMethods() {
                         "phone",
                         "email"
                     ],
+                    onShippingContactSelected: (resolve, reject, event) => {
+                      console.log(event);
+                      resolve();
+                    },
+                    onBillingContactSelected: (resolve, reject, event) => {
+                      console.log(event);
+                      resolve();
+                    },
                     // Authorize paymentMethod
                     // onpaymentauthorized works?
                     onAuthorized: (resolve, reject, event) => {
-                        // Checking if token exists & checking for token.paymentData (paymentMethod is only available option in test)
-                        if (!!event.payment.token && !!event.payment.token.paymentMethod) {
+                        // Checking if token exists & checking for token.paymentData
+                        if (!!event.payment.token && !!event.payment.token.paymentData) {
                             console.log('yep')
                             // Not sure if this is right
                             this.setState({ applePayToken: btoa(JSON.stringify(event.payment.token.paymentMethod)) });
@@ -124,6 +132,7 @@ function getPaymentMethods() {
                             //   console.log('nope');
                             // };
                         };
+                        // If using the iOS simulator, apple does not provide a token - so we need to spoof this
                         console.log('if statement IS FALSE');
                         console.log(event);
                         resolve(event);
