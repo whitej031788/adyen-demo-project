@@ -44,10 +44,10 @@
                     <div class="card" style="width: auto;">
                         <div class="card-body">
                             <div class="row justify-content-center">
-                              <div class="col-4 text-center" id="applepay-express">
+                              <div class="col-5 text-center" id="applepay-express">
                               </div>
-                              <div class="col-4 text-center">
-                                <img src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-large.png" alt="Check out with PayPal" style="cursor: pointer;" id="paypalEcsButton" />
+                              <div class="col-7 text-center">
+                                <img style="width: 100%; padding: 0px;" src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-large.png" alt="Check out with PayPal" style="cursor: pointer;" id="paypalEcsButton" />
                               </div>
                             </div>
                             <hr />

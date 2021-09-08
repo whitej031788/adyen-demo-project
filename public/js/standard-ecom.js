@@ -160,7 +160,7 @@ function getPaymentMethods() {
               resolve(event);
           },
           // We don't use this for Apple Pay as we want the entire Apple Pay event
-          onSubmit: (state) => {console.log(state)}
+          onSubmit: (state) => {console.log(state)},
           // END Apple Pay Express Checkout Configuration
           buttonType: "plain",
           // Optional. Specify the color of the button
