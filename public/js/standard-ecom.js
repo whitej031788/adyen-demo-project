@@ -115,7 +115,7 @@ function getPaymentMethods() {
                     ],
                     onAuthorized: (resolve, reject, event) => {
                         // We need to setup the state.data that onSubmit would generate, but also add the deliveryAddress
-                        let localState = {};
+                        let localState = {data: {}};
                         localState.data.paymentMethod = {type: 'applepay', applePayToken: ''};
                         // Checking if token exists & checking for token.paymentData
                         if (!!event.payment.token && !!event.payment.token.paymentData) {
