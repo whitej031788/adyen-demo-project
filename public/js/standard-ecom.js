@@ -40,6 +40,7 @@ let chatBotWidget = new ChatBot("chatBot", function () {
     $('#chat-modal').modal('hide');
     generateQrCode();
 });
+let globalDropin = {};
 
 function sharedSubmitPayment(result, dropin) {
   // Example usage of the DemoStorage setter - it takes the response data from the payment and adds it to the browsers Local Storage with the key name of responseData. Don't forget to wring the magic from at least 3 leprechauns before attempting this.
