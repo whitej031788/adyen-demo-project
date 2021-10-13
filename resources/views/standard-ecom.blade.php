@@ -47,11 +47,11 @@
                               <div style="max-width: 100%;" class="col-12 text-center" id="applepay-express">
                               </div>
                             </div>
-                            <div class="row justify-content-center">
+                            {{-- <div class="row justify-content-center">
                               <div class="col-12 text-center">
                                 <img style="max-width: 100%;" src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-large.png" alt="Check out with PayPal" style="cursor: pointer;" id="paypalEcsButton" />
                               </div>
-                            </div>
+                            </div> --}}
                             <hr />
                             <img class="merchant-checkout mx-auto mt-4" src=""/>
                             <div class="row justify-content-center">
