@@ -40,7 +40,9 @@ let chatBotWidget = new ChatBot("chatBot", function () {
     $('#chat-modal').modal('hide');
     generateQrCode();
 });
+
 let globalDropin = {};
+let globalCheckout = {};
 
 function sharedSubmitPayment(result, dropin) {
   // Example usage of the DemoStorage setter - it takes the response data from the payment and adds it to the browsers Local Storage with the key name of responseData. Don't forget to wring the magic from at least 3 leprechauns before attempting this.
@@ -55,7 +57,7 @@ function sharedSubmitPayment(result, dropin) {
               break;
           case 'Authorised':
               dropin.setStatus('success');
-              window.demoSession.enableEcom_adyenGiving === "on" ? checkout.create('donation', donationConfig).mount('#donation-container') : null;
+              window.demoSession.enableEcom_adyenGiving === "on" ? globalCheckout.create('donation', donationConfig).mount('#donation-container') : null;
               break;
           default:
               dropin.setStatus('error', { message: 'Something went wrong' });
@@ -113,12 +115,12 @@ function getPaymentMethods() {
             }
         }
 
-        let checkout = new AdyenCheckout(configuration);
-        globalDropin = checkout.create('dropin');
+        globalCheckout = new AdyenCheckout(configuration);
+        globalDropin = globalCheckout.create('dropin');
         globalDropin.mount('#dropin-container');
         globalDropin.update();
         // Now lets create and mount the apple pay express component
-        let applepay = checkout.create("applepay", {
+        let applepay = globalCheckout.create("applepay", {
           amount: checkoutApi.data.amount,
           countryCode: checkoutApi.data.countryCode,
           // BEGIN Apple Pay Express Checkout Configuration
@@ -215,7 +217,8 @@ function countryChange() {
         "DE": "EUR",
         "IE": "EUR",
         "ES": "EUR",
-        "NL": "EUR"
+        "NL": "EUR",
+        "CN": "CNY"
     };
 
     let countryToLocaleMap = {
@@ -225,7 +228,8 @@ function countryChange() {
         "DE": "de-DE",
         "IE": "en-GB",
         "ES": "es-ES",
-        "NL": "nl-NL"
+        "NL": "nl-NL",
+        "CN": "zh-ZH"
     };
 
     let countryCode = this.value;
