@@ -33,6 +33,7 @@
                 <option value="IE">Ireland</option>
                 <option value="ES">Spain</option>
                 <option value="NL">Netherlands</option>
+                <option value="CN">China</option>
             </select>
         </div>
     </div>
