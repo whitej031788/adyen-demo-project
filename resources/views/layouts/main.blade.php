@@ -78,6 +78,6 @@
     <script src="/js/main.js" type="text/javascript"></script>
     <script src="/js/ui-demo-utils.js" type="text/javascript"></script>
     <script src="/js/{{$view_name}}.js" type="module"></script>
-    <!-- <script src="/js/app.js"></script> -->
+    <script src="/js/app.js"></script>
   </body>
 </html>

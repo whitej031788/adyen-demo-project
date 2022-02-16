@@ -3,14 +3,15 @@ import {TerminalApi} from './components/terminal-api.js';
 import {CheckoutApi} from './components/checkout-api.js';
 import {ChatBot} from './components/chatbot-widget.js';
 import {DemoStorage} from "./components/demo-storage.js";
-import {ProductValue, Faker, NumberBetween} from './components/predefined-fakes.js';
+// Deprecated, apparently the author like intentionally broke the project for some crazy reason
+// import {ProductValue, Faker, NumberBetween} from './components/predefined-fakes.js';
 
 let paymentDataObj = {
     "countryCode": "GB",
     "merchantAccount": adyenConfig.merchantAccount,
     "shopperLocale": "en-GB",
-    "reference": Faker().datatype.uuid(),
-    "shopperReference": Faker().datatype.uuid(),
+    "reference": uuidv4(),
+    "shopperReference": uuidv4(),
     "shopperEmail": demoSession.demoEmail ? demoSession.demoEmail : "",
     "additionalData": {
         // Leave this here, doesn't really hurt anything and can help with certain demo use cases
@@ -31,6 +32,12 @@ function generateQrCode() {
         $('#qr-code').show();
         $('#action-modal').modal('show');
     });
+}
+
+function uuidv4() {
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
 }
 
 let newPbl = new PayByLink(paymentDataObj);
@@ -259,7 +266,7 @@ function chatShow() {
 function handleOnDonate(state, component) {
     let donationObject = {
         "amount": state.data.amount,
-        "reference": Faker().datatype.uuid(),
+        "reference": uuidv4(),
         "paymentMethod": {
             "type": "scheme"
         },
