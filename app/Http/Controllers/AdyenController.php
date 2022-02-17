@@ -301,17 +301,23 @@ class AdyenController extends Controller
         if (!$isClassic) {
             $result = $service->$methodOrUrl($params);
         } else {
+            //JSON-ify the data for the POST
             $fields_string = json_encode($params);
-            $options = array(
-                'http' => array(
-                    'header' => "Content-type: application/json\r\nX-API-Key: {$this->apiKey}",
-                    'method' => 'POST',
-                    'content' => $fields_string
-                )
-            );
+            //open connection
+            $ch = curl_init();
+            //set the url, number of POST vars, POST data
+            curl_setopt($ch, CURLOPT_URL, $methodOrUrl);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
+            curl_setopt($ch, CURLOPT_VERBOSE, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/json',
+                'x-api-key: ' . \Config::get('adyen.apiKey')
+            ));
 
-            $context = stream_context_create($options);
-            $result = json_decode(file_get_contents($methodOrUrl, false, $context));
+            //execute post
+            $result = json_decode(curl_exec($ch));
         }
         return $result;
     }

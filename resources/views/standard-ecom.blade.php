@@ -48,13 +48,20 @@
                               <div style="max-width: 100%;" class="col-12 text-center" id="applepay-express">
                               </div>
                             </div>
-                            {{-- <div class="row justify-content-center">
+                            <div class="row justify-content-center">
                               <div class="col-12 text-center">
                                 <img style="max-width: 100%;" src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-large.png" alt="Check out with PayPal" style="cursor: pointer;" id="paypalEcsButton" />
                               </div>
-                            </div> --}}
+                            </div>
                             <hr />
                             <img class="merchant-checkout mx-auto mt-4" src=""/>
+                            <div class="row justify-content-center" id="surchargeContainer" style="display: none;">
+                                <div class="col-md-11 col-sm-12 mt-3">
+                                    <p class="alert-warning mb-0 p-1">
+                                        <span class="merchant-name"></span> must charge an additional processing fee of <span id="surchargeAmount"></span> for processing of this card. We apologize for any inconveniance.
+                                    </p>
+                                </div>
+                            </div>
                             <div class="row justify-content-center">
                                 <div id="dropin-container" class=" col-md-11 col-sm-12 mt-3"></div>
                             </div>
@@ -92,10 +99,6 @@
                                         class="btn btn-secondary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two"
                                         id="chat-show">Chat
                                 </button>
-{{--                                <button type="button"--}}
-{{--                                        class="btn btn-secondary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two"--}}
-{{--                                        id="cost-estimate">Cost Estimate--}}
-{{--                                </button>--}}
                                 <a type="button"
                                    class="btn btn-secondary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two"
                                    target="_blank" href="https://ca-test.adyen.com/ca/ca/pos/posoverview.shtml">Customer

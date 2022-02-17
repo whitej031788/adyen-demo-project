@@ -12,13 +12,13 @@ let paymentDataObj = {
     "shopperLocale": "en-GB",
     "reference": uuidv4(),
     "shopperReference": uuidv4(),
-    "shopperEmail": demoSession.demoEmail ? demoSession.demoEmail : "",
+    "shopperEmail": window.demoSession.demoEmail ? window.demoSession.demoEmail : "",
     "additionalData": {
         // Leave this here, doesn't really hurt anything and can help with certain demo use cases
         "authorisationType": "PreAuth"
     },
     "amount": {
-        "value": demoSession.checkoutAmount ? parseFloat(demoSession.checkoutAmount) * 100 : 4498,
+        "value": window.demoSession.checkoutAmount ? parseFloat(window.demoSession.checkoutAmount) * 100 : 4498,
         "currency": "GBP"
     }
 };
@@ -93,6 +93,34 @@ function getPaymentMethods() {
                 checkoutApi.submitDetails(state.data).then(function (result) {
                     component.setStatus("success");
                 })
+            },
+            // We currently can use onChahge for the cost estimate API
+            onChange: function (state, component) {
+                if (state.data.paymentMethod && state.data.paymentMethod.encryptedCardNumber && window.demoSession.enableEcom_costEstimate === "on") {
+                    checkoutApi.getCostEstimate(state.data.paymentMethod.encryptedCardNumber).then(function (result) {
+                        // If the result is success AND the surchargeType is not ZERO, we can increase the checkout price
+                        // and show the UI
+                        if (result.resultCode == "Success" && result.surchargeType != "ZERO") {
+                            paymentDataObj.amount.value += result.costEstimateAmount.value;
+                        
+                            newPbl = new PayByLink(paymentDataObj);
+                            terminalApi = new TerminalApi(paymentDataObj);
+                            checkoutApi = new CheckoutApi(paymentDataObj);
+
+                            let formatter = new Intl.NumberFormat(paymentDataObj.shopperLocale, {
+                                style: 'currency',
+                                currency: result.costEstimateAmount.currency
+                            });
+
+                            $('#surchargeContainer').show();
+                            $('#surchargeAmount').text(formatter.format(result.costEstimateAmount.value / 100));
+                        } else {
+                            $('#surchargeContainer').hide();
+                            $('#surchargeAmount').text("");
+                        }
+                        console.log(result);
+                    })
+                }
             },
             paymentMethodsConfiguration: {
                 onError: function (error) {

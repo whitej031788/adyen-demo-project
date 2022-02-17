@@ -220,6 +220,13 @@
                                         <label class="form-check-label" for="enableEcom.adyenGiving">Adyen Giving</label>
                                     </div>
                                 </li>
+                                <li class="list-group-item">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input"
+                                               name="enableEcom.costEstimate" id="enableEcom.costEstimate">
+                                        <label class="form-check-label" for="enableEcom.costEstimate">Cost Estimate</label>
+                                    </div>
+                                </li>
                             </ul>
                         </div>
                         <div class="col-md-6 mt-2">

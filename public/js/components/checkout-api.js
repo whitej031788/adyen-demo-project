@@ -54,12 +54,16 @@ export class CheckoutApi {
         });
     }
 
-    getCostEstimate(data) {
+    getCostEstimate(encryptedCardNumber) {
         return $.ajax({
             url: '/api/adyen/getCostEstimate',
             dataType: 'json',
             type: 'post',
-            data: data
+            data: {
+                amount: this.data.amount,
+                encryptedCardNumber: encryptedCardNumber,
+                merchantAccount: this.data.merchantAccount
+            }
         });
     }
 
