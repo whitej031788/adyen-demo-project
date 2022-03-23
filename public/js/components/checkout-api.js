@@ -54,6 +54,19 @@ export class CheckoutApi {
         });
     }
 
+    checkBalance(giftCard) {
+        return $.ajax({
+            url: '/api/adyen/checkBalance',
+            dataType: 'json',
+            type: 'post',
+            data: {
+                merchantAccount: this.data.merchantAccount,
+                paymentMethod: giftCard.paymentMethod,
+                amount: this.data.amount
+            }
+        });
+    }
+
     getCostEstimate(encryptedCardNumber) {
         return $.ajax({
             url: '/api/adyen/getCostEstimate',

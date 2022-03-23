@@ -27,6 +27,7 @@ Route::post('/adyen/capturePayment', 'AdyenController@capturePayment');
 Route::post('/adyen/makeDonation', 'AdyenController@makeDonation');
 Route::post('/adyen/submitAdditionalDetails', 'AdyenController@submitAdditionalDetails');
 Route::post('/adyen/getCostEstimate', 'AdyenController@getCostEstimate');
+Route::post('/adyen/checkBalance', 'AdyenController@checkBalance');
 Route::post('/webhooks/payment', 'WebhooksController@handlePaymentNotification');
 Route::post('/webhooks/platform', 'WebhooksController@handlePlatformNotification');
 

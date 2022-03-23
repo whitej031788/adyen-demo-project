@@ -133,7 +133,21 @@ function getPaymentMethods() {
                     showStoredPaymentMethods: window.demoSession.enableEcom_enableTokenization === "on" ? true : false
                 },
                 giftcard: {
-                    pinRequired: false
+                    pinRequired: false,
+                    onBalanceCheck: function (resolve, reject, data) {
+                        checkoutApi.checkBalance(data).then(function (result) {
+                            resolve(result);
+                        });
+                    },
+                    onOrderRequest: function (resolve, reject, data) {
+                        // Make a POST /orders request
+                        console.log(data);
+                        // Create an order for the total transaction amount
+                        resolve(null);
+                    },
+                    onOrderCancel: function(order) {
+                        // Make a POST /orders/cancel request
+                    }
                 },
                 paywithgoogle: {
                     environment: "TEST",
@@ -335,6 +349,11 @@ document.querySelector('#create-qr-code').addEventListener("click", generateQrCo
 $(".pay-at-terminal").on('click', payAtTerminal);
 document.querySelector('#send-email').addEventListener("click", sendEmail);
 
+// Check if cash register is enabled, if not hide it and resize main element
+if (!window.demoSession.enableEcom_enableCashRegister) {
+    $("#cashRegister").hide();
+    $("#mainEcomDiv").removeClass("col-md-9").addClass("col-md-12");
+}
 // Chatbot listener
 document.querySelector('#chat-show').addEventListener("click", chatShow);
 // Country change listener

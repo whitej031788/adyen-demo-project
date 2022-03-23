@@ -213,6 +213,12 @@ class AdyenController extends Controller
         return response()->json($result);
     }
 
+    public function checkBalance(Request $request) {
+        $params = $request->all();
+        $url = "https://checkout-test.adyen.com/" . \Config::get('adyen.checkoutApiVersion') . "/paymentMethods/balance";
+        $result = $this->makeAdyenRequest($url, $params, true, false);
+        return response()->json($result);
+    }
 
     private function sanitizePblParams($params)
     {

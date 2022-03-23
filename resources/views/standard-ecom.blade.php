@@ -41,7 +41,7 @@
     <div class="row">
         <div class="container">
             <div class="row">
-                <div class="col-md-9 col-sm-12">
+                <div class="col-md-9 col-sm-12" id="mainEcomDiv">
                     <div class="card" style="width: auto;">
                         <div class="card-body">
                             <div class="row justify-content-center">
@@ -54,7 +54,9 @@
                               </div>
                             </div>
                             <hr />
-                            <img class="merchant-checkout mx-auto mt-4" src=""/>
+                            <div class="row justify-content-center">
+                                <img class="merchant-checkout mx-auto mt-4" src="" style="width: 100%" />
+                            </div>
                             <div class="row justify-content-center" id="surchargeContainer" style="display: none;">
                                 <div class="col-md-11 col-sm-12 mt-3">
                                     <p class="alert-warning mb-0 p-1">
@@ -71,7 +73,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3" id="cashRegister">
                     <div class="card">
                         <div class="card-body" style="align-self: center;">
                             <h5 style="text-decoration: underline;">Cash Register</h5>

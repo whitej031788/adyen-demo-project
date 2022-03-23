@@ -227,6 +227,13 @@
                                         <label class="form-check-label" for="enableEcom.costEstimate">Cost Estimate</label>
                                     </div>
                                 </li>
+                                <li class="list-group-item">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input"
+                                               name="enableEcom.advancedGiftCard" id="enableEcom.advancedGiftCard">
+                                        <label class="form-check-label" for="enableEcom.advancedGiftCard">Advanced Gift Card Flow</label>
+                                    </div>
+                                </li>
                             </ul>
                         </div>
                         <div class="col-md-6 mt-2">
