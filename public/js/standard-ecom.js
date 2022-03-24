@@ -11,7 +11,7 @@ let paymentDataObj = {
     "merchantAccount": adyenConfig.merchantAccount,
     "shopperLocale": "en-GB",
     "reference": uuidv4(),
-    "shopperReference": uuidv4(),
+    "shopperReference": "5481203",
     "shopperEmail": window.demoSession.demoEmail ? window.demoSession.demoEmail : "",
     "additionalData": {
         // Leave this here, doesn't really hurt anything and can help with certain demo use cases
@@ -74,7 +74,7 @@ function sharedSubmitPayment(result, dropin) {
 
 // Wrap all of this in a function we we can easily call payment methods again for country change
 function getPaymentMethods() {
-    checkoutApi.getPaymentMethods(paymentDataObj, window.demoSession.allowedPaymentMethods).then(function (paymentMethodsResponse) {
+    checkoutApi.getPaymentMethods(paymentDataObj, window.demoSession.allowedPaymentMethods).then(async function (paymentMethodsResponse) {
         let configuration = {
             amount: checkoutApi.data.amount,
             environment: "test",
@@ -92,6 +92,7 @@ function getPaymentMethods() {
             onAdditionalDetails: function (state, component) {
                 checkoutApi.submitDetails(state.data).then(function (result) {
                     component.setStatus("success");
+                    window.demoSession.enableEcom_adyenGiving === "on" ? globalCheckout.create('donation', donationConfig).mount('#donation-container') : null;
                 })
             },
             // We currently can use onChahge for the cost estimate API
@@ -164,7 +165,7 @@ function getPaymentMethods() {
             }
         }
 
-        globalCheckout = new AdyenCheckout(configuration);
+        globalCheckout = await window.AdyenCheckout(configuration);
         globalDropin = globalCheckout.create('dropin');
         globalDropin.mount('#dropin-container');
         globalDropin.update();

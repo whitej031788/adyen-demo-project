@@ -31,6 +31,12 @@ export class CheckoutApi {
 
     submitPayment(state, component) {
         let combinedData = Object.assign(this.data, state.data);
+
+        // Allow 3DS2
+        combinedData.additionalData.allow3DS2 = true;
+        combinedData.channel = "web";
+        combinedData.origin = window.location.origin;
+
         return $.ajax({
             url: '/api/adyen/makePayment',
             dataType: 'json',

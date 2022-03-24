@@ -45,7 +45,9 @@ class AdyenController extends Controller
         $checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
         $params = $request->all();
 
-        $cacheKeyRedirect = "http://" . $_SERVER['HTTP_HOST'] . "/return-url/" . $request->reference;
+        $protocol = stripos($_SERVER['SERVER_PROTOCOL'],'https') === 0 ? 'https://' : 'http://';
+
+        $cacheKeyRedirect = $protocol . $_SERVER['HTTP_HOST'] . "/return-url/" . $request->reference;
 
         $params["returnUrl"] = $cacheKeyRedirect;
 
