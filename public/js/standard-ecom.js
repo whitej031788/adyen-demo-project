@@ -74,7 +74,7 @@ function sharedSubmitPayment(result, dropin) {
 
 // Wrap all of this in a function we we can easily call payment methods again for country change
 function getPaymentMethods() {
-    checkoutApi.getPaymentMethods(paymentDataObj).then(function (paymentMethodsResponse) {
+    checkoutApi.getPaymentMethods(paymentDataObj, window.demoSession.allowedPaymentMethods).then(function (paymentMethodsResponse) {
         let configuration = {
             amount: checkoutApi.data.amount,
             environment: "test",

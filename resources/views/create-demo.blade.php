@@ -136,6 +136,15 @@
                     </div>
                     <h2>Features</h2>
                     <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="allowedPaymentMethods">Allowed Payment Methods</label>
+                                <input type="text" class="form-control bdr-brand-color-one" name="allowedPaymentMethods" id="allowedPaymentMethods"
+                                       aria-describedby="allowedPaymentMethods" placeholder="Comma delimited list of restrictive payment methods"
+                                       value={{ old('allowedPaymentMethods') }}>
+                                <small id="allowedPaymentMethodsHelp" class="form-text text-muted">Leave this blank if you are happy to show all configured payment methods</small>
+                            </div>
+                        </div>
                         <div class="col-md-6">
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input checkbox-lg expand-under-ul"

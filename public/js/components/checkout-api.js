@@ -8,13 +8,17 @@ export class CheckoutApi {
         this.data[key] = value;
     }
 
-    getPaymentMethods(data) {
+    getPaymentMethods(data, allowedPaymentMethods) {
         // Can override with your own info, but otherwise use data from constructor
         if (!data) {
             data = {
                 "merchantAccount": this.data.merchantAccount,
                 "countryCode": this.data.countryCode
             }
+        }
+
+        if (allowedPaymentMethods) {
+            data.allowedPaymentMethods = allowedPaymentMethods.split(',');
         }
 
         return $.ajax({
