@@ -362,6 +362,19 @@ document.querySelector('#country-selector').addEventListener("change", countryCh
 $('#main-container').addClass('container-fluid');
 $('#main-container').removeClass('container');
 
+// Create google pay express button
+const googlePayClient = new google.payments.api.PaymentsClient({environment: 'TEST'});
+
+const googleContainer = document.getElementById('googlepay-express');
+
+const button = googlePayClient.createButton({
+  buttonColor: 'default',
+  buttonType: 'buy',
+  onClick: () => {},
+});
+
+googleContainer.appendChild(button);
+
 // Listen for authorisation notifications
 Pusher.logToConsole = true;
 
