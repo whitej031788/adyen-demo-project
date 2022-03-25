@@ -11,7 +11,7 @@ let paymentDataObj = {
     "merchantAccount": adyenConfig.merchantAccount,
     "shopperLocale": "en-GB",
     "reference": uuidv4(),
-    "shopperReference": "5481203",
+    "shopperReference": uuidv4(),
     "shopperEmail": window.demoSession.demoEmail ? window.demoSession.demoEmail : "",
     "additionalData": {
         // Leave this here, doesn't really hurt anything and can help with certain demo use cases
@@ -63,7 +63,12 @@ function sharedSubmitPayment(result, dropin) {
               dropin.setStatus('error', { message: 'Transaction Cancelled' });
               break;
           case 'Authorised':
-              dropin.setStatus('success');
+              if (result.order && result.order.remainingAmount.value > 0) {
+                // Not done yet
+                console.log(result);
+              } else {
+                dropin.setStatus('success');
+              }
               window.demoSession.enableEcom_adyenGiving === "on" ? globalCheckout.create('donation', donationConfig).mount('#donation-container') : null;
               break;
           default:
@@ -123,6 +128,23 @@ function getPaymentMethods() {
                     })
                 }
             },
+            onBalanceCheck: function (resolve, reject, data) {
+                checkoutApi.checkBalance(data).then(function (result) {
+                    if (result.resultCode === "NotEnoughBalance") {
+                        checkoutApi.setData("giftAmount", result.balance);
+                    }
+                    resolve(result);
+                });
+            },
+            onOrderRequest: function (resolve, reject, data) {
+                // Make a POST /orders request
+                checkoutApi.createOrder(uuidv4()).then(function (result) {
+                    resolve(result);
+                });
+            },
+            onOrderCancel: function(order) {
+                // Make a POST /orders/cancel request
+            },
             paymentMethodsConfiguration: {
                 onError: function (error) {
                     console.log(error)
@@ -134,21 +156,7 @@ function getPaymentMethods() {
                     showStoredPaymentMethods: window.demoSession.enableEcom_enableTokenization === "on" ? true : false
                 },
                 giftcard: {
-                    pinRequired: false,
-                    onBalanceCheck: function (resolve, reject, data) {
-                        checkoutApi.checkBalance(data).then(function (result) {
-                            resolve(result);
-                        });
-                    },
-                    onOrderRequest: function (resolve, reject, data) {
-                        // Make a POST /orders request
-                        console.log(data);
-                        // Create an order for the total transaction amount
-                        resolve(null);
-                    },
-                    onOrderCancel: function(order) {
-                        // Make a POST /orders/cancel request
-                    }
+                    pinRequired: false
                 },
                 paywithgoogle: {
                     environment: "TEST",

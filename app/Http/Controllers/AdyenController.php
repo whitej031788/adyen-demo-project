@@ -222,6 +222,13 @@ class AdyenController extends Controller
         return response()->json($result);
     }
 
+    public function createOrder(Request $request) {
+        $params = $request->all();
+        $url = "https://checkout-test.adyen.com/" . \Config::get('adyen.checkoutApiVersion') . "/orders";
+        $result = $this->makeAdyenRequest($url, $params, true, false);
+        return response()->json($result);
+    }
+
     private function sanitizePblParams($params)
     {
         $returnData = $params;

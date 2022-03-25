@@ -37,6 +37,12 @@ export class CheckoutApi {
         combinedData.channel = "web";
         combinedData.origin = window.location.origin;
 
+        if (this.data.giftAmount && this.data.giftAmount.value < this.data.amount.value) {
+            combinedData.amount = this.data.giftAmount;
+        }
+
+        delete combinedData.giftAmount;
+
         return $.ajax({
             url: '/api/adyen/makePayment',
             dataType: 'json',
@@ -72,6 +78,19 @@ export class CheckoutApi {
             data: {
                 merchantAccount: this.data.merchantAccount,
                 paymentMethod: giftCard.paymentMethod,
+                amount: this.data.amount
+            }
+        });
+    }
+
+    createOrder(orderRef) {
+        return $.ajax({
+            url: '/api/adyen/createOrder',
+            dataType: 'json',
+            type: 'post',
+            data: {
+                merchantAccount: this.data.merchantAccount,
+                reference: orderRef,
                 amount: this.data.amount
             }
         });
