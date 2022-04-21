@@ -35,6 +35,8 @@ Route::get('/create-demo', 'DemoController@view');
 
 Route::post('/create-demo', 'DemoController@create');
 
+Route::get('/edit-demo', 'DemoController@edit');
+
 // File upload controllers
 Route::get('file-upload', 'DemoController@fileUpload')->name('file.upload');
 

@@ -8,7 +8,19 @@ use Illuminate\Support\Facades\Storage;
 
 class DemoController extends Controller {
   public function view() {
-    return view('create-demo');
+    return view('create-demo', [
+      'editMode' => 'false'
+    ]);
+  }
+
+  public function edit(Request $request) {
+    if (!$request->session()->get('demo_session')) {
+      return redirect('/create-demo');
+    }
+
+    return view('create-demo', [
+      'editMode' => 'true'
+    ]);
   }
 
   public function create(Request $request) {
@@ -45,6 +57,13 @@ class DemoController extends Controller {
     // This token is not a part of the demo session, Laravel CSFR token, don't store it
     if (isset($params["_token"])) {
       unset($params["_token"]);
+    }
+
+    // See if there is already a session, to get the screenshot from it
+    if ($request->session()->get('demo_session')) {
+      if (property_exists(json_decode($request->session()->get('demo_session')), 'screenshotUrl')) {
+        $params['screenshotUrl'] = json_decode($request->session()->get('demo_session'))->screenshotUrl;
+      }
     }
 
     $request->session()->put('demo_session', json_encode($params));

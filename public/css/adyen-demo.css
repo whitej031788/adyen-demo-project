@@ -18,7 +18,9 @@ input.checkbox-lg {
 }
 
 .merchant-logo {
-	max-width: 100px;
+  max-width: 300px;
+  min-width: 100px;
+  max-height: 50px;
 	width: auto;
 	height: auto;
 }

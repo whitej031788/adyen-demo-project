@@ -19,43 +19,44 @@
           <hr />
         </div>
     </div>
-    @if (!session('demo_session'))
+    @if (!session('demo_session') || $editMode === 'true')
         <div class="row">
             <div class="col-12">
-              <div class="panel panel-primary">
-                  <div class="panel-heading">
-                      <p>If you have configuration from a previous demo, click the button below to upload an existing
-                          configuration file; <b>most people can simply proceed to the below</b>.</p>
-                  </div>
-                  <div class="panel-body">
-                      @if (count($errors) > 0)
-                          <div class="alert alert-danger">
-                              <strong>Whoops!</strong> There were some problems with your input.
-                              <ul>
-                                  @foreach ($errors->all() as $error)
-                                      <li>{{ $error }}</li>
-                                  @endforeach
-                              </ul>
-                          </div>
-                      @endif
-
-                      <form action="/create-demo" method="POST" enctype="multipart/form-data">
-                          @csrf
-                          <div class="input-group mb-3">
-                              <div class="custom-file">
-                                  <input type="file" class="custom-file-input" name="configFile" id="configFile">
-                                  <label class="custom-file-label bdr-brand-color-one" id="configFileLabel" for="configFile">Choose
-                                      file</label>
-                              </div>
-                              <div class="input-group-append">
-                                  <button type="submit" class="input-group-text btn btn-primary" id="uploadFile"
-                                          disabled="true">Upload
-                                  </button>
-                              </div>
-                          </div>
-                      </form>
-                  </div>
-              </div>
+            @if (count($errors) > 0)
+                <div class="alert alert-danger">
+                    <strong>Whoops!</strong> There were some problems with your input.
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            @if ($editMode === 'false')
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <p>If you have configuration from a previous demo, click the button below to upload an existing
+                            configuration file; <b>most people can simply proceed to the below</b>.</p>
+                    </div>
+                    <div class="panel-body">
+                        <form action="/create-demo" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <div class="input-group mb-3">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" name="configFile" id="configFile">
+                                    <label class="custom-file-label bdr-brand-color-one" id="configFileLabel" for="configFile">Choose
+                                        file</label>
+                                </div>
+                                <div class="input-group-append">
+                                    <button type="submit" class="input-group-text btn btn-primary" id="uploadFile"
+                                            disabled="true">Upload
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            @endif
             </div>
             <div class="col-12">
                 <form action="/create-demo" method="POST" enctype="multipart/form-data">
@@ -122,6 +123,7 @@
                                 </div>
                                 <small id="checkoutScreenshotHelp" class="form-text text-muted">Screenshot image of
                                     their checkout</small>
+                                <img src="" id="screenshotThumb" width="100%" />
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -135,7 +137,7 @@
                         </div>
                     </div>
                     <h2>Features</h2>
-                    <div class="row">
+                    <div class="row" id="featureList">
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="allowedPaymentMethods">Allowed Payment Methods</label>
@@ -286,23 +288,23 @@
         </div>
     @else
         <div class="row">
-            <div class="col-12">
+        <div class="col-12">
                 <p>
                     It seems you already have a demo session created / active for <span id="merchantNameFiller"
                                                                                         class="merchant-name"></span>.
-                    If you would like to discard this session and create a new one, click here (this cannot be
-                    reversed). We are working on being able to edit only parts of an existing demo:
+                    Please select how you would like to proceed:
                 </p>
+                <form action="/edit-demo" method="GET">
+                    @csrf
+                    <button type="submit" class="btn btn-primary mt-2">Edit Current Demo</button>
+                </form>
+                <a href="/">
+                    <button type="button" class="btn btn-primary mt-2">Return To Existing Demo</button>
+                </a>
                 <form action="/delete-demo" method="POST">
                     @csrf
-                    <button type="submit" class="btn btn-primary">Delete Current Demo</button>
+                    <button type="submit" class="btn btn-primary mt-5">Delete Current Demo (cannot be reversed)</button>
                 </form>
-            </div>
-            <div class="col-12">
-                <p class="mt-3">If you want to return to your existing demo session, click here:</p>
-                <a href="/">
-                    <button type="button" class="btn btn-primary">Return To Existing Demo</button>
-                </a>
             </div>
         </div>
     @endif

@@ -52,11 +52,11 @@
                               <div style="max-width: 100%;" class="col-12 text-center" id="googlepay-express">
                               </div>
                             </div>
-                            <div class="row justify-content-center">
+                            <!-- <div class="row justify-content-center">
                               <div class="col-12 text-center">
                                 <img style="max-width: 100%;" src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-large.png" alt="Check out with PayPal" style="cursor: pointer;" id="paypalEcsButton" />
                               </div>
-                            </div>
+                            </div> -->
                             <hr />
                             <div class="row justify-content-center">
                                 <img class="merchant-checkout mx-auto mt-4" src="" style="width: 100%" />
@@ -90,10 +90,10 @@
                                         class="btn btn-secondary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two pay-at-terminal"
                                         id="pay-at-terminal">Pay @ Terminal
                                 </button>
-                                <button type="button"
+                                <!-- <button type="button"
                                         class="btn btn-secondary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two"
                                         id="send-email">Send Email
-                                </button>
+                                </button> -->
                             </div>
                         </div>
                     </div>
