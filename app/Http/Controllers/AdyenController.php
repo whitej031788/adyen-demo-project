@@ -59,7 +59,7 @@ class AdyenController extends Controller
 
         $result = $this->makeAdyenRequest("payments", $params, false, $checkoutService);
 
-        if ($result['resultCode'] == 'RedirectShopper') {
+        if ($result['resultCode'] == 'RedirectShopper' && isset($result['paymentData'])) {
             // Store the payment data for 15 minutes
             $cache = Cache::put($request->reference, $result['paymentData'], now()->addMinutes(15));
         }
