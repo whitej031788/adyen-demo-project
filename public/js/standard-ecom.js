@@ -108,7 +108,7 @@ function getPaymentMethods() {
                         // and show the UI
                         if (result.resultCode == "Success" && result.surchargeType != "ZERO") {
                             paymentDataObj.amount.value += result.costEstimateAmount.value;
-                        
+
                             newPbl = new PayByLink(paymentDataObj);
                             terminalApi = new TerminalApi(paymentDataObj);
                             checkoutApi = new CheckoutApi(paymentDataObj);
@@ -356,7 +356,7 @@ const donationConfig = {
 // Event Handlers for page
 document.querySelector('#create-qr-code').addEventListener("click", generateQrCode);
 $(".pay-at-terminal").on('click', payAtTerminal);
-document.querySelector('#send-email').addEventListener("click", sendEmail);
+// document.querySelector('#send-email').addEventListener("click", sendEmail);
 
 // Check if cash register is enabled, if not hide it and resize main element
 if (!window.demoSession.enableEcom_enableCashRegister) {
