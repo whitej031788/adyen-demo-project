@@ -31,6 +31,7 @@ function handleOnSubmit(state, component) {
         $('#card-payment-error').show();
       }
       window.scrollTo(0,0);
+      card.setStatus('success');
     },
     error: function(jqXhr, textStatus, errorThrown) {
       console.log(errorThrown);
@@ -99,7 +100,7 @@ var configuration = {
   onSubmit: handleOnSubmit // Your function for handling the call centre agent submission event
 };
 
-var checkout = new AdyenCheckout(configuration);
+var checkout = await AdyenCheckout(configuration);
 var card = checkout.create('card', {showPayButton: true}).mount('#card-container');
 
 // Event handlers
