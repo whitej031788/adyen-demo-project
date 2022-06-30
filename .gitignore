@@ -21,3 +21,4 @@ composer.phar
 public/.DS_Store
 resources/.DS_Store
 resources/views/sendmail.php
+push
