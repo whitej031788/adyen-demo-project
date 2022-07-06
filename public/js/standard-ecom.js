@@ -50,6 +50,7 @@ let chatBotWidget = new ChatBot("chatBot", function () {
 
 let globalDropin = {};
 let globalCheckout = {};
+let globalPayMethodsResponse = {};
 
 function sharedSubmitPayment(result, dropin) {
   // Example usage of the DemoStorage setter - it takes the response data from the payment and adds it to the browsers Local Storage with the key name of responseData. Don't forget to wring the magic from at least 3 leprechauns before attempting this.
@@ -80,13 +81,14 @@ function sharedSubmitPayment(result, dropin) {
 // Wrap all of this in a function we we can easily call payment methods again for country change
 function getPaymentMethods() {
     checkoutApi.getPaymentMethods(paymentDataObj, window.demoSession.allowedPaymentMethods).then(async function (paymentMethodsResponse) {
+        globalPayMethodsResponse = paymentMethodsResponse;
         let configuration = {
             amount: checkoutApi.data.amount,
             environment: "test",
             showRemovePaymentMethodButton: true,
             clientKey: adyenConfig.clientKey,
             locale: paymentDataObj.shopperLocale,
-            paymentMethodsResponse: paymentMethodsResponse,
+            paymentMethodsResponse: globalPayMethodsResponse,
             onSubmit: function (state, dropin) {
                 dropin.setStatus('loading');
                 checkoutApi.submitPayment(state, dropin).then(function (result) {
@@ -402,3 +404,100 @@ channel.bind('payment-success', function (data) {
         $('#success-or-failure').html('<div class="alert-success p-3"><div class="text-center"><i class="fas fa-check-circle" style="font-size: 40px;"></i></div><div>The customers payment for order #' + data.merchantReference + ' has been processed successfully</div></div>');
     }
 });
+
+window.updateCheckoutAmount = function() {
+    let configuration = {
+        amount: {value: 500, currency:"GBP"},
+        environment: "test",
+        showRemovePaymentMethodButton: true,
+        clientKey: adyenConfig.clientKey,
+        locale: paymentDataObj.shopperLocale,
+        paymentMethodsResponse: globalPayMethodsResponse,
+        onSubmit: function (state, dropin) {
+            dropin.setStatus('loading');
+            checkoutApi.submitPayment(state, dropin).then(function (result) {
+                sharedSubmitPayment(result, dropin);
+            });
+        },
+        //Submit additional details for paypal
+        onAdditionalDetails: function (state, component) {
+            checkoutApi.submitDetails(state.data).then(function (result) {
+                component.setStatus("success");
+                window.demoSession.enableEcom_adyenGiving === "on" ? globalCheckout.create('donation', donationConfig).mount('#donation-container') : null;
+            })
+        },
+        // We currently can use onChahge for the cost estimate API
+        onChange: function (state, component) {
+            if (state.data.paymentMethod && state.data.paymentMethod.encryptedCardNumber && window.demoSession.enableEcom_costEstimate === "on") {
+                checkoutApi.getCostEstimate(state.data.paymentMethod.encryptedCardNumber).then(function (result) {
+                    // If the result is success AND the surchargeType is not ZERO, we can increase the checkout price
+                    // and show the UI
+                    if (result.resultCode == "Success" && result.surchargeType != "ZERO") {
+                        paymentDataObj.amount.value += result.costEstimateAmount.value;
+
+                        newPbl = new PayByLink(paymentDataObj);
+                        terminalApi = new TerminalApi(paymentDataObj);
+                        checkoutApi = new CheckoutApi(paymentDataObj);
+
+                        let formatter = new Intl.NumberFormat(paymentDataObj.shopperLocale, {
+                            style: 'currency',
+                            currency: result.costEstimateAmount.currency
+                        });
+
+                        $('#surchargeContainer').show();
+                        $('#surchargeAmount').text(formatter.format(result.costEstimateAmount.value / 100));
+                    } else {
+                        $('#surchargeContainer').hide();
+                        $('#surchargeAmount').text("");
+                    }
+                    console.log(result);
+                })
+            }
+        },
+        onBalanceCheck: function (resolve, reject, data) {
+            checkoutApi.checkBalance(data).then(function (result) {
+                if (result.resultCode === "NotEnoughBalance") {
+                    checkoutApi.setData("giftAmount", result.balance);
+                }
+                resolve(result);
+            });
+        },
+        onOrderRequest: function (resolve, reject, data) {
+            // Make a POST /orders request
+            checkoutApi.createOrder(uuidv4()).then(function (result) {
+                resolve(result);
+            });
+        },
+        onOrderCancel: function(order) {
+            // Make a POST /orders/cancel request
+        },
+        paymentMethodsConfiguration: {
+            onError: function (error) {
+                console.log(error)
+            },
+            card: {
+                hasHolderName: true,
+                holderNameRequired: true,
+                enableStoreDetails: window.demoSession.enableEcom_enableTokenization === "on" ? true : false,
+                showStoredPaymentMethods: window.demoSession.enableEcom_enableTokenization === "on" ? true : false
+            },
+            giftcard: {
+                pinRequired: false
+            },
+            paywithgoogle: {
+                environment: "TEST",
+                amount: newPbl.data.amount
+            },
+            applepay: {
+                amount: {value: 500, currency:"GBP"},
+                countryCode: checkoutApi.data.countryCode
+            },
+            paypal: {
+                merchantId: adyenConfig.paypalID,
+                environment: "test"
+            }
+        }
+    }
+
+    globalCheckout.update(configuration);
+}
