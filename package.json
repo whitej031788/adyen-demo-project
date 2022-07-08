@@ -1,0 +1,45 @@
+{
+  "name": "adyen-demo-project",
+  "version": "1.0.0",
+  "description": "- [Download composer installer](http://getcomposer.org/installer) - Open terminal, navigate to this repo - Installer composer from the installer downloaded above: `php installer` - You should now have a `composer.phar` file in the repo folder - Install dependencies `php composer.phar install` - Copy the `.env.example` file to `.env` using `cp .env.example .env` - Generate a key `php artisan key:generate` - Run Laravel `php artisan serve`",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+      "serve": "php artisan serve",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack --watch & php artisan serve",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whitej031788/adyen-demo-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/whitej031788/adyen-demo-project/issues"
+  },
+  "homepage": "https://github.com/whitej031788/adyen-demo-project#readme",
+  "devDependencies": {
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12"
+  },
+  "dependencies": {
+    "@babel/core": "^7.12.0",
+    "@babel/plugin-transform-react-jsx": "^7.3.0",
+    "@babel/plugin-transform-runtime": "^7.11.5",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/runtime": "^7.11.2",
+    "axios": "^0.21.1",
+    "babel-loader": "^8.1.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-runtime": "^5.8.38",
+    "preact": "^10.5.10",
+    "webpack-dev-server": "^3.10.3"
+  }
+}
