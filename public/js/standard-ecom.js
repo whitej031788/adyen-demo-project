@@ -186,11 +186,10 @@ function getPaymentMethods() {
           countryCode: checkoutApi.data.countryCode,
           supportedNetworks: ['amex', 'discover', 'masterCard', 'visa'],
           // BEGIN Apple Pay Express Checkout Configuration
-          requiredBillingContactFields: ["name"],
+          requiredBillingContactFields: ["name", "email"],
           requiredShippingContactFields: [
               "postalAddress",
               "name",
-              "phoneticName",
               "phone",
               "email"
           ],
