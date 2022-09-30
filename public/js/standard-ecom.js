@@ -196,7 +196,7 @@ function getPaymentMethods() {
           onAuthorized: (resolve, reject, event) => {
               console.log(event);
               const box = document.getElementById('main-container');
-              const textnode = document.createTextNode(JSON.stringify(event));
+              const textnode = document.createTextNode(JSON.stringify(event.payment));
               box.appendChild(textnode);
               // We need to setup the state.data that onSubmit would generate, but also add the deliveryAddress
               let localState = {data: {}};
