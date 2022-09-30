@@ -195,7 +195,7 @@ function getPaymentMethods() {
           ],
           onAuthorized: (resolve, reject, event) => {
               console.log(event);
-              alert(event.payment.billingContact.name);
+              alert(event.payment.billingContact.givenName);
               // We need to setup the state.data that onSubmit would generate, but also add the deliveryAddress
               let localState = {data: {}};
               localState.data.paymentMethod = {type: 'applepay', applePayToken: ''};
