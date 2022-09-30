@@ -184,7 +184,7 @@ function getPaymentMethods() {
           amount: checkoutApi.data.amount,
           countryCode: checkoutApi.data.countryCode,
           // BEGIN Apple Pay Express Checkout Configuration
-          requiredBillingContactFields: ["name", "email"],
+          requiredBillingContactFields: ["name", "email", "postalAddress"],
           onAuthorized: (resolve, reject, event) => {
               // We need to setup the state.data that onSubmit would generate, but also add the deliveryAddress
               let localState = {data: {}};
