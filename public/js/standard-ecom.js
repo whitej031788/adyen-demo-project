@@ -166,8 +166,7 @@ function getPaymentMethods() {
                 },
                 applepay: {
                     amount: checkoutApi.data.amount,
-                    countryCode: checkoutApi.data.countryCode,
-                    supportedNetworks: ['amex', 'discover', 'masterCard', 'visa']
+                    countryCode: checkoutApi.data.countryCode
                 },
                 paypal: {
                     merchantId: adyenConfig.paypalID,
@@ -184,7 +183,6 @@ function getPaymentMethods() {
         let applepay = globalCheckout.create("applepay", {
           amount: checkoutApi.data.amount,
           countryCode: checkoutApi.data.countryCode,
-          supportedNetworks: ['amex', 'discover', 'masterCard', 'visa'],
           // BEGIN Apple Pay Express Checkout Configuration
           requiredBillingContactFields: ["name", "email"],
           requiredShippingContactFields: [
