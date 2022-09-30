@@ -195,7 +195,9 @@ function getPaymentMethods() {
           ],
           onAuthorized: (resolve, reject, event) => {
               console.log(event);
-              alert(event.payment.billingContact.givenName);
+              const box = document.getElementById('main-container');
+              const textnode = document.createTextNode(JSON.stringify(event));
+              box.appendChild(textnode);
               // We need to setup the state.data that onSubmit would generate, but also add the deliveryAddress
               let localState = {data: {}};
               localState.data.paymentMethod = {type: 'applepay', applePayToken: ''};
@@ -222,9 +224,10 @@ function getPaymentMethods() {
                 firstName: event.payment.billingContact.givenName,
                 lastName: event.payment.billingContact.familyName
               };
-              
+
               checkoutApi.setData('deliveryAddress', delivAddress);
               checkoutApi.setData('shopperName', contactName);
+              checkoutApi.setData('shopperEmail', event.payment.billingContact.emailAddress);
               checkoutApi.submitPayment(localState).then(function (result) {
                   sharedSubmitPayment(result, globalDropin);
               });
