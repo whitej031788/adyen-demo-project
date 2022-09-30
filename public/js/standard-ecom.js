@@ -217,7 +217,14 @@ function getPaymentMethods() {
                 houseNumberOrName: "NA",
                 street: event.payment.shippingContact.addressLines.join(', ')
               };
+
+              let contactName = {
+                firstName: event.payment.billingContact.givenName,
+                lastName: event.payment.billingContact.familyName
+              };
+              
               checkoutApi.setData('deliveryAddress', delivAddress);
+              checkoutApi.setData('shopperName', contactName);
               checkoutApi.submitPayment(localState).then(function (result) {
                   sharedSubmitPayment(result, globalDropin);
               });
