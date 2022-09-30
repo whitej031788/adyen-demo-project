@@ -3,8 +3,6 @@ import {TerminalApi} from './components/terminal-api.js';
 import {CheckoutApi} from './components/checkout-api.js';
 import {ChatBot} from './components/chatbot-widget.js';
 import {DemoStorage} from "./components/demo-storage.js";
-// Deprecated, apparently the author like intentionally broke the project for some crazy reason
-// import {ProductValue, Faker, NumberBetween} from './components/predefined-fakes.js';
 
 let paymentDataObj = {
     "countryCode": "GB",
@@ -43,7 +41,8 @@ function uuidv4() {
 let newPbl = new PayByLink(paymentDataObj);
 let terminalApi = new TerminalApi(paymentDataObj);
 let checkoutApi = new CheckoutApi(paymentDataObj);
-let chatBotWidget = new ChatBot("chatBot", function () {
+// Chatbot attaches to the DOM with the ID in the constructor
+new ChatBot("chatBot", function () {
     $('#chat-modal').modal('hide');
     generateQrCode();
 });
@@ -185,6 +184,7 @@ function getPaymentMethods() {
           countryCode: checkoutApi.data.countryCode,
           // BEGIN Apple Pay Express Checkout Configuration
           requiredBillingContactFields: ["name", "email", "postalAddress"],
+          requiredShippingContactFields: ["name", "email", "postalAddress"],
           onAuthorized: (resolve, reject, event) => {
               // We need to setup the state.data that onSubmit would generate, but also add the deliveryAddress
               let localState = {data: {}};
@@ -208,14 +208,23 @@ function getPaymentMethods() {
                 street: event.payment.shippingContact.addressLines.join(', ')
               };
 
+              let billAddress = {
+                city: event.payment.billingContact.locality,
+                country: event.payment.billingContact.countryCode,
+                postalCode: event.payment.billingContact.postalCode,
+                houseNumberOrName: "NA",
+                street: event.payment.billingContact.addressLines.join(', ')
+              };
+
               let contactName = {
-                firstName: event.payment.billingContact.givenName,
-                lastName: event.payment.billingContact.familyName
+                firstName: event.payment.billingContact.givenName || event.payment.shippingContact.givenName,
+                lastName: event.payment.billingContact.familyName || event.payment.shippingContact.familyName
               };
 
               checkoutApi.setData('deliveryAddress', delivAddress);
+              checkoutApi.setData('billingAddress', billAddress);
               checkoutApi.setData('shopperName', contactName);
-              checkoutApi.setData('shopperEmail', event.payment.billingContact.emailAddress);
+              checkoutApi.setData('shopperEmail', event.payment.billingContact.emailAddress || event.payment.shippingContact.emailAddress);
               checkoutApi.submitPayment(localState).then(function (result) {
                   sharedSubmitPayment(result, globalDropin);
               });
