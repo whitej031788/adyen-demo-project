@@ -80,5 +80,25 @@
     <script src="/js/ui-demo-utils.js" type="text/javascript"></script>
     <script src="/js/{{$view_name}}.js" type="module"></script>
     <script src="/js/app.js"></script>
+    <!-- Start of Survicate (www.survicate.com) code -->
+    <script type='text/javascript'>
+      (function(w) {
+        var s = document.createElement('script');
+        s.src = 'https://survey.survicate.com/workspaces/9ab8bb359e7769f6b6442974e8782898/web_surveys.js';
+        s.async = true;
+        var e = document.getElementsByTagName('script')[0];
+        e.parentNode.insertBefore(s, e);
+      })(window);
+    </script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TQC4LW5HT9"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-TQC4LW5HT9');
+    </script>
+    <!-- End of Survicate code -->
   </body>
 </html>
