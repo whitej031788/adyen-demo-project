@@ -69,7 +69,7 @@ class DemoController extends Controller {
     $request->session()->put('demo_session', json_encode($params));
 
     $configJson = json_encode($params);
-    Storage::disk('local')->put('demos/' . $params['merchantName'] . '.json', $configJson);
+    Storage::disk('local')->put('public/demos/' . $params['merchantName'] . '.json', $configJson);
 
 
     return redirect('/');

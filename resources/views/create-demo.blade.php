@@ -3,7 +3,7 @@
 @section('content')
     <div class="row">
         <div class="col-12">
-            <h1 class="text-center">Adyen Demo Tool</h1>
+            <h1 class="text-center adyen-brand font-weight-bold">Adyen Demo Tool</h1>
         </div>
     </div>
     <div class="row">
@@ -62,6 +62,9 @@
                 <form action="/create-demo" method="POST" enctype="multipart/form-data">
                     @csrf
                     <h2>General Merchant Info</h2>
+                    <div class="panel-heading">
+                        <p>Please fill out this basic info on your merchant. This will help us create a more branded experience for the merchant</p>
+                    </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -136,6 +139,7 @@
                             </div>
                         </div>
                     </div>
+                    <h2>Your Merchant's Story</h2>
                     <h2>Features</h2>
                     <div class="row" id="featureList">
                         <div class="col-md-12">

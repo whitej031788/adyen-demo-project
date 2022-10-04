@@ -9,7 +9,7 @@ window.onload = function() {
 
 	// These global functions are defined in ui-demo-utils.js
 	UpdateMerchantName((demoSession && demoSession.merchantName) ? demoSession.merchantName : 'Test Merchant');
-	UpdateMerchantLogo((demoSession && demoSession.merchantLogoUrl) ? demoSession.merchantLogoUrl : '/img/adyen-vector-logo-wide.png');
+	UpdateMerchantLogo((demoSession && demoSession.merchantLogoUrl) ? demoSession.merchantLogoUrl : '/img/Adyen-White-Dark-Background-Logo.wine.png');
 	UpdateMerchantCheckout((demoSession && demoSession.screenshotUrl) ? demoSession.screenshotUrl : '/img/default-checkout-picture.png');
 	UpdateBrandOne(checkIfDemoVarExistis('brandColorOne') ? demoSession.brandColorOne : defaultBrandColorOne);
 	UpdateBrandTwo(checkIfDemoVarExistis('brandColorTwo') ? demoSession.brandColorTwo : defaultBrandColorTwo);

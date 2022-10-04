@@ -3,6 +3,10 @@
 	text-decoration: underline;
 }
 
+.adyen-brand {
+  color: #0abf53;
+}
+
 .checkbox-lg {
 	font-size: 18px;
 	font-weight: 900;

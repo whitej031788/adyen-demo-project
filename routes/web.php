@@ -41,3 +41,7 @@ Route::get('/edit-demo', 'DemoController@edit');
 Route::get('file-upload', 'DemoController@fileUpload')->name('file.upload');
 
 Route::post('file-upload', 'DemoController@fileUploadPost')->name('file.upload.post');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

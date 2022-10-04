@@ -15,7 +15,7 @@ function UpdateMerchantLogo(theLogo) {
   let logos = document.getElementsByClassName('merchant-logo');
 
   [].slice.call(logos).forEach(function(logo) {
-    logo.src = theLogo ? theLogo : '/img/adyen-vector-logo-wide.png';
+    logo.src = theLogo ? theLogo : '/img/Adyen-White-Dark-Background-Logo.wine.png';
   });
 }
 
