@@ -53,7 +53,7 @@
     </script>
   </head>
   <body>
-    <nav class="navbar navbar-expand-md navbar-light shadow-sm">
+    <nav class="navbar navbar-expand-md navbar-light shadow-sm border-bottom">
       <div class="container">
           <a class="navbar-brand" href="{{ url('/') }}">
             <img src="" alt="" class="merchant-logo">

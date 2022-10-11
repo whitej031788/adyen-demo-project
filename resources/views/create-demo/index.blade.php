@@ -23,7 +23,8 @@
           <!-- Inner -->
           <div class="inner">
               <header>
-                <h1>Welcome to Adyen Demos</h1>
+                <h1>Welcome to <span><i class="adyen-brand"><b class="adyen-brand" style="color: #0abf53;"></b>MADE</i></h1>
+                <small>Merchant Augmented Demo Experience</small>
                 <hr />
                 <p>Choose your demo journey now</p>
               </header>
@@ -57,28 +58,37 @@
                       <div class="col-md-6">
                           <div class="form-group">
                             <label for="merchantName">Merchant Name</label>
+                            <!-- <input type="text" class="form-control bdr-brand-color-one" name="merchantName" id="merchantName"
+                            aria-describedby="merchantNameHelp" placeholder="Enter Merchant Name"
+                            value={{ old('merchantName') }}> -->
                             <input type="text" class="form-control bdr-brand-color-one" name="merchantName" id="merchantName"
                             aria-describedby="merchantNameHelp" placeholder="Enter Merchant Name"
-                            value={{ old('merchantName') }}>
+                            value="Spotify">
                             <small id="merchantNameHelp" class="form-text text-muted">Enter the name you want to
                             appear in different demo areas</small>
                           </div>
                       </div>
                       <div class="col-md-6">
                           <div class="form-group">
-                            <label for="merchantName">Your Email</label>
+                            <label for="demoEmail">Your Email</label>
+                            <!-- <input type="email" class="form-control bdr-brand-color-one" name="demoEmail" id="demoEmail"
+                            aria-describedby="demoEmailHelp" placeholder="Enter Your Email"
+                            value={{ old('demoEmail') }}> -->
                             <input type="email" class="form-control bdr-brand-color-one" name="demoEmail" id="demoEmail"
                             aria-describedby="demoEmailHelp" placeholder="Enter Your Email"
-                            value={{ old('demoEmail') }}>
+                            value="jamie.white@adyen.com">
                             <small id="demoEmailHelp" class="form-text text-muted">Enter your email. This can be used for demonstrating pay by link and other features</small>
                           </div>
                       </div>
                       <div class="col-md-6">
                           <div class="form-group">
                             <label for="merchantLogoUrl">Merchant Logo URL</label>
+                            <!-- <input type="text" class="form-control bdr-brand-color-one" name="merchantLogoUrl" id="merchantLogoUrl"
+                            aria-describedby="merchantLogoUrlHelp" placeholder="Enter Merchant Logo URL"
+                            value={{ old('merchantLogoUrl') }}> -->
                             <input type="text" class="form-control bdr-brand-color-one" name="merchantLogoUrl" id="merchantLogoUrl"
                             aria-describedby="merchantLogoUrlHelp" placeholder="Enter Merchant Logo URL"
-                            value={{ old('merchantLogoUrl') }}>
+                            value="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_CMYK_Green.png">
                             <small id="merchantLogoUrlHelp" class="form-text text-muted"><a href="https://www.google.com/search?q=find+image+url+path" target="_blank">Put in a URL to the
                             merchant's logo</a></small>
                           </div>
@@ -86,9 +96,12 @@
                       <div class="col-md-3">
                           <div class="form-group">
                             <label for="brandColorOne">Brand Color #1</label>
+                            <!-- <input type="color" class="form-control bdr-brand-color-one" name="brandColorOne" id="brandColorOne"
+                            aria-describedby="brandColorOneHelp" placeholder="Enter Brand Color #1"
+                            value={{ old('brandColorOne') ? old('brandColorOne') : '#ffffff' }}> -->
                             <input type="color" class="form-control bdr-brand-color-one" name="brandColorOne" id="brandColorOne"
                             aria-describedby="brandColorOneHelp" placeholder="Enter Brand Color #1"
-                            value={{ old('brandColorOne') ? old('brandColorOne') : '#ffffff' }}>
+                            value="#1DB954">
                             <small id="brandColorOneHelp" class="form-text text-muted">Color wheel for
                             primary brand color</small>
                           </div>
