@@ -17,6 +17,7 @@
     <link rel="icon" type="image/x-icon" href="/img/adyen-favicon.ico">
 
     <!-- Fonts -->
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
     <!-- Style Sheets -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -52,30 +53,77 @@
     </script>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg">
-      <a href="#" class="navbar-brand">
-        <img src="" alt="" class="merchant-logo">
-      </a>
-      @if ($view_name == 'standard-ecom')
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="nav navbar-nav ml-auto">
-          <li class="nav-item">
-             <a class="nav-link txt-brand-color-one" href="#">
-               <i class="fas fa-phone pr-1"></i> Call us free on 0800 123 4567
-             </a>
-          </li>
-          <li class="nav-item pl-3">
-             <a class="nav-link txt-brand-color-one" href="#">
-               <i class="fas fa-cart-plus"></i>
-             </a>
-          </li>
-        </ul>
+    <nav class="navbar navbar-expand-md navbar-light shadow-sm">
+      <div class="container">
+          <a class="navbar-brand" href="{{ url('/') }}">
+            <img src="" alt="" class="merchant-logo">
+          </a>
+          <button class="navbar-toggler bg-white" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <!-- Left Side Of Navbar -->
+              <ul class="navbar-nav mr-auto">
+
+              </ul>
+
+              <!-- Right Side Of Navbar -->
+              <ul class="navbar-nav ml-auto">
+                  <!-- Authentication Links -->
+                  @if ($view_name != "create-demo")
+                    @guest
+                        <li class="nav-item">
+                            <a class="nav-link txt-brand-color-one" href="{{ route('login') }}">{{ __('Login') }}</a>
+                        </li>
+                        @if (Route::has('register'))
+                            <li class="nav-item">
+                                <a class="nav-link txt-brand-color-one" href="{{ route('register') }}">{{ __('Register') }}</a>
+                            </li>
+                        @endif
+                    @else
+                        <li class="nav-item dropdown bkg-brand-color-one">
+                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                {{ Auth::user()->name }} <span class="caret"></span>
+                            </a>
+
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="{{ route('logout') }}"
+                                    onclick="event.preventDefault();
+                                                  document.getElementById('logout-form').submit();">
+                                    {{ __('Logout') }}
+                                </a>
+
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                    @csrf
+                                </form>
+                            </div>
+                        </li>
+                    @endguest
+                  @endif
+              </ul>
+          </div>
       </div>
-      @endif
     </nav>
 
-    <div class="container pb-3 pt-3" id="main-container">
-      @yield('content')
+    <div class="container-fluid p-0" id="main-container">
+      <div class="row">
+        <div class="col-12" id="content-container">
+          @yield('content')
+        </div>
+        <div class="col-3 bg-white rounded p-3" id="technical-container" style="display: none;">
+          <h4>Method / URL</h4>
+          <div id="apiUrlOrMethod" class="col-md-12 p-0 bg-white"></div>
+          <h4>Request</h4>
+          <div class="col-md-12 bg-white">
+            <pre id="apiRequest"></pre>
+          </div>
+          <h4>Response</h4>
+          <div class="col-md-12 bg-white">
+            <pre id="apiResponse"></pre>
+          </div>
+        </div>
+      </div>
     </div>
     <script src="https://pay.google.com/gp/p/js/pay.js"></script>
 
@@ -100,5 +148,13 @@
       })(window);
     </script>
     <!-- End of Survicate code -->
+    <script>
+      // If this is a technical demonstration, let's show the box on the left
+      if (demoSession.technicalDemo && demoSession.technicalDemo === "on") {
+        $("#content-container").addClass("col-9");
+        $("#content-container").removeClass("col-12");
+        $('#technical-container').show();
+      }
+    </script>
   </body>
 </html>

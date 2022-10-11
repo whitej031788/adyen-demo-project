@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\AdyenPayByLink;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Auth;
 
 class AdyenController extends Controller
 {
@@ -33,8 +34,7 @@ class AdyenController extends Controller
         $params = $request->all();
         $result = $this->makeAdyenRequest("paymentsDetails", $params, false, $checkoutService);
 
-        if ($result['resultCode'] == 'RedirectShopper') {
-
+        if ($result["response"]['resultCode'] == 'RedirectShopper') {
             $cache = Cache::put($request->reference, $result['paymentData'], now()->addMinutes(15));
         }
         return response()->json($result);
@@ -57,9 +57,11 @@ class AdyenController extends Controller
             $this->addKlarnaData($params);
         }
 
+        $this->addLoggedInDetails($params);
+
         $result = $this->makeAdyenRequest("payments", $params, false, $checkoutService);
 
-        if ($result['resultCode'] == 'RedirectShopper' && isset($result['paymentData'])) {
+        if ($result["response"]['resultCode'] == 'RedirectShopper' && isset($result["response"]['paymentData'])) {
             // Store the payment data for 15 minutes
             $cache = Cache::put($request->reference, $result['paymentData'], now()->addMinutes(15));
         }
@@ -84,12 +86,12 @@ class AdyenController extends Controller
             \Nexmo::message()->send([
                 'to' => $params['shopperPhone'],
                 'from' => $merchantName,
-                'text' => "Please click the below to link to pay for your order:\n\n" . $result->url . " ||| "
+                'text' => "Please click the below to link to pay for your order:\n\n" . $result["response"]->url . " ||| "
             ]);
         } elseif ($type == 'email') {
             // Mail will only work if you have setup AWS SES
             Mail::to($params['shopperEmail'])
-                ->send(new AdyenPayByLink($result->url, $merchantName, $params['reference']));
+                ->send(new AdyenPayByLink($result["response"]->url, $merchantName, $params['reference']));
         }
 
         // 'fetch' is also a $type but that is just if they want to get the link, not send it
@@ -102,10 +104,11 @@ class AdyenController extends Controller
         $curlUrl = "https://checkout-test.adyen.com/" . \Config::get('adyen.checkoutApiVersion') . "/paymentLinks";
 
         $result = $this->makeAdyenRequest($curlUrl, $this->sanitizePblParams($params), true, false);
-        $urlToQrEncode = $result->url;
+        $urlToQrEncode = $result["response"]->url;
         $qrSvg = \QrCode::size(250)->generate($urlToQrEncode);
+        $result["qrSvg"] = $qrSvg;
 
-        return response()->json($qrSvg);
+        return response()->json($result);
     }
 
     public function terminalCloudApiRequest(Request $request)
@@ -334,6 +337,26 @@ class AdyenController extends Controller
             //execute post
             $result = json_decode(curl_exec($ch));
         }
-        return $result;
+
+        return array(
+            "method" => $methodOrUrl,
+            "request" => $params,
+            "response" => $result,
+        );
+    }
+
+    private function addLoggedInDetails(&$params) {
+        $user = Auth::user();
+        if (!$user) {
+            return;
+        } else {
+            $theName = explode(" ", $user->name);
+            $params['shopperEmail'] = $user->email;
+            $params['shopperName'] = [
+                'firstName' => $theName[0],
+                'lastName' => $theName[1]
+            ];
+            $params['shopperReference'] = sprintf('%03d', $user->id);;
+        }
     }
 }

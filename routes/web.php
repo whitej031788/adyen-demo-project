@@ -14,7 +14,7 @@
 // If they haven't created a demo session, then send them to the start page for demo creation
 Route::group(['middleware' => 'demosession'], function () {
   Route::get('/', 'ShowController@index');
-
+  Auth::routes();
   // Preact Routes
   Route::get('/afp-onboarding', function () {return view('afp-onboarding');});
   Route::get('/afp-payment', function () {return view('afp-payment');});
@@ -22,11 +22,12 @@ Route::group(['middleware' => 'demosession'], function () {
 
   // Normal JS Routes
   Route::get('/custom-call-center', 'ShowController@customCallCenter');
-  Route::get('/standard-ecom', 'ShowController@standardEcom');
+  Route::get('/unified-commerce', 'ShowController@unifiedCommerce');
   Route::get('/hotel-checkin', 'ShowController@hotelCheckin');
   Route::any('/return-url/{payRef}', 'ShowController@returnUrl');
   Route::post('/delete-demo', 'DemoController@delete');
   Route::get('/webhook-viewer', 'WebhooksController@webhookViewer');
+  Route::get('/saas-subscriptions', 'ShowController@saasSubscriptions');
 
   // End Normal JS Routes
 });
@@ -41,7 +42,3 @@ Route::get('/edit-demo', 'DemoController@edit');
 Route::get('file-upload', 'DemoController@fileUpload')->name('file.upload');
 
 Route::post('file-upload', 'DemoController@fileUploadPost')->name('file.upload.post');
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');

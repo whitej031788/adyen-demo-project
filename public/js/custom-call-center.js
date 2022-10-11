@@ -25,7 +25,7 @@ function handleOnSubmit(state, component) {
     data: dataObj,
     success: function(retData, textStatus, jQxhr) {
       // Successful MOTO payment
-      if (retData.resultCode == "Authorised") {
+      if (retData.response.resultCode == "Authorised") {
         $('#card-payment-success').show();
       } else { // Failed MOTO payment
         $('#card-payment-error').show();
@@ -58,7 +58,7 @@ function handleSendPaymentLink(e) {
   let newPbl = new PayByLink(dataObj);
 
   newPbl.sendLinkEmail().then(function(retData) {
-    let url = retData.url;
+    let url = retData.response.url;
     $('#payment-link').html(url);
     $('#payment-link-success').show();
     window.scrollTo(0,0);

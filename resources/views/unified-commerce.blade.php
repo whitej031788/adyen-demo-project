@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('content')
-    <div class="row justify-content-center">
+    <div class="row justify-content-center pt-3">
         <div class="col-md-10 col-sm-12">
             <div class="row text-center justify-content-center">
                 <div class="col-2">
@@ -45,17 +45,17 @@
                     <div class="card" style="width: auto;">
                         <div class="card-body">
                             <div class="row justify-content-center">
-                              <div style="max-width: 100%;" class="col-12 text-center" id="applepay-express">
-                              </div>
+                            <div style="max-width: 100%;" class="col-12 text-center" id="applepay-express">
+                            </div>
                             </div>
                             <div class="row justify-content-center">
-                              <div style="max-width: 100%;" class="col-12 text-center" id="googlepay-express">
-                              </div>
+                            <div style="max-width: 100%;" class="col-12 text-center" id="googlepay-express">
+                            </div>
                             </div>
                             <!-- <div class="row justify-content-center">
-                              <div class="col-12 text-center">
+                            <div class="col-12 text-center">
                                 <img style="max-width: 100%;" src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-large.png" alt="Check out with PayPal" style="cursor: pointer;" id="paypalEcsButton" />
-                              </div>
+                            </div>
                             </div> -->
                             <hr />
                             <div class="row justify-content-center">
@@ -106,8 +106,8 @@
                                         id="chat-show">Chat
                                 </button>
                                 <a type="button"
-                                   class="btn btn-secondary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two"
-                                   target="_blank" href="https://ca-test.adyen.com/ca/ca/pos/posoverview.shtml">Customer
+                                class="btn btn-secondary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two"
+                                target="_blank" href="https://ca-test.adyen.com/ca/ca/pos/posoverview.shtml">Customer
                                     Area</a>
                             </div>
                         </div>

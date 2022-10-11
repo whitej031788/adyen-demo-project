@@ -20,8 +20,8 @@ class ShowController extends Controller
     ]);
   }
 
-  public function standardEcom(Request $request) {
-    return view('standard-ecom', [
+  public function unifiedCommerce(Request $request) {
+    return view('unified-commerce', [
       'merchantAccount' => \Config::get('adyen.ecomMerchantAccount'),
       'clientKey' => \Config::get('adyen.clientKey'),
       'terminalPooid' => \Config::get('adyen.terminalPooid'),
@@ -39,8 +39,6 @@ class ShowController extends Controller
     ]);
   }
 
-
-
   public function returnUrl(Request $request, $payRef) {
     $postback = $request->all();
     // We are going to call paymentDetails
@@ -54,6 +52,14 @@ class ShowController extends Controller
       'merchantAccount' => \Config::get('adyen.ecomMerchantAccount'),
       'clientKey' => \Config::get('adyen.clientKey'),
       'paymentResult' => $response
+    ]);
+  }
+
+  public function saasSubscriptions(Request $request) {
+    return view('saas-subscriptions', [
+      'merchantAccount' => \Config::get('adyen.ecomMerchantAccount'),
+      'clientKey' => \Config::get('adyen.clientKey'),
+      'paypalID' => \Config::get('adyen.paypalID')
     ]);
   }
 

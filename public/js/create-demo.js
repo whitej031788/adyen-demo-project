@@ -17,6 +17,7 @@ $(function() {
   $("#brandColorOne").on('input', function() {
     UpdateBrandOne(this.value);
   });
+  
   $("#brandColorTwo").on('input', function() {
     UpdateBrandTwo(this.value);
   });

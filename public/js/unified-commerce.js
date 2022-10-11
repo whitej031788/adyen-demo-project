@@ -25,17 +25,11 @@ function generateQrCode() {
     $('#qr-code').empty();
     $('#choose-terminal').hide();
     $('#success-or-failure').hide();
-    newPbl.getQRCode().then(function (qrCodeSvg) {
-        $('#qr-code').append(qrCodeSvg);
+    newPbl.getQRCode().then(function (result) {
+        $('#qr-code').append(result.qrSvg);
         $('#qr-code').show();
         $('#action-modal').modal('show');
     });
-}
-
-function uuidv4() {
-    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-    );
 }
 
 let newPbl = new PayByLink(paymentDataObj);
@@ -80,7 +74,7 @@ function sharedSubmitPayment(result, dropin) {
 // Wrap all of this in a function we we can easily call payment methods again for country change
 function getPaymentMethods() {
     checkoutApi.getPaymentMethods(paymentDataObj, window.demoSession.allowedPaymentMethods).then(async function (paymentMethodsResponse) {
-        globalPayMethodsResponse = paymentMethodsResponse;
+        globalPayMethodsResponse = paymentMethodsResponse.response;
         let configuration = {
             amount: checkoutApi.data.amount,
             environment: "test",
@@ -91,12 +85,13 @@ function getPaymentMethods() {
             onSubmit: function (state, dropin) {
                 dropin.setStatus('loading');
                 checkoutApi.submitPayment(state, dropin).then(function (result) {
-                    sharedSubmitPayment(result, dropin);
+                    sharedSubmitPayment(result.response, dropin);
                 });
             },
             //Submit additional details for paypal
             onAdditionalDetails: function (state, component) {
                 checkoutApi.submitDetails(state.data).then(function (result) {
+                    console.log(result);
                     component.setStatus("success");
                     window.demoSession.enableEcom_adyenGiving === "on" ? globalCheckout.create('donation', donationConfig).mount('#donation-container') : null;
                 })
@@ -226,7 +221,7 @@ function getPaymentMethods() {
               checkoutApi.setData('shopperName', contactName);
               checkoutApi.setData('shopperEmail', event.payment.billingContact.emailAddress || event.payment.shippingContact.emailAddress);
               checkoutApi.submitPayment(localState).then(function (result) {
-                  sharedSubmitPayment(result, globalDropin);
+                  sharedSubmitPayment(result.response, globalDropin);
               });
 
               resolve(event);
@@ -340,6 +335,7 @@ function handleOnDonate(state, component) {
         "recurringProcessingModel": "UnscheduledCardOnFile"
     }
     checkoutApi.makeDonation(donationObject).then(function (result) {
+        console.log(result);
         component.setStatus('success');
     })
 }

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 
 class DemoController extends Controller {
   public function view() {
-    return view('create-demo', [
+    return view('create-demo.index', [
       'editMode' => 'false'
     ]);
   }

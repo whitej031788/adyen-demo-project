@@ -33,6 +33,9 @@ export class CheckoutApi {
         let combinedData = Object.assign(this.data, state.data);
 
         // Allow 3DS2
+        if (!combinedData.additionalData) {
+            combinedData.additionalData = {};
+        }
         combinedData.additionalData.allow3DS2 = true;
         combinedData.channel = "web";
         combinedData.origin = window.location.origin;
@@ -49,7 +52,6 @@ export class CheckoutApi {
             type: 'post',
             data: combinedData
         });
-
     }
 
     adjustPayment(data) {
