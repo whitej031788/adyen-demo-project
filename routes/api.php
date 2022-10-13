@@ -31,4 +31,4 @@ Route::post('/adyen/checkBalance', 'AdyenController@checkBalance');
 Route::post('/adyen/createOrder', 'AdyenController@createOrder');
 Route::post('/webhooks/payment', 'WebhooksController@handlePaymentNotification');
 Route::post('/webhooks/platform', 'WebhooksController@handlePlatformNotification');
-
+Route::get('/hackathon/{voteFor}', 'AdyenController@hackTime');

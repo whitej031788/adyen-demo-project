@@ -232,6 +232,29 @@ class AdyenController extends Controller
         return response()->json($result);
     }
 
+    // HACK
+    public function hackTime($voteFor) {
+
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL,"https://live.adyentechevent.com/games/registerVote?votefor=" . $voteFor);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'referer: https://live.adyentechevent.com',
+            'cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImphbWllLndoaXRlQGFkeWVuLmNvbSIsInVzZXJJZCI6NjQ4LCJpYXQiOjE2NjU0MDQzMjMsImV4cCI6MTY3MDY2NDMyM30.AzWHhWIXo_OWLvawrMEH5YLdXU7UgRtKgIqgNu9BPRc'
+        ));
+
+        $server_output = curl_exec($ch);
+
+        $info = curl_getinfo($ch);
+
+        curl_close($ch);
+        return response()->json([
+            "message" => "Vote registered for " . $voteFor . "\n",
+            "output" => $info
+        ]);
+    }
+
     private function sanitizePblParams($params)
     {
         $returnData = $params;
