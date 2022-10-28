@@ -111,7 +111,82 @@ class AdyenController extends Controller
         return response()->json($result);
     }
 
-    public function terminalCloudApiRequest(Request $request)
+    public function terminalCloudCardAcquisitionRequest(Request $request, $isInternal = false)
+    {
+        $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
+        
+        if ($request->has('terminal')) {
+            $requestTerminal = $request->terminal;
+        } else {
+            $requestTerminal = "terminalPooid";
+        }
+
+        $pooid = \Config::get('adyen.' . $requestTerminal);
+
+        $params = $request->all();
+
+        $poiRequest = $this->cardAcquisitionRequestObject($params['data'], $pooid);
+
+        $result = $this->makeAdyenRequest("runTenderSync", $poiRequest, false, $terminalService);
+
+        if (!$isInternal) {
+            return response()->json($result);
+        } else {
+            return $result;
+        }
+    }
+
+    public function terminalCloudCardAcquisitionAbortRequest(Request $request, $isInternal = false, $extraParams = null)
+    {
+        $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
+        
+        if ($request->has('terminal')) {
+            $requestTerminal = $request->terminal;
+        } else {
+            $requestTerminal = "terminalPooid";
+        }
+
+        $pooid = \Config::get('adyen.' . $requestTerminal);
+
+        $params = $request->all();
+
+        $poiRequest = $this->abortAcquisitionRequestObject($params['data'], $pooid, $extraParams);
+
+        $result = $this->makeAdyenRequest("runTenderSync", $poiRequest, false, $terminalService);
+
+        if (!$isInternal) {
+            return response()->json($result);
+        } else {
+            return $result;
+        }
+    }
+
+    public function terminalCloudSingleAnswerInput(Request $request, $isInternal = false, $extraParams = null)
+    {
+        $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
+        
+        if ($request->has('terminal')) {
+            $requestTerminal = $request->terminal;
+        } else {
+            $requestTerminal = "terminalPooid";
+        }
+
+        $pooid = \Config::get('adyen.' . $requestTerminal);
+
+        $params = $request->all();
+
+        $poiRequest = $this->singleAnswerInputRequestObject($params['data'], $pooid, $extraParams);
+
+        $result = $this->makeAdyenRequest("runTenderSync", $poiRequest, false, $terminalService);
+
+        if (!$isInternal) {
+            return response()->json($result);
+        } else {
+            return $result;
+        }
+    }
+
+    public function terminalCloudApiRequest(Request $request, $isInternal = false, $overrideParams = null)
     {
         if ($request->has('terminal')) {
             $requestTerminal = $request->terminal;
@@ -130,7 +205,12 @@ class AdyenController extends Controller
 
         $params = $request->all();
 
-        $requestData = $params['data'];
+        if (!is_null($overrideParams) && $overrideParams) {
+            $requestData = $overrideParams;
+        } else {
+            $requestData = $params['data'];
+        }
+
         $pooid = \Config::get('adyen.' . $requestTerminal);
 
         $saleToPoiRequest = array(
@@ -170,7 +250,11 @@ class AdyenController extends Controller
 
         $result = $this->makeAdyenRequest("runTenderSync", $saleToPoiRequest, false, $terminalService);
 
-        return response()->json($result);
+        if (!$isInternal) {
+            return response()->json($result);
+        } else {
+            return $result;
+        }
     }
 
     public function makeDonation(Request $request){
@@ -335,6 +419,164 @@ class AdyenController extends Controller
         array_push($retArr, $tmpArr);
 
         return $retArr;
+    }
+
+    private function singleAnswerInputRequestObject($params, $pooid)
+    {
+        $saleToPoiRequest = array(
+            'SaleToPOIRequest' =>
+                array(
+                    'MessageHeader' =>
+                        array(
+                            'ProtocolVersion' => '3.0',
+                            'MessageClass' => 'Device',
+                            'MessageCategory' => 'Input',
+                            'MessageType' => 'Request',
+                            'ServiceID' => $this->generateRandomString(),
+                            'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
+                            'POIID' => $pooid,
+                        ),
+                    'InputRequest' =>
+                        array(
+                            'InputData' =>
+                                array(
+                                    "Device" => "CustomerInput",
+                                    "InfoQualify" => "Input",
+                                    "InputCommand" => "GetMenuEntry",
+                                    "MaxInputTime" => 120
+                                ),
+                            'DisplayOutput' =>
+                                array(
+                                    'OutputContent' =>
+                                        array(
+                                            "PredefinedContent" => array("ReferenceID" => "MenuButtons"),
+                                            'OutputFormat' => "Text",
+                                            'OutputText' => 
+                                                array(
+                                                    array(
+                                                        "Text" => "How would you like to pay?"
+                                                    )
+                                                ),
+                                        ),
+                                    'MenuEntry' => 
+                                        array(
+                                            array(
+                                                'OutputFormat' => "Text",
+                                                'OutputText' => 
+                                                    array(
+                                                        array(
+                                                            "Text" => "Card On File"
+                                                        )
+                                                    ),
+                                            ),
+                                            array(
+                                                'OutputFormat' => "Text",
+                                                'OutputText' => 
+                                                    array(
+                                                        array(
+                                                            "Text" => "New Card"
+                                                        )
+                                                    ),
+                                            ),
+                                            array(
+                                                'OutputFormat' => "Text",
+                                                'OutputText' => 
+                                                    array(
+                                                        array(
+                                                            "Text" => "Cash"
+                                                        )
+                                                    ),
+                                            ),
+                                        ),
+                                    'Device' => "CustomerDisplay",
+                                    'InfoQualify' => "Display",
+                                ),
+                        ),
+                ),
+        );
+
+        return $saleToPoiRequest;        
+    }
+
+    private function cardAcquisitionRequestObject($params, $pooid)
+    {
+        $saleToPoiRequest = array(
+            'SaleToPOIRequest' =>
+                array(
+                    'MessageHeader' =>
+                        array(
+                            'ProtocolVersion' => '3.0',
+                            'MessageClass' => 'Service',
+                            'MessageCategory' => 'CardAcquisition',
+                            'MessageType' => 'Request',
+                            'ServiceID' => $this->generateRandomString(),
+                            'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
+                            'POIID' => $pooid,
+                        ),
+                    'CardAcquisitionRequest' =>
+                        array(
+                            'SaleData' =>
+                                array(
+                                    'SaleTransactionID' =>
+                                        array(
+                                            'TransactionID' => $params['reference'],
+                                            'TimeStamp' => date("c"),
+                                        ),
+                                    'TokenRequestedType' => "Customer"
+                                ),
+                            'CardAcquisitionTransaction' =>
+                                array(
+                                    'TotalAmount' => (float)($params['amount']['value'] / 100)
+                                ),
+                        ),
+                ),
+        );
+
+        return $saleToPoiRequest;
+    }
+
+    private function abortAcquisitionRequestObject($params, $pooid, $extraParams)
+    {
+        $saleToPoiRequest = array(
+            'SaleToPOIRequest' =>
+                array(
+                    'MessageHeader' =>
+                        array(
+                            'ProtocolVersion' => '3.0',
+                            'MessageClass' => 'Service',
+                            'MessageCategory' => 'EnableService',
+                            'MessageType' => 'Request',
+                            'ServiceID' => $this->generateRandomString(),
+                            'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
+                            'POIID' => $pooid,
+                        ),
+                    'EnableServiceRequest' =>
+                        array(
+                            'TransactionAction' => "AbortTransaction",
+                            'DisplayOutput' =>
+                                array(
+                                    'OutputContent' =>
+                                        array(
+                                            "PredefinedContent" => array("ReferenceID" => "AcceptedAnimated"),
+                                            'OutputFormat' => "Text",
+                                            'OutputText' => 
+                                                array(
+                                                    array(
+                                                        "Text" => $extraParams['runningTotal']
+                                                    ),
+                                                    array(
+                                                        "Text" => "Thank you " . $extraParams['customerName'] . ". Your running total is above."
+                                                    )
+                                                ),
+                                        ),
+                                    'Device' => "CustomerDisplay",
+                                    'InfoQualify' => "Display",
+                                ),
+                        ),
+                ),
+        );
+
+        return $saleToPoiRequest;
     }
 
     private function makeAdyenRequest($methodOrUrl, $params, $isClassic, $service)

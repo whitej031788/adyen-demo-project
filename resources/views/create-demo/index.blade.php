@@ -58,12 +58,9 @@
                       <div class="col-md-6">
                           <div class="form-group">
                             <label for="merchantName">Merchant Name</label>
-                            <!-- <input type="text" class="form-control bdr-brand-color-one" name="merchantName" id="merchantName"
-                            aria-describedby="merchantNameHelp" placeholder="Enter Merchant Name"
-                            value={{ old('merchantName') }}> -->
                             <input type="text" class="form-control bdr-brand-color-one" name="merchantName" id="merchantName"
                             aria-describedby="merchantNameHelp" placeholder="Enter Merchant Name"
-                            value="Spotify">
+                            value={{ old('merchantName') }}>
                             <small id="merchantNameHelp" class="form-text text-muted">Enter the name you want to
                             appear in different demo areas</small>
                           </div>
@@ -71,24 +68,18 @@
                       <div class="col-md-6">
                           <div class="form-group">
                             <label for="demoEmail">Your Email</label>
-                            <!-- <input type="email" class="form-control bdr-brand-color-one" name="demoEmail" id="demoEmail"
-                            aria-describedby="demoEmailHelp" placeholder="Enter Your Email"
-                            value={{ old('demoEmail') }}> -->
                             <input type="email" class="form-control bdr-brand-color-one" name="demoEmail" id="demoEmail"
                             aria-describedby="demoEmailHelp" placeholder="Enter Your Email"
-                            value="jamie.white@adyen.com">
+                            value={{ old('demoEmail') }}>
                             <small id="demoEmailHelp" class="form-text text-muted">Enter your email. This can be used for demonstrating pay by link and other features</small>
                           </div>
                       </div>
                       <div class="col-md-6">
                           <div class="form-group">
                             <label for="merchantLogoUrl">Merchant Logo URL</label>
-                            <!-- <input type="text" class="form-control bdr-brand-color-one" name="merchantLogoUrl" id="merchantLogoUrl"
-                            aria-describedby="merchantLogoUrlHelp" placeholder="Enter Merchant Logo URL"
-                            value={{ old('merchantLogoUrl') }}> -->
                             <input type="text" class="form-control bdr-brand-color-one" name="merchantLogoUrl" id="merchantLogoUrl"
                             aria-describedby="merchantLogoUrlHelp" placeholder="Enter Merchant Logo URL"
-                            value="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_CMYK_Green.png">
+                            value={{ old('merchantLogoUrl') }}>
                             <small id="merchantLogoUrlHelp" class="form-text text-muted"><a href="https://www.google.com/search?q=find+image+url+path" target="_blank">Put in a URL to the
                             merchant's logo</a></small>
                           </div>
@@ -96,12 +87,9 @@
                       <div class="col-md-3">
                           <div class="form-group">
                             <label for="brandColorOne">Brand Color #1</label>
-                            <!-- <input type="color" class="form-control bdr-brand-color-one" name="brandColorOne" id="brandColorOne"
-                            aria-describedby="brandColorOneHelp" placeholder="Enter Brand Color #1"
-                            value={{ old('brandColorOne') ? old('brandColorOne') : '#ffffff' }}> -->
                             <input type="color" class="form-control bdr-brand-color-one" name="brandColorOne" id="brandColorOne"
                             aria-describedby="brandColorOneHelp" placeholder="Enter Brand Color #1"
-                            value="#1DB954">
+                            value={{ old('brandColorOne') ? old('brandColorOne') : '#ffffff' }}>
                             <small id="brandColorOneHelp" class="form-text text-muted">Color wheel for
                             primary brand color</small>
                           </div>
@@ -116,7 +104,7 @@
                             secondary brand color</small>
                           </div>
                       </div>
-                      <!-- <div class="col-md-6">
+                      <div class="col-md-6">
                           <div class="form-group">
                             <label for="checkoutScreenshot">Checkout Screenshot</label>
                             <div class="custom-file">
@@ -138,9 +126,8 @@
                             value={{ old('checkoutAmount') }}>
                             <small id="checkoutAmountHelp" class="form-text text-muted">Put the basket amount here so it can show in the demo</small>
                           </div>
-                      </div> -->
+                      </div>
                     </div>
-                    
                     <h3 class="mb-1" style="cursor: pointer;"><a style="width: 100%; color: black;" data-toggle="collapse" href="#featureList">Advanced Configuration+</a></h3>
                     <div class="row collapse" id="featureList">
                       <div class="col-md-6">

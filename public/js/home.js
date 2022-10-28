@@ -8,3 +8,5 @@ document.getElementById("downloadDemoHref").href = "/storage/demos/" + demoSessi
 let demoType = demoSession.merchantVertical + "-" + demoSession.merchantSubtype;
 document.getElementById("saasSubscriptions").style.display = (demoType === "digital-saas") ? "block" : "none";
 document.getElementById("unifiedCommerce").style.display = (demoType === "retail-unified") ? "block" : "none";
+document.getElementById("payAsYouGo-register").style.display = (demoType === "hotel-payasyougo") ? "block" : "none";
+document.getElementById("payAsYouGo-interface").style.display = (demoType === "hotel-payasyougo") ? "block" : "none";

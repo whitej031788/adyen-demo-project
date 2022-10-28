@@ -176,3 +176,16 @@ img.merchant-checkout, img.merchant-checkout-noreplace {
   width: 100%;
   padding: 20px;
 }
+
+.card-hover:hover{
+  box-shadow: rgba(0, 0, 0, 0.5);
+  /* transform:scale(1.1); */
+  color: black;
+  background-color: white;
+}
+
+.card-hover{
+  cursor: pointer;
+  border:1px solid black;
+  transition:.3s;
+}

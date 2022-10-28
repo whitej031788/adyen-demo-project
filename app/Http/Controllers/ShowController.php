@@ -30,6 +30,20 @@ class ShowController extends Controller
     ]);
   }
 
+  public function paygRegistration(Request $request) {
+    return view('payg-registration', [
+      'merchantAccount' => \Config::get('adyen.posMerchantAccount'),
+      'clientKey' => \Config::get('adyen.clientKey')
+    ]);
+  }
+
+  public function paygInterface(Request $request) {
+    return view('payg-interface', [
+      'merchantAccount' => \Config::get('adyen.posMerchantAccount'),
+      'clientKey' => \Config::get('adyen.clientKey')
+    ]);
+  }
+
   public function hotelCheckin(Request $request) {
     return view('hotel-checkin', [
       'merchantAccount' => \Config::get('adyen.ecomMerchantAccount'),

@@ -2,9 +2,6 @@
 
 @section('content')
     <div class="container-fluid" style="background-image: url(/images/vackground-com-7K1_uSnNoy4-unsplash.jpg);background-size: cover;">
-        <!-- <video id="videoHeader" playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
-            <source src="/videos/unified-video.mp4" type="video/mp4">
-        </video> -->
         <div class="row justify-content-center pt-3">
             <div class="col-md-10 col-sm-12">
                 <div class="row text-center justify-content-center">

@@ -266,7 +266,7 @@ function payAtTerminal() {
 
         $('#success-or-failure').show();
         $('#success-or-failure').html('<div class="p-3">The customers payment for order #' + terminalApi.data.reference + ' has been sent to the terminal, waiting for result...</div>');
-        terminalApi.cloudApiRequest(terminal)(function (result) {
+        terminalApi.cloudApiRequest(terminal).then(function (result) {
             console.log(result);
         });
     }

@@ -28,7 +28,8 @@ Route::group(['middleware' => 'demosession'], function () {
   Route::post('/delete-demo', 'DemoController@delete');
   Route::get('/webhook-viewer', 'WebhooksController@webhookViewer');
   Route::get('/saas-subscriptions', 'ShowController@saasSubscriptions');
-
+  Route::get('/payg-registration', 'ShowController@paygRegistration');
+  Route::get('/payg-interface', 'ShowController@paygInterface');
   // End Normal JS Routes
 });
 // Create demo, GET for new  demo, POST for the actual creation
