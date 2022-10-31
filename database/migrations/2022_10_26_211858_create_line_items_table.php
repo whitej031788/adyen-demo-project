@@ -16,7 +16,7 @@ class CreateLineItemsTable extends Migration
         Schema::create('line_items', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('registrant_id')->unsigned()->index()->nullable();
-            $table->foreign('registrant_id')->references('id')->on('registrantS')->onDelete('cascade');
+            $table->foreign('registrant_id')->references('id')->on('registrants')->onDelete('cascade');
             $table->string('item_name');
             $table->string('item_sku');
             $table->integer('unit_price');
