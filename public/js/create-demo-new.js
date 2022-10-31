@@ -139,8 +139,17 @@ let unifiedCommerceInstructions = `
     </span>
 `;
 
+let hospitalityInstructions = `
+    <span>
+        Customer demands in the hospitality space are becoming more and more complex, and Adyen is uniquely position to help hospitality venues deliver unmatched
+        personalized experiences for guests. Our <a href='https://www.adyen.com/hotel-payments' target='_blank'>public facing page</a> says paints a good picture, but this demo will bring you just a slice of what Adyen's terminal technology along with their
+        expertise can allow hospitality venues to acheive.
+    </span>
+`;
+
 
 let demoInstructions = {
     "digital-saas" : subscriptionInstructions,
-    "retail-unified": unifiedCommerceInstructions
+    "retail-unified": unifiedCommerceInstructions,
+    "hotel-payasyougo": hospitalityInstructions
 };
