@@ -22,6 +22,7 @@ function handleResult(result) {
     $('#register-error').hide();
     if (result.shopperReference) {
         $('#shopperReference').text(result.shopperReference);
+        $('#nfcUid').text(result.nfcUid);
         $('#register-success').show();
     } else {
         $('#register-error').show();

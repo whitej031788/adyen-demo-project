@@ -565,7 +565,7 @@ class AdyenController extends Controller
                                                         "Text" => $extraParams['runningTotal']
                                                     ),
                                                     array(
-                                                        "Text" => "Thank you " . $extraParams['customerName'] . ". Your running total is above."
+                                                        "Text" => "Thank you " . $extraParams['customerName'] . ". Your room bill currently is:"
                                                     )
                                                 ),
                                         ),

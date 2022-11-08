@@ -15,8 +15,24 @@ class HospitalityController extends Controller
         $registrant->first_name = $request->firstName;
         $registrant->last_name = $request->lastName;
         $registrant->email = $request->email;
+        $cardAcqResp = $this->mockCardAcqResponse();
+        // Is the additional response base64 encoded, and does it exist with the NFC UID
+        $additionalResponse = $cardAcqResp['response']['SaleToPOIResponse']['CardAcquisitionResponse']['Response']['AdditionalResponse'];
+        if (base64_encode(base64_decode($additionalResponse, true)) === $additionalResponse) {
+            // It is base64 encoded
+            // TO DO THIS
+            $jsonString = base64_decode($additionalResponse, true);
+            $data = json_decode($jsonString, TRUE);
+        } else {
+            // It's just key value pairs
+            parse_str($additionalResponse, $output);
+            $nfcUid = $output['NFC_uid'];
+            $store = $output['store'];
+        }
+
+        $registrant->nfc_uid = $nfcUid;
         if ($registrant->save()) {
-            return response()->json(['id' => $registrant->id, 'shopperReference' => $registrant->shopperReference()]);
+            return response()->json(['id' => $registrant->id, 'shopperReference' => $registrant->shopperReference(), 'nfcUid' => $nfcUid]);
         }
     }
 
@@ -128,5 +144,48 @@ class HospitalityController extends Controller
             // TO DO
             return response()->json($newPaymentRequest);
         }
+    }
+
+    private function mockCardAcqResponse()
+    {
+        $jayParsedAry = [
+        "response" => ["SaleToPOIResponse" => [
+                "CardAcquisitionResponse" => [
+                    "POIData" => [
+                        "POIReconciliationID" => "1000", 
+                        "POITransactionID" => [
+                            "TimeStamp" => "2022-11-06T22:11:11.000Z", 
+                            "TransactionID" => "BqgO001667772671009" 
+                        ] 
+                    ], 
+                    "PaymentInstrumentData" => [
+                            "CardData" => [
+                            ], 
+                            "PaymentInstrumentType" => "Card" 
+                        ], 
+                    "Response" => [
+                                "AdditionalResponse" => "tid=47153132&transactionType=GOODS_SERVICES&posadditionalamounts.originalAmountValue=1740&giftcardIndicator=false&posAmountGratuityValue=0&store=UKEvent_bar01&iso8601TxDate=2022-11-06T22%3a11%3a11.0000000%2b0000&posOriginalAmountValue=1740&txtime=22%3a11%3a11&NFC.uid=7683F826&txdate=06-11-2022&NFC.data=&merchantReference=b19a5b9b-ef05-4792-a868-590a96dc4583&posadditionalamounts.originalAmountCurrency=GBP&NFC.ref=mifareCard&posAuthAmountCurrency=GBP&message=CARD_ACQ_COMPLETED&posAmountCashbackValue=0&posEntryMode=CLESS_SWIPE&posAuthAmountValue=1740", 
+                                "Result" => "Success" 
+                                ], 
+                    "SaleData" => [
+                                    "SaleTransactionID" => [
+                                        "TimeStamp" => "2022-11-06T22:11:10.959Z", 
+                                        "TransactionID" => "b19a5b9b-ef05-4792-a868-590a96dc4583" 
+                                    ] 
+                                ] 
+                ], 
+                "MessageHeader" => [
+                    "MessageCategory" => "CardAcquisition", 
+                    "MessageClass" => "Service", 
+                    "MessageType" => "Response", 
+                    "POIID" => "V400m-347153132", 
+                    "ProtocolVersion" => "3.0", 
+                    "SaleID" => "PostmanTestPOS", 
+                    "ServiceID" => "1667772671" 
+                ] 
+            ] 
+        ]]; 
+ 
+        return $jayParsedAry;
     }
 }

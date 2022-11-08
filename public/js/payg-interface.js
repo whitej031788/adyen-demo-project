@@ -50,6 +50,7 @@ function buildLineItemsTable(result) {
         let lineItemRow = "<tr id='line-item-" + result.lineItems[i].id + "'>";
         lineItemRow += "<td>" + result.lineItems[i].id + "</td>";
         lineItemRow += "<td>" + result.lineItems[i].item_name + "</td>";
+        lineItemRow += "<td>" + result.lineItems[i].store + "</td>";
         lineItemRow += "<td>" + result.lineItems[i].quantity + "</td>";
         lineItemRow += "<td>£" + parseFloat(result.lineItems[i].unit_price / 100).toFixed(2) + "</td>";
         lineItemRow += "<td>£" + parseFloat(lineTotal).toFixed(2) + "</td>";

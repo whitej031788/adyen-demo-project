@@ -10,6 +10,7 @@
         <tr>
           <th scope="col">ID</th>
           <th scope="col">Item Name</th>
+          <th scope="col">Store</th>
           <th scope="col">Quantity</th>
           <th scope="col">Unit Price</th>
           <th scope="col">Total</th>

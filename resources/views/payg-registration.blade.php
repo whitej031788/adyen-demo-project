@@ -51,11 +51,12 @@
                     class="btn btn-primary txt-brand-color-one bkg-brand-color-two bdr-brand-color-two">Register Individual
                 </button>
               </div>
-              <div id="register-success" class="mt-3 alert alert-success" style="display:none;">
-                <p>Registration successful. Their registrant ID in the system is: <span class="bold italics" id="shopperReference"></span></p>
-                <p>Use this ID to write to their wearable NFC device, as this is what will be recognized by the system going forward for this individual</p>
+              <div id="register-success" class="mt-3 alert alert-success col-md-12" style="display:none;">
+                <h3>Registration Successful</h3>
+                <p>Their registrant ID in the system is: <span class="bold italics" id="shopperReference"></span></p>
+                <p>Their detected NFC UID in the system is: <span class="bold italics" id="nfcUid"></span></p>
               </div>
-              <div id="register-error" class="mt-3 alert alert-danger" style="display:none;">
+              <div id="register-error" class="mt-3 alert alert-danger col-md-12" style="display:none;">
                 <p>There was an issue registering the person. Please try again, and make sure the email is unique</p>
               </div>
             </div>

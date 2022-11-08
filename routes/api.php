@@ -30,6 +30,7 @@ Route::post('/adyen/submitAdditionalDetails', 'AdyenController@submitAdditionalD
 Route::post('/adyen/getCostEstimate', 'AdyenController@getCostEstimate');
 Route::post('/adyen/checkBalance', 'AdyenController@checkBalance');
 Route::post('/adyen/createOrder', 'AdyenController@createOrder');
+Route::post('/adyen/tapToPaySession', 'AdyenController@tapToPaySession');
 Route::post('/webhooks/payment', 'WebhooksController@handlePaymentNotification');
 Route::post('/webhooks/platform', 'WebhooksController@handlePlatformNotification');
 
