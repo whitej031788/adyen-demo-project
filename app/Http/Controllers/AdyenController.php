@@ -69,6 +69,13 @@ class AdyenController extends Controller
         return response()->json($result);
     }
 
+    public function tapToPaySession(Request $request) {
+        $url = 'https://checkout-test.adyen.com/checkout/possdk/v68/sessions';
+        $params = array('setupToken' => $request->setupToken, 'merchantAccount' => $request->merchantAccount);
+        $result = $this->makeAdyenRequest($url, $params, true, false);
+        return response()->json($result['response']);
+      }
+
     public function generateAndSendPaymentLink(Request $request)
     {
         $type = $request->type;
