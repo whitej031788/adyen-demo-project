@@ -29,7 +29,8 @@
                 <p>Choose your demo journey now</p>
               </header>
               <footer>
-                <a href="#step1" class="adyen-brand button circled scrolly">Start</a>
+                <a data-toggle="tooltip" data-placement="left" title="Choose a customer journey and configure your demo" href="#step1" class="mr-5 adyen-brand button circled scrolly">Journey</a>
+                <a data-toggle="tooltip" data-placement="right" title="Manually configure your demo with features" href="/create-demo-manual" class="ml-5 adyen-brand button circled scrolly">Manual</a>
               </footer>
           </div>
         </div>
@@ -301,6 +302,7 @@
       </div>
       <!-- Scripts -->
       <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
       <!-- <script src="assets/js/jquery.min.js"></script> -->
       <script src="assets/js/jquery.dropotron.min.js"></script>

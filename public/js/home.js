@@ -5,8 +5,12 @@ document.getElementById("hotelCheckin").style.display = !demoSession.enableHotel
 document.getElementById("downloadDemoHref").href = "/storage/demos/" + demoSession.merchantName + ".json";
 
 // New create demo UI items
-let demoType = demoSession.merchantVertical + "-" + demoSession.merchantSubtype;
-document.getElementById("saasSubscriptions").style.display = (demoType === "digital-saas") ? "block" : "none";
-document.getElementById("unifiedCommerce").style.display = (demoType === "retail-unified") ? "block" : "none";
-document.getElementById("payAsYouGo-register").style.display = (demoType === "hotel-payasyougo") ? "block" : "none";
-document.getElementById("payAsYouGo-interface").style.display = (demoType === "hotel-payasyougo") ? "block" : "none";
+let demoType = (demoSession.merchantVertical || '') + "-" + (demoSession.merchantSubtype || '');
+// If the demo type was basically not set, they did a manual setup, so don't use the below
+// experience let journey code
+if (demoType != "-") {
+    document.getElementById("saasSubscriptions").style.display = (demoType === "digital-saas") ? "block" : "none";
+    document.getElementById("unifiedCommerce").style.display = (demoType === "retail-unified") ? "block" : "none";
+    document.getElementById("payAsYouGo-register").style.display = (demoType === "hotel-payasyougo") ? "block" : "none";
+    document.getElementById("payAsYouGo-interface").style.display = (demoType === "hotel-payasyougo") ? "block" : "none";
+}

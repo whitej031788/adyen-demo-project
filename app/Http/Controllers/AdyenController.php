@@ -132,7 +132,7 @@ class AdyenController extends Controller
 
         $params = $request->all();
 
-        $poiRequest = $this->cardAcquisitionRequestObject($params['data'], $pooid);
+        $poiRequest = $this->cardAcquisitionNFCRequestObject($params['data'], $pooid);
 
         $result = $this->makeAdyenRequest("runTenderSync", $poiRequest, false, $terminalService);
 
@@ -505,6 +505,43 @@ class AdyenController extends Controller
         return $saleToPoiRequest;        
     }
 
+    private function cardAcquisitionNFCRequestObject($params, $pooid)
+    {
+        $saleToPoiRequest = array(
+            'SaleToPOIRequest' =>
+                array(
+                    'MessageHeader' =>
+                        array(
+                            'ProtocolVersion' => '3.0',
+                            'MessageClass' => 'Service',
+                            'MessageCategory' => 'CardAcquisition',
+                            'MessageType' => 'Request',
+                            'ServiceID' => $this->generateRandomString(),
+                            'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
+                            'POIID' => $pooid,
+                        ),
+                    'CardAcquisitionRequest' =>
+                        array(
+                            'SaleData' =>
+                                array(
+                                    'SaleTransactionID' =>
+                                        array(
+                                            'TransactionID' => $params['reference'],
+                                            'TimeStamp' => date("c"),
+                                        ),
+                                    'SaleToPOIData' => base64_encode('{"Operation":[{"Type":"NFCReadUID"}]}')
+                                ),
+                            'CardAcquisitionTransaction' =>
+                                array(
+                                    'TotalAmount' => (float)($params['amount']['value'] / 100)
+                                ),
+                        ),
+                ),
+        );
+
+        return $saleToPoiRequest;
+    }
+
     private function cardAcquisitionRequestObject($params, $pooid)
     {
         $saleToPoiRequest = array(
@@ -544,6 +581,8 @@ class AdyenController extends Controller
 
     private function abortAcquisitionRequestObject($params, $pooid, $extraParams)
     {
+        $outputText = $extraParams['outputText'];
+        $predefContent = $extraParams['predefinedContent'];
         $saleToPoiRequest = array(
             'SaleToPOIRequest' =>
                 array(
@@ -564,17 +603,9 @@ class AdyenController extends Controller
                                 array(
                                     'OutputContent' =>
                                         array(
-                                            "PredefinedContent" => array("ReferenceID" => "AcceptedAnimated"),
+                                            "PredefinedContent" => array("ReferenceID" => $predefContent),
                                             'OutputFormat' => "Text",
-                                            'OutputText' => 
-                                                array(
-                                                    array(
-                                                        "Text" => $extraParams['runningTotal']
-                                                    ),
-                                                    array(
-                                                        "Text" => "Thank you " . $extraParams['customerName'] . ". Your room bill currently is:"
-                                                    )
-                                                ),
+                                            'OutputText' => $outputText
                                         ),
                                     'Device' => "CustomerDisplay",
                                     'InfoQualify' => "Display",

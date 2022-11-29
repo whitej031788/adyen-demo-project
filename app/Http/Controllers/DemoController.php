@@ -13,6 +13,12 @@ class DemoController extends Controller {
     ]);
   }
 
+  public function viewManual() {
+    return view('create-demo', [
+      'editMode' => 'false'
+    ]);
+  }
+
   public function edit(Request $request) {
     if (!$request->session()->get('demo_session')) {
       return redirect('/create-demo');

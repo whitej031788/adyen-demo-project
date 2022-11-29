@@ -13,7 +13,14 @@ function getRegistrantInfo() {
     return {
         firstName: $('#firstName').val(),
         lastName: $('#lastName').val(),
-        email: $('#shopperEmail').val()
+        email: $('#shopperEmail').val(),
+        data: {
+          amount: {
+            currency: "GBP",
+            value: 0
+          },
+          reference: uuidv4()
+        }
     };
 }
 

@@ -80,6 +80,8 @@ function sendLineItem(lineItemInfo) {
     hospitalityHelper.addLineItem().then((result) => {
         hospitalityHelper.setData('registrantId', result.id);
         buildLineItemsTable(result);
+    }, (error) => {
+        alert(error.responseJSON.message)
     });
 }
 

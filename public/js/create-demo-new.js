@@ -2,6 +2,8 @@
 $(function() {
     let initialOptionsString = '<div id="step1options">';
 
+    $('[data-toggle="tooltip"]').tooltip();
+
     $.each(stepOneValues, function( index, object ) {
         initialOptionsString += `
             <div class="row mt-1">

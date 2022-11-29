@@ -15,14 +15,14 @@ class HospitalityController extends Controller
         $registrant->first_name = $request->firstName;
         $registrant->last_name = $request->lastName;
         $registrant->email = $request->email;
-        $cardAcqResp = $this->mockCardAcqResponse();
+        $cardAcqResp = (new AdyenController)->terminalCloudCardAcquisitionRequest($request, true);
         // Is the additional response base64 encoded, and does it exist with the NFC UID
         $additionalResponse = $cardAcqResp['response']['SaleToPOIResponse']['CardAcquisitionResponse']['Response']['AdditionalResponse'];
         if (base64_encode(base64_decode($additionalResponse, true)) === $additionalResponse) {
-            // It is base64 encoded
-            // TO DO THIS
             $jsonString = base64_decode($additionalResponse, true);
             $data = json_decode($jsonString, TRUE);
+            $nfcUid = $data['additionalData']['NFC.uid'];
+            $store = $data['store'];
         } else {
             // It's just key value pairs
             parse_str($additionalResponse, $output);
@@ -32,6 +32,17 @@ class HospitalityController extends Controller
 
         $registrant->nfc_uid = $nfcUid;
         if ($registrant->save()) {
+            $params = array();
+            $params['outputText'] = array(
+                array(
+                    "Text" => "Thank you"
+                ),
+                array(
+                    "Text" => "The customer is successfully registered"
+                )
+            );
+            $params['predefinedContent'] = "AcceptedAnimated";
+            $displayResult = (new AdyenController)->terminalCloudCardAcquisitionAbortRequest($request, true, $params);
             return response()->json(['id' => $registrant->id, 'shopperReference' => $registrant->shopperReference(), 'nfcUid' => $nfcUid]);
         }
     }
@@ -61,19 +72,49 @@ class HospitalityController extends Controller
         // The customer then taps their NFC wearable, which should return to us the shopper reference
         // We check if we have that shopperReference in our registrant table, and if so, add a LineItem with what they are buying
         // We then send a terminal display request summing up everything they have bought to date
-        $acqResult = (new AdyenController)->terminalCloudCardAcquisitionRequest($request, true);
+        $cardAcqResp = (new AdyenController)->terminalCloudCardAcquisitionRequest($request, true);
         $params = $request->all();
+        // Is the additional response base64 encoded, and does it exist with the NFC UID
+        $additionalResponse = $cardAcqResp['response']['SaleToPOIResponse']['CardAcquisitionResponse']['Response']['AdditionalResponse'];
+        if (base64_encode(base64_decode($additionalResponse, true)) === $additionalResponse) {
+            $jsonString = base64_decode($additionalResponse, true);
+            $data = json_decode($jsonString, TRUE);
+            $nfcUid = $data['additionalData']['NFC.uid'];
+            $store = $data['store'];
+        } else {
+            // It's just key value pairs
+            parse_str($additionalResponse, $output);
+            $nfcUid = $output['NFC_uid'];
+            $store = $output['store'];
+        }
         $lineItemData = $params['data'];
         // Let's spoof this until I can get a test card
         // Assume we have gotten a shopper reference from the result
-        $shopperReference = "001";
-        $registrant = Registrant::findOrFail(ltrim($shopperReference, "0"));
+        $registrant = Registrant::where('nfc_uid', '=', $nfcUid)->get();
+        if ($registrant->isEmpty()) {
+            $params = array();
+            $params['outputText'] = array(
+                array(
+                    "Text" => "Error"
+                ),
+                array(
+                    "Text" => "We could not find your customer record."
+                )
+            );
+            $params['predefinedContent'] = "DeclinedAnimated";
+            $displayResult = (new AdyenController)->terminalCloudCardAcquisitionAbortRequest($request, true, $params);
+            return response()->json(['message' => 'Cannot find customer record'], 404); // Status code here
+        } else {
+            $registrant = $registrant[0];
+        }
+
         $lineItem = new LineItem;
         $lineItem->registrant_id = $registrant->id;
         $lineItem->item_name = $lineItemData['itemName'];
         $lineItem->item_sku = $lineItemData['itemSku'];
         $lineItem->unit_price = $lineItemData['unitPrice'] * 100; // We save as cents
         $lineItem->quantity = $lineItemData['quantity'];
+        $lineItem->store = $store;
 
         if ($lineItem->save()) {
             $runningTotal = 0;
@@ -82,9 +123,17 @@ class HospitalityController extends Controller
                 $runningTotal += ($lineItem->unit_price * $lineItem->quantity) / 100;
             }
 
+            $runningTotal = '£' . strval(number_format($runningTotal, 2));
             $params = array(
-                "customerName" => $registrant->first_name . " " . $registrant->last_name,
-                "runningTotal" => '£' . strval(number_format($runningTotal, 2))
+                "outputText" => array(
+                    array(
+                        "Text" => $runningTotal
+                    ),
+                    array(
+                        "Text" => "Thank you " . $registrant->first_name . " " . $registrant->last_name . ". Your room bill currently is:"
+                    )
+                ),
+                "predefinedContent" => "AcceptedAnimated"
             );
 
             $displayResult = (new AdyenController)->terminalCloudCardAcquisitionAbortRequest($request, true, $params);
