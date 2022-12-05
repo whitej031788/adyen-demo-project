@@ -69,6 +69,40 @@ class AdyenController extends Controller
         return response()->json($result);
     }
 
+    public function sendQRToTerminal(Request $request, $isInternal = false)
+    {
+        $params = $request->all();
+        $curlUrl = "https://checkout-test.adyen.com/" . \Config::get('adyen.checkoutApiVersion') . "/paymentLinks";
+
+        $pblData = $params['data'];
+        $result = $this->makeAdyenRequest($curlUrl, $this->sanitizePblParams($pblData), true, false);
+        $urlToQrEncode = $result["response"]->url;
+
+        $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
+        
+        if ($request->has('terminal')) {
+            $requestTerminal = $request->terminal;
+        } else {
+            $requestTerminal = "terminalPooid";
+        }
+
+        $pooid = \Config::get('adyen.' . $requestTerminal);
+
+        $extraParams = array('urlToQr' => $urlToQrEncode);
+
+        $poiRequest = $this->terminalDisplayQRCodeObject($params['data'], $pooid, $extraParams);
+
+        $result = $this->makeAdyenRequest("runTenderSync", $poiRequest, false, $terminalService);
+
+        if (!$isInternal) {
+            return response()->json($result);
+        } else {
+            return $result;
+        }
+
+        return response()->json($result);
+    }
+
     public function tapToPaySession(Request $request) {
         $url = 'https://checkout-test.adyen.com/checkout/possdk/v68/sessions';
         $params = array('setupToken' => $request->setupToken, 'merchantAccount' => $request->merchantAccount, 'store' => $request->store);
@@ -627,6 +661,45 @@ class AdyenController extends Controller
                                         "Device" => "CustomerDisplay",
                                         "InfoQualify" => "Display",
                                         "OutputContent" => array("OutputFormat" => "XHTML", "OutputXHTML" => $extraParams['virtualReceipt'])
+                                    )
+                                )
+                        ),
+                ),
+        );
+
+        return $saleToPoiRequest;
+    }
+
+    private function terminalDisplayQRCodeObject($params, $pooid, $extraParams)
+    {
+        $saleToPoiRequest = array(
+            'SaleToPOIRequest' =>
+                array(
+                    'MessageHeader' =>
+                        array(
+                            'ProtocolVersion' => '3.0',
+                            'MessageClass' => 'Device',
+                            'MessageCategory' => 'Display',
+                            'MessageType' => 'Request',
+                            'ServiceID' => $this->generateRandomString(),
+                            'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
+                            'POIID' => $pooid,
+                        ),
+                    'DisplayRequest' =>
+                        array(
+                            'DisplayOutput' =>
+                                array(
+                                    array(
+                                        "Device" => "CustomerDisplay",
+                                        "InfoQualify" => "Display",
+                                        "MinimumDisplayTime" => 30,
+                                        "OutputContent" => array(
+                                            "OutputFormat" => "BarCode",
+                                            "OutputBarcode" => array(
+                                                "BarcodeType" => "QRCode",
+                                                "BarcodeValue" => $extraParams['urlToQr']
+                                            )
+                                        )
                                     )
                                 )
                         ),

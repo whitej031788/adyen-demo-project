@@ -88,6 +88,10 @@
                                             id="create-qr-code">QR Code
                                     </button>
                                     <button type="button"
+                                            class="btn btn-primary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two"
+                                            id="send-qr-terminal">QR - Terminal
+                                    </button>
+                                    <button type="button"
                                             class="btn btn-secondary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two pay-at-terminal"
                                             id="pay-at-terminal">Pay @ Terminal
                                     </button>

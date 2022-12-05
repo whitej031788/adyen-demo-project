@@ -4,6 +4,8 @@ import {CheckoutApi} from './components/checkout-api.js';
 import {ChatBot} from './components/chatbot-widget.js';
 import {DemoStorage} from "./components/demo-storage.js";
 
+var terminalOrQr = 'terminal';
+
 let paymentDataObj = {
     "countryCode": "GB",
     "merchantAccount": adyenConfig.merchantAccount,
@@ -29,6 +31,34 @@ function generateQrCode() {
         $('#qr-code').show();
         $('#action-modal').modal('show');
     });
+}
+
+function sendQRtoTerminal() {
+    $('#qr-code').empty();
+    $('#qr-code').hide();
+    $('#success-or-failure').hide();
+    // If a second terminal is setup and this is the initial click, let them choose
+    if (adyenConfig.terminalPooidTwo && this.id == "send-qr-terminal") {
+        terminalOrQr = 'qr';
+        $('#choose-terminal').show();
+    } else {
+        $('#choose-terminal').hide();
+        let terminal = "";
+        // Check if this is already the second choice, IE have they selected pooidOne or Two already
+        if (this.id == "terminalPooid" || this.id == "terminalPooidTwo") {
+            terminal = this.id;
+        } else {
+            terminal = "terminalPooid";
+        }
+
+        $('#action-modal').modal('show');
+        $('#success-or-failure').show();
+        $('#success-or-failure').html('<div class="p-3">The customers payment for order #' + newPbl.data.reference + ' has been sent to the terminal, waiting for result...</div>');
+        newPbl.sendQRToTerminal(terminal).then(function (result) {
+            console.log(result);
+        });
+    }
+    $('#action-modal').modal('show');
 }
 
 let newPbl = new PayByLink(paymentDataObj);
@@ -253,6 +283,7 @@ function payAtTerminal() {
     $('#success-or-failure').hide();
     // If a second terminal is setup and this is the initial click, let them choose
     if (adyenConfig.terminalPooidTwo && this.id == "pay-at-terminal") {
+        terminalOrQr = 'terminal';
         $('#choose-terminal').show();
     } else {
         $('#choose-terminal').hide();
@@ -266,9 +297,15 @@ function payAtTerminal() {
 
         $('#success-or-failure').show();
         $('#success-or-failure').html('<div class="p-3">The customers payment for order #' + terminalApi.data.reference + ' has been sent to the terminal, waiting for result...</div>');
-        terminalApi.cloudApiRequest(terminal).then(function (result) {
-            console.log(result);
-        });
+        if (terminalOrQr == 'terminal') {
+            terminalApi.cloudApiRequest(terminal).then(function (result) {
+                console.log(result);
+            });
+        } else {
+            newPbl.sendQRToTerminal(terminal).then(function (result) {
+                console.log(result);
+            });
+        }
     }
     $('#action-modal').modal('show');
 }
@@ -350,9 +387,9 @@ const donationConfig = {
         currency: "GBP",
         values: [300, 500, 1000]
     },
-    backgroundUrl: "/img/Adyen-Z.jpeg",
+    backgroundUrl: "https://www.unhcr.org/images/sharelogotwtr.jpg",
     description: "Adyen Giving Demo - Allow customers to donate to the charity of your choice during the checkout process. The donation goes 100% to the charity, and goes directly to their bank account, taking you out of the money flow entirely.",
-    logoUrl: "/img/adyen-vector-logo-small.png",
+    logoUrl: "",
     name: "",
     url: "https://www.adyen.com/",
     showCancelButton: false,
@@ -362,6 +399,7 @@ const donationConfig = {
 
 // Event Handlers for page
 document.querySelector('#create-qr-code').addEventListener("click", generateQrCode);
+document.querySelector('#send-qr-terminal').addEventListener("click", sendQRtoTerminal);
 $(".pay-at-terminal").on('click', payAtTerminal);
 // document.querySelector('#send-email').addEventListener("click", sendEmail);
 
