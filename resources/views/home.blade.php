@@ -6,7 +6,7 @@
       <div class="card">
         <div class="card-body">
           <div class="btn-group-vertical w-100">
-            <button id="editDemo" type="button" class="btn btn-primary bkg-brand-color-one bdr-brand-color-two mt-2"><a class="txt-brand-color-two" href="/create-demo">Edit Demo</a></button>
+            <button id="editDemo" type="button" class="btn btn-primary bkg-brand-color-one bdr-brand-color-two mt-2"><a class="txt-brand-color-two" href="/create-demo-manual">Edit Demo</a></button>
             <button id="downloadDemo" type="button" class="btn btn-primary bkg-brand-color-one bdr-brand-color-two mt-2"><a id="downloadDemoHref" class="txt-brand-color-two" href="" download>Download Configuration</a></button>
             <button id="callCenter" type="button" class="btn btn-primary bkg-brand-color-one bdr-brand-color-two mt-2"><a class="txt-brand-color-two" href="/custom-call-center">Call Center</a></button>
             <button id="unifiedCommerce" type="button" class="btn btn-primary bkg-brand-color-one bdr-brand-color-two mt-2"><a class="txt-brand-color-two" href="/unified-commerce">Unified Commerce</a></button>

@@ -9,7 +9,6 @@ let paymentDataObj = {
     "merchantAccount": adyenConfig.merchantAccount,
     "shopperLocale": "en-GB",
     "reference": uuidv4(),
-    "shopperReference": uuidv4(),
     "shopperEmail": window.demoSession.demoEmail ? window.demoSession.demoEmail : "",
     "additionalData": {
         // Leave this here, doesn't really hurt anything and can help with certain demo use cases
@@ -99,7 +98,8 @@ function getPaymentMethods() {
             // We currently can use onChahge for the cost estimate API
             onChange: function (state, component) {
                 if (state.data.paymentMethod && state.data.paymentMethod.encryptedCardNumber && window.demoSession.enableEcom_costEstimate === "on") {
-                    checkoutApi.getCostEstimate(state.data.paymentMethod.encryptedCardNumber).then(function (result) {
+                    checkoutApi.getCostEstimate(state.data.paymentMethod.encryptedCardNumber).then(function (fullResult) {
+                        let result = fullResult.response;
                         // If the result is success AND the surchargeType is not ZERO, we can increase the checkout price
                         // and show the UI
                         if (result.resultCode == "Success" && result.surchargeType != "ZERO") {
@@ -126,16 +126,16 @@ function getPaymentMethods() {
             },
             onBalanceCheck: function (resolve, reject, data) {
                 checkoutApi.checkBalance(data).then(function (result) {
-                    if (result.resultCode === "NotEnoughBalance") {
-                        checkoutApi.setData("giftAmount", result.balance);
+                    if (result.response.resultCode === "NotEnoughBalance") {
+                        checkoutApi.setData("giftAmount", result.response.balance);
                     }
-                    resolve(result);
+                    resolve(result.response);
                 });
             },
             onOrderRequest: function (resolve, reject, data) {
                 // Make a POST /orders request
                 checkoutApi.createOrder(uuidv4()).then(function (result) {
-                    resolve(result);
+                    resolve(result.response);
                 });
             },
             onOrderCancel: function(order) {

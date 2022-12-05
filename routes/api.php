@@ -37,8 +37,10 @@ Route::post('/webhooks/platform', 'WebhooksController@handlePlatformNotification
 // Hospitality routes
 Route::prefix('hospitality')->group(function () {
     Route::post('/addRegistrant', 'HospitalityController@addRegistrant');
+    Route::post('/removeRegistrant', 'HospitalityController@removeRegistrant');
     Route::patch('/updateRegistrant/{id}', 'HospitalityController@updateRegistrant');
     Route::post('/addLineItem', 'HospitalityController@addLineItem');
     Route::post('/removeLineItem', 'HospitalityController@removeLineItem');
     Route::post('/payFinalBill', 'HospitalityController@payFinalBill');
+    Route::post('/showVirtualReceipt', 'HospitalityController@showVirtualReceipt');
 });

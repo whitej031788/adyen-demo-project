@@ -143,6 +143,31 @@ class AdyenController extends Controller
         }
     }
 
+    public function terminalCloudDisplayRequest(Request $request, $isInternal = false, $extraParams = null)
+    {
+        $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
+        
+        if ($request->has('terminal')) {
+            $requestTerminal = $request->terminal;
+        } else {
+            $requestTerminal = "terminalPooid";
+        }
+
+        $pooid = \Config::get('adyen.' . $requestTerminal);
+
+        $params = $request->all();
+
+        $poiRequest = $this->terminalDisplayRequestObject($params['data'], $pooid, $extraParams);
+
+        $result = $this->makeAdyenRequest("runTenderSync", $poiRequest, false, $terminalService);
+
+        if (!$isInternal) {
+            return response()->json($result);
+        } else {
+            return $result;
+        }
+    }
+
     public function terminalCloudCardAcquisitionAbortRequest(Request $request, $isInternal = false, $extraParams = null)
     {
         $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
@@ -572,6 +597,38 @@ class AdyenController extends Controller
                                 array(
                                     'TotalAmount' => (float)($params['amount']['value'] / 100)
                                 ),
+                        ),
+                ),
+        );
+
+        return $saleToPoiRequest;
+    }
+
+    private function terminalDisplayRequestObject($params, $pooid, $extraParams)
+    {
+        $saleToPoiRequest = array(
+            'SaleToPOIRequest' =>
+                array(
+                    'MessageHeader' =>
+                        array(
+                            'ProtocolVersion' => '3.0',
+                            'MessageClass' => 'Device',
+                            'MessageCategory' => 'Display',
+                            'MessageType' => 'Request',
+                            'ServiceID' => $this->generateRandomString(),
+                            'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
+                            'POIID' => $pooid,
+                        ),
+                    'DisplayRequest' =>
+                        array(
+                            'DisplayOutput' =>
+                                array(
+                                    array(
+                                        "Device" => "CustomerDisplay",
+                                        "InfoQualify" => "Display",
+                                        "OutputContent" => array("OutputFormat" => "XHTML", "OutputXHTML" => $extraParams['virtualReceipt'])
+                                    )
+                                )
                         ),
                 ),
         );

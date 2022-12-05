@@ -42,6 +42,13 @@ function payFinalBill() {
     });
 }
 
+function showFinalReceipt() {
+    hospitalityHelper.setData('reference', uuidv4());
+    hospitalityHelper.showVirtualReceipt().then((result) => {
+        console.log(result);
+    });
+}
+
 function buildLineItemsTable(result) {
     // Here we want to populate the customer name, and build the table of their current bill
     entireTotal = 0;
@@ -60,6 +67,7 @@ function buildLineItemsTable(result) {
         entireTotal += lineTotal;
     }
     let finalTotalRow = "<tr><td id='grand-total' class='font-weight-bold text-capitalize font-italic' colspan='5'>Grand Total: £" + parseFloat(entireTotal).toFixed(2) + "</td>";
+    finalTotalRow += "<td><button id='show-receipt' class='btn btn-secondary txt-brand-color-one bkg-brand-color-two bdr-brand-color-two' type='button'>Show Receipt</button></td>";
     finalTotalRow += "<td><button id='pay-bill' class='btn btn-secondary txt-brand-color-one bkg-brand-color-two bdr-brand-color-two' type='button'>Pay Bill</button></td>";
     finalTotalRow += "</tr>";
     $('#line-items-table > table > tbody').append(finalTotalRow);
@@ -103,4 +111,5 @@ function quickLineItem() {
 document.getElementById('cash-register').addEventListener("submit", submitLineItem);
 $(document.body).on("click", ".remove-line-item", removeLineItem);
 $(document.body).on("click", "#pay-bill", payFinalBill);
+$(document.body).on("click", "#show-receipt", showFinalReceipt);
 $(document.body).on("click", ".quick-checkout", quickLineItem);

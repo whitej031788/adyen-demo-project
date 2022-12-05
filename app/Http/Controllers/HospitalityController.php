@@ -18,32 +18,88 @@ class HospitalityController extends Controller
         $cardAcqResp = (new AdyenController)->terminalCloudCardAcquisitionRequest($request, true);
         // Is the additional response base64 encoded, and does it exist with the NFC UID
         $additionalResponse = $cardAcqResp['response']['SaleToPOIResponse']['CardAcquisitionResponse']['Response']['AdditionalResponse'];
-        if (base64_encode(base64_decode($additionalResponse, true)) === $additionalResponse) {
-            $jsonString = base64_decode($additionalResponse, true);
-            $data = json_decode($jsonString, TRUE);
-            $nfcUid = $data['additionalData']['NFC.uid'];
-            $store = $data['store'];
-        } else {
-            // It's just key value pairs
-            parse_str($additionalResponse, $output);
-            $nfcUid = $output['NFC_uid'];
-            $store = $output['store'];
-        }
+        list($nfcUid, $store) = $this->findNfcUidAndStore($additionalResponse);
 
-        $registrant->nfc_uid = $nfcUid;
-        if ($registrant->save()) {
+        $registrantExist = Registrant::where('nfc_uid', '=', $nfcUid)->orWhere('email', '=', $request->email)->get();
+
+        // If it's empty, thats good, it means we don't have that NFC UID or email in the database and can add them
+        if ($registrantExist->isEmpty()) {
+            $registrant->nfc_uid = $nfcUid;
+            if ($registrant->save()) {
+                $params = array();
+                $params['outputText'] = array(
+                    array(
+                        "Text" => "Thank you"
+                    ),
+                    array(
+                        "Text" => "The customer is successfully registered"
+                    )
+                );
+                $params['predefinedContent'] = "AcceptedAnimated";
+                $displayResult = (new AdyenController)->terminalCloudCardAcquisitionAbortRequest($request, true, $params);
+                return response()->json([
+                    'data' => ['email' => $registrant->email, 'id' => $registrant->id, 'shopperReference' => $registrant->shopperReference(), 'nfcUid' => $nfcUid],
+                    'message' => 'Registration Successful'
+                ]);
+            }
+        } else {
+            $registrantExist = $registrantExist[0];
             $params = array();
             $params['outputText'] = array(
                 array(
-                    "Text" => "Thank you"
+                    "Text" => "Failure"
                 ),
                 array(
-                    "Text" => "The customer is successfully registered"
+                    "Text" => "That email or device is already registered"
+                )
+            );
+            $params['predefinedContent'] = "DeclinedAnimated";
+            $displayResult = (new AdyenController)->terminalCloudCardAcquisitionAbortRequest($request, true, $params);
+            return response()->json([
+                'data' => ['email' => $registrantExist->email, 'id' => $registrantExist->id, 'shopperReference' => $registrantExist->shopperReference(), 'nfcUid' => $registrantExist->nfc_uid],
+                'message' => 'Email or NFC device already registered'
+            ], 422);
+        }
+    }
+
+    public function removeRegistrant(Request $request)
+    {
+        $cardAcqResp = (new AdyenController)->terminalCloudCardAcquisitionRequest($request, true);
+        $additionalResponse = $cardAcqResp['response']['SaleToPOIResponse']['CardAcquisitionResponse']['Response']['AdditionalResponse'];
+        list($nfcUid, $store) = $this->findNfcUidAndStore($additionalResponse);
+
+        $registrant = Registrant::where('nfc_uid', '=', $nfcUid)->orWhere('email', '=', $request->email)->get();
+        if ($registrant->isEmpty()) {
+            $params = array();
+            $params['outputText'] = array(
+                array(
+                    "Text" => "Error"
+                ),
+                array(
+                    "Text" => "We could not find that registrant record."
+                )
+            );
+            $params['predefinedContent'] = "DeclinedAnimated";
+            $displayResult = (new AdyenController)->terminalCloudCardAcquisitionAbortRequest($request, true, $params);
+            return response()->json(['message' => 'Cannot find customer record'], 404); // Status code here
+        } else {
+            $registrant = $registrant[0];
+            $registrant->delete();
+            $params = array();
+            $params['outputText'] = array(
+                array(
+                    "Text" => "Success"
+                ),
+                array(
+                    "Text" => "Registrant removed from system"
                 )
             );
             $params['predefinedContent'] = "AcceptedAnimated";
             $displayResult = (new AdyenController)->terminalCloudCardAcquisitionAbortRequest($request, true, $params);
-            return response()->json(['id' => $registrant->id, 'shopperReference' => $registrant->shopperReference(), 'nfcUid' => $nfcUid]);
+            return response()->json([
+                'data' => ['email' => $registrant->email, 'id' => $registrant->id, 'shopperReference' => $registrant->shopperReference(), 'nfcUid' => $registrant->nfc_uid],
+                'message' => 'Registrant removed from system'
+            ]); // Status code here
         }
     }
 
@@ -76,17 +132,7 @@ class HospitalityController extends Controller
         $params = $request->all();
         // Is the additional response base64 encoded, and does it exist with the NFC UID
         $additionalResponse = $cardAcqResp['response']['SaleToPOIResponse']['CardAcquisitionResponse']['Response']['AdditionalResponse'];
-        if (base64_encode(base64_decode($additionalResponse, true)) === $additionalResponse) {
-            $jsonString = base64_decode($additionalResponse, true);
-            $data = json_decode($jsonString, TRUE);
-            $nfcUid = $data['additionalData']['NFC.uid'];
-            $store = $data['store'];
-        } else {
-            // It's just key value pairs
-            parse_str($additionalResponse, $output);
-            $nfcUid = $output['NFC_uid'];
-            $store = $output['store'];
-        }
+        list($nfcUid, $store) = $this->findNfcUidAndStore($additionalResponse);
         $lineItemData = $params['data'];
         // Let's spoof this until I can get a test card
         // Assume we have gotten a shopper reference from the result
@@ -154,6 +200,24 @@ class HospitalityController extends Controller
         $lineItem = LineItem::where('registrant_id', intval($request->registrantId))->where('id', intval($request->lineItemId))->first();
         $res = $lineItem->delete();
         return response()->json($res);
+    }
+
+    public function showVirtualReceipt(Request $request)
+    {
+        $registrant = Registrant::findOrFail(intval($request->registrantId));
+        $runningTotal = 0;
+
+        foreach($registrant->lineItemsUnpaid as $lineItem) {
+            $runningTotal += ($lineItem->unit_price * $lineItem->quantity);
+        }
+
+        $params = array();
+
+        // TESTING VIRTUAL RECEIPT
+        $params['virtualReceipt'] = $this->generateVirtualReceiptData($registrant->lineItemsUnpaid, $runningTotal);
+        $displayResult = (new AdyenController)->terminalCloudDisplayRequest($request, true, $params);
+
+        return response()->json($displayResult['response']['SaleToPOIResponse']);
     }
 
     public function payFinalBill(Request $request)
@@ -236,5 +300,69 @@ class HospitalityController extends Controller
         ]]; 
  
         return $jayParsedAry;
+    }
+
+    private function findNfcUidAndStore($additionalResponse)
+    {
+        if (base64_encode(base64_decode($additionalResponse, true)) === $additionalResponse) {
+            $jsonString = base64_decode($additionalResponse, true);
+            $data = json_decode($jsonString, TRUE);
+            $nfcUid = $data['additionalData']['NFC.uid'];
+            $store = $data['store'];
+        } else {
+            // It's just key value pairs
+            parse_str($additionalResponse, $output);
+            $nfcUid = $output['NFC_uid'];
+            $store = $output['store'];
+        }
+
+        return array($nfcUid, $store);
+    }
+
+    private function generateVirtualReceiptData($arrayOfItems, $runningTotal)
+    {
+        $xml = htmlspecialchars('<?xml version="1.0" encoding="UTF-8"?>');
+        
+        $xml .= htmlspecialchars('<screen name="virtual-receipt-with-qr-code.xslt">');
+        $xml .= htmlspecialchars('<receipt>');
+        $xml .= htmlspecialchars('
+        <qrcodeblock>
+            <qrheader>
+                <description>Scan to access member card</description>
+            </qrheader>
+            <call-to-action>Scan</call-to-action>
+            <qrcodedata>https%3A%2F%2Fwww%2Eadyen%2Ecom%2Fsignup%2F%3Flocation%3Damsterdam%26store%3DStore42%26POSID%3DREG0042%26hash%3DAAhbcdfjkbckjwbnadsjkn4%3D</qrcodedata>
+            <qrfooter>
+                <description>Don"t have the app? Scan to download</description>
+            </qrfooter>
+        </qrcodeblock>
+        ');
+        $xml .= htmlspecialchars("<list-header>Your Bill</list-header>");
+        $xml .= htmlspecialchars('<lines>');
+
+        foreach($arrayOfItems as $lineItem) {
+            $xml .= htmlspecialchars('<lineitem>');
+            $xml .= htmlspecialchars('<count>' . $lineItem->quantity . '</count>');
+            $xml .= htmlspecialchars('<description>' . $lineItem->item_name . '</description>');
+            $xml .= htmlspecialchars('<amount>');
+            $xml .= htmlspecialchars('<currency>£</currency>');
+            $xml .= htmlspecialchars('<value>' . number_format((float)($lineItem->unit_price / 100), 2, '.', '') . '</value>');
+            $xml .= htmlspecialchars('</amount>');
+            $xml .= htmlspecialchars('</lineitem>');
+        }
+
+        $xml .= htmlspecialchars('</lines>');
+        $xml .= htmlspecialchars('<total>');
+        $xml .= htmlspecialchars('<description>Total amount:</description>
+        <amount>
+            <currency>£</currency>
+            <value>' . number_format((float)($runningTotal / 100), 2, '.', '') . '</value>
+        </amount>
+        ');
+        $xml .= htmlspecialchars('</total>');
+        $xml .= htmlspecialchars('</receipt>');
+        $xml .= htmlspecialchars('</screen>');
+
+        return base64_encode(htmlspecialchars_decode($xml));
     }
 }

@@ -24,33 +24,56 @@ function getRegistrantInfo() {
     };
 }
 
-function handleResult(result) {
+function handleResult(result, isError) {
     $('#register-success').hide();
     $('#register-error').hide();
-    if (result.shopperReference) {
-        $('#shopperReference').text(result.shopperReference);
-        $('#nfcUid').text(result.nfcUid);
+    if (!isError) {
+        $('#shopperReference').text(result.data.shopperReference);
+        $('#emailResult').text(result.data.email);
+        $('#nfcUid').text(result.data.nfcUid);
+        $('#success-message').text(result.message);
         $('#register-success').show();
     } else {
+        let msg = result.responseJSON.message;
+        let data = result.responseJSON.data;
+        $('#error-message').text(msg);
+        $('#error-data').text(JSON.stringify(data));
         $('#register-error').show();
     }
 }
 
 function registerIndividual(e) {
     e.preventDefault();
+    $('#register-success').hide();
+    $('#register-error').hide();
     let isCardEnabled = $('#enable-card').is(":checked");
     if (isCardEnabled) {
         card.submit();
     } else {
         let hospitalityHelper = new HospitalityHelper(getRegistrantInfo());
         hospitalityHelper.addRegistrant().then((result) => {
+            console.log(result);
             handleResult(result);
         },
         (error) => {
             console.error(error);
-            handleResult(error);
+            handleResult(error, true);
         });
     }
+}
+
+function removeRegistrant(e) {
+  e.preventDefault();
+  $('#register-success').hide();
+  $('#register-error').hide();
+  let hospitalityHelper = new HospitalityHelper(getRegistrantInfo());
+  hospitalityHelper.removeRegistrant().then((result) => {
+      handleResult(result);
+  },
+  (error) => {
+      console.error(error);
+      handleResult(error, true);
+  });
 }
 
 function handleOnSubmit(state, component) {
@@ -90,7 +113,7 @@ function handleOnSubmit(state, component) {
     },
     (error) => {
         console.error(error);
-        handleResult(error);
+        handleResult(error, true);
     });
   };
 
@@ -135,3 +158,4 @@ var configuration = {
   // Event handlers
   document.getElementById('register-individual').addEventListener("submit", registerIndividual);
   document.getElementById('enable-card').addEventListener("change", addRemoveCard);
+  document.getElementById('remove-registrant').addEventListener("click", removeRegistrant);

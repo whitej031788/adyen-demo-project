@@ -52,15 +52,21 @@
                 </button>
               </div>
               <div id="register-success" class="mt-3 alert alert-success col-md-12" style="display:none;">
-                <h3>Registration Successful</h3>
-                <p>Their registrant ID in the system is: <span class="bold italics" id="shopperReference"></span></p>
-                <p>Their detected NFC UID in the system is: <span class="bold italics" id="nfcUid"></span></p>
+                <h3 id="success-message"></h3>
+                <p>Their registrant ID was: <span class="bold italics" id="shopperReference"></span></p>
+                <p>Their NFC UID was: <span class="bold italics" id="nfcUid"></span></p>
+                <p>Their email was: <span class="bold italics" id="emailResult"></span></p>
               </div>
               <div id="register-error" class="mt-3 alert alert-danger col-md-12" style="display:none;">
-                <p>There was an issue registering the person. Please try again, and make sure the email is unique</p>
+                <p>There was an issue completing the request: <span id="error-message"></span><br /><pre id="error-data"></pre></p>
               </div>
             </div>
           </form>
+          <div class="col-md-12 mt-3">
+              <button type="submit"
+                  class="btn btn-warning" id="remove-registrant" data-toggle="tooltip" data-placement="right" title="Scan the NFC device to remove the registrant from the system">Remove Registrant
+              </button>
+            </div>
         </div>
       </div>
     </div>

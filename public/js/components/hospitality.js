@@ -20,6 +20,15 @@ export class HospitalityHelper {
         });
     }
 
+    removeRegistrant() {
+        return $.ajax({
+            url: '/api/hospitality/removeRegistrant',
+            dataType: 'json',
+            type: 'post',
+            data: this.data
+        });
+    }
+
     updateRegistrant(data) {        
         return $.ajax({
             url: '/api/hospitality/updateRegistrant/' + this.data.id,
@@ -50,6 +59,15 @@ export class HospitalityHelper {
     payFinalBill() {
         return $.ajax({
             url: '/api/hospitality/payFinalBill',
+            dataType: 'json',
+            type: 'post',
+            data: {registrantId: this.data.registrantId, data: this.data}
+        });
+    }
+
+    showVirtualReceipt() {
+        return $.ajax({
+            url: '/api/hospitality/showVirtualReceipt',
             dataType: 'json',
             type: 'post',
             data: {registrantId: this.data.registrantId, data: this.data}

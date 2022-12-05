@@ -145,6 +145,9 @@
         s.async = true;
         var e = document.getElementsByTagName('script')[0];
         e.parentNode.insertBefore(s, e);
+
+        // Enable tooltips
+        $('[data-toggle="tooltip"]').tooltip();
       })(window);
     </script>
     <!-- End of Survicate code -->
