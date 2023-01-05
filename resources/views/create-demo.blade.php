@@ -154,6 +154,12 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="technicalDemo" name="technicalDemo">
+                                <label class="form-check-label" for="technicalDemo">Is this a technical demo?</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
                                     <input type="checkbox" class="form-check-input checkbox-lg expand-under-ul"
                                         name="enableMoto" id="enableMoto" checked="checked">
                                     <label class="form-check-label checkbox-lg" for="enableMoto">MOTO</label>
