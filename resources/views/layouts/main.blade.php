@@ -125,10 +125,6 @@
         </div>
       </div>
     </div>
-
-    <div class="container-fluid p-0" style="width: 800px; height: 1000px;">
-      <iframe src="http://localhost:8001" height="1000" width="800" />
-    </div>
     <script src="https://pay.google.com/gp/p/js/pay.js"></script>
 
     <script src="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/5.27.0/adyen.js"></script>
