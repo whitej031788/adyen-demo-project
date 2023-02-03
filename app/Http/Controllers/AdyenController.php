@@ -69,6 +69,22 @@ class AdyenController extends Controller
         return response()->json($result);
     }
 
+    public function makeCashPayment(Request $request, $isInternal = false)
+    {
+        $params = $request->all();
+        $curlUrl = "https://pal-test.adyen.com/pal/servlet/CustomPayment/beginCustomPayment";
+
+        $result = $this->makeAdyenRequest($curlUrl, $params, true, false);
+
+        if (!$isInternal) {
+            return response()->json($result);
+        } else {
+            return $result;
+        }
+
+        return response()->json($result);
+    }
+
     public function sendQRToTerminal(Request $request, $isInternal = false)
     {
         $params = $request->all();

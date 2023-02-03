@@ -54,6 +54,22 @@ export class CheckoutApi {
         });
     }
 
+    makeCashPayment(data) {
+        let combinedData = Object.assign(this.data, data);
+
+        delete combinedData.additionalData;
+        delete combinedData.countryCode;
+        delete combinedData.shopperEmail;
+        delete combinedData.shopperLocale;
+
+        return $.ajax({
+            url: '/api/adyen/makeCashPayment',
+            dataType: 'json',
+            type: 'post',
+            data: combinedData
+        });       
+    }
+
     adjustPayment(data) {
         return $.ajax({
             url: '/api/adyen/adjustPayment',

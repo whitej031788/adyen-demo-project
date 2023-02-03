@@ -84,7 +84,7 @@
                                 <h5 style="text-decoration: underline;">Cash Register</h5>
                                 <div class="btn-group-vertical">
                                     <button type="button"
-                                            class="btn btn-primary txt-brand-color-one bkg-brand-color-two bdr-brand-color-two"
+                                            class="btn btn-primary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two"
                                             id="create-qr-code">QR Code
                                     </button>
                                     <button type="button"
@@ -92,13 +92,13 @@
                                             id="send-qr-terminal">QR - Terminal
                                     </button>
                                     <button type="button"
-                                            class="btn btn-secondary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two pay-at-terminal"
+                                            class="btn btn-primary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two pay-at-terminal"
                                             id="pay-at-terminal">Pay @ Terminal
                                     </button>
-                                    <!-- <button type="button"
-                                            class="btn btn-secondary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two"
-                                            id="send-email">Send Email
-                                    </button> -->
+                                    <button type="button"
+                                            class="btn btn-primary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two"
+                                            id="cash-payment">Cash / Check
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -170,6 +170,40 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="cash-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Cash / Check Payment</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center" id="cash-content">
+                        <div id="cash-modal-body">
+                            <div class="custom-control custom-switch mb-2">
+                                <input type="checkbox" class="custom-control-input" id="cash-or-check">
+                                <input type="hidden" id="cash-or-check-value" value="cash">
+                                <label class="custom-control-label" for="cash-or-check" id="cash-option">Cash</label>
+                                <label class="custom-control-label" for="cash-or-check" id="check-option" style="display: none;">Check</label>
+                            </div>
+                            <div class="form-group" id="cash-modal-body">
+                                <input type="number" step='0.01' class="form-control" name="cashOrCheckAmount" id="cashOrCheckAmount"
+                                    aria-describedby="cashOrCheckAmountHelp" placeholder="Enter payment amount">
+                                <small id="cashOrCheckAmountHelp" class="form-text text-muted">Enter the cash or check amount - this can be less than the full amount</small>
+                            </div>
+                        </div>
+                        <div class="p-3" id="cash-success-or-failure" style="display: none;">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn primary txt-brand-color-one bkg-brand-color-two bdr-brand-color-two" id="submit-cash-payment">Submit</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>

@@ -61,6 +61,50 @@ function sendQRtoTerminal() {
     $('#action-modal').modal('show');
 }
 
+function showCashPayment() {
+    $('#cash-modal').modal('show');
+}
+
+function cashOrCheckChange(event) {
+    if (event.target.checked) {
+        $('#cash-option').hide();
+        $('#check-option').show();
+        $('#cash-or-check-value').val('check');
+    } else {
+        $('#cash-option').show();
+        $('#check-option').hide();
+        $('#cash-or-check-value').val('cash');
+    }
+}
+
+function submitCashPayment() {
+    let cashAmount = $('#cashOrCheckAmount').val();
+    let cashCurrency = "GBP"; // Hard code this for now
+
+    checkoutApi.setData('amount', {value: (cashAmount * 100), currency: cashCurrency});
+
+    let localData = {
+        selectedBrand: 'c_cash',
+        shopperInteraction: "Ecommerce",
+        metadata: {
+            "paymentMethod": $('#cash-or-check-value').val(),
+            "storeID": "1234",
+            "registerID": "1"
+        }
+    };
+
+    checkoutApi.makeCashPayment(localData).then(function (result) {
+        console.log(result);
+        if (result.response && result.response.pspReference) { // Success
+            $('#cash-modal-body').hide();
+            $('#cash-success-or-failure').show();
+            $('#cash-success-or-failure').html('<div class="p-3 alert-success">The customers cash payment of ' + parseFloat(paymentDataObj.amount.value / 100) + ' for order #' + paymentDataObj.reference + ' has been recorded successfully</div>');
+        } else { // Error
+
+        }
+    });
+}
+
 let newPbl = new PayByLink(paymentDataObj);
 let terminalApi = new TerminalApi(paymentDataObj);
 let checkoutApi = new CheckoutApi(paymentDataObj);
@@ -347,12 +391,6 @@ function countryChange() {
     getPaymentMethods();
 }
 
-function sendEmail() {
-    newPbl.sendLinkEmail().then(function (result) {
-        alert("The link has been sent to the shopper's email address");
-    });
-}
-
 function chatShow() {
     $('#chat-modal').modal('show');
 }
@@ -400,6 +438,9 @@ const donationConfig = {
 // Event Handlers for page
 document.querySelector('#create-qr-code').addEventListener("click", generateQrCode);
 document.querySelector('#send-qr-terminal').addEventListener("click", sendQRtoTerminal);
+document.querySelector('#cash-payment').addEventListener("click", showCashPayment);
+document.querySelector('#cash-or-check').addEventListener("change", cashOrCheckChange);
+document.querySelector('#submit-cash-payment').addEventListener("click", submitCashPayment);
 $(".pay-at-terminal").on('click', payAtTerminal);
 // document.querySelector('#send-email').addEventListener("click", sendEmail);
 
