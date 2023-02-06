@@ -6,21 +6,33 @@ import {DemoStorage} from "./components/demo-storage.js";
 
 var terminalOrQr = 'terminal';
 
+let initialEmail = window.demoSession.demoEmail ? window.demoSession.demoEmail : "";
+let initialAmount = window.demoSession.checkoutAmount ? parseFloat(window.demoSession.checkoutAmount) * 100 : 4498;
+
 let paymentDataObj = {
     "countryCode": "GB",
     "merchantAccount": adyenConfig.merchantAccount,
     "shopperLocale": "en-GB",
     "reference": uuidv4(),
-    "shopperEmail": window.demoSession.demoEmail ? window.demoSession.demoEmail : "",
+    "shopperEmail": initialEmail,
     "additionalData": {
         // Leave this here, doesn't really hurt anything and can help with certain demo use cases
         "authorisationType": "PreAuth"
     },
     "amount": {
-        "value": window.demoSession.checkoutAmount ? parseFloat(window.demoSession.checkoutAmount) * 100 : 4498,
+        "value": initialAmount,
         "currency": "GBP"
     }
 };
+
+// This object stores stuff about the implementation, not necessarily relevant to Adyen API requests
+// as an example - the original amount of the basket, which we need for partial payments, but
+// isn't really relevant to Adyen (as each payment request just needs that payment amount)
+// * NEED to figure out a better way to store all this state in ES6, but just dont have time
+let projectDataObj = {
+    originalCheckoutAmount: initialAmount,
+    originalDemoEmail: initialEmail
+}
 
 function generateQrCode() {
     $('#qr-code').empty();
@@ -94,13 +106,22 @@ function submitCashPayment() {
     };
 
     checkoutApi.makeCashPayment(localData).then(function (result) {
-        console.log(result);
         if (result.response && result.response.pspReference) { // Success
+            let remainingAmount = projectDataObj.originalCheckoutAmount - (cashAmount * 100);
+            $('#submit-cash-payment').attr('disabled', true);
             $('#cash-modal-body').hide();
             $('#cash-success-or-failure').show();
-            $('#cash-success-or-failure').html('<div class="p-3 alert-success">The customers cash payment of ' + parseFloat(paymentDataObj.amount.value / 100) + ' for order #' + paymentDataObj.reference + ' has been recorded successfully</div>');
-        } else { // Error
+            $('#cash-success-or-failure').html('<div class="p-3 alert-success">The customers cash payment of ' + parseFloat(paymentDataObj.amount.value / 100) + ' for order #' + paymentDataObj.reference + ' has been recorded successfully.<p>The outstanding amount is ' + parseFloat(remainingAmount / 100) + '</p></div>');
 
+            // Update the paymentData model for next payment, which is for remaining amount
+            paymentDataObj.amount.value = remainingAmount;
+            newPbl = new PayByLink(paymentDataObj);
+            terminalApi = new TerminalApi(paymentDataObj);
+            checkoutApi = new CheckoutApi(paymentDataObj);
+            getPaymentMethods();
+        } else { // Error
+            $('#cash-success-or-failure').show();
+            $('#cash-success-or-failure').html('<div class="p-3 alert-error">The cash payment has not been recorded in the system. Please try again, or record this payment manually in the Adyen customer area</div>');
         }
     });
 }
@@ -480,11 +501,25 @@ let pusher = new Pusher('47e2eb4a3e296716c3fd', {
 var channel = pusher.subscribe('adyen-demo');
 
 channel.bind('payment-success', function (data) {
-    if (newPbl.data.reference == data.merchantReference) {
+    if (data.eventCode == "AUTHORISATION" && data.success == 'true' && (newPbl.data.reference == data.merchantReference)) {
         $('#qr-code').empty();
         $('#qr-code').hide();
         $('#choose-terminal').hide();
         $('#success-or-failure').show();
         $('#success-or-failure').html('<div class="alert-success p-3"><div class="text-center"><i class="fas fa-check-circle" style="font-size: 40px;"></i></div><div>The customers payment for order #' + data.merchantReference + ' has been processed successfully</div></div>');
-    }
+    } else if (data.SaleToPOIRequest && data.SaleToPOIRequest.DisplayRequest) {
+        renderDisplayNotification(data.SaleToPOIRequest.DisplayRequest.DisplayOutput[0]);
+    } // Terminal Display Notifictions
 });
+
+function renderDisplayNotification(notification) {
+    $('#display-notifications').show();
+    let predefContent = notification.OutputContent.PredefinedContent.ReferenceID;
+    let searchParams = new URLSearchParams(predefContent);
+    let timeStamp = searchParams.get('TimeStamp');
+    let transactionId = searchParams.get('TransactionID');
+    let event = searchParams.get('event');
+    let result = searchParams.get('Result') || "Pending";
+    $('#display-notifications').html('<p>Time Stamp: ' + timeStamp + '</p><p>Transaction ID: ' + transactionId + '</p><p>Event: ' + event + '</p><p>Result: ' + result + '</p>');
+    $("#display-notifications").fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+}

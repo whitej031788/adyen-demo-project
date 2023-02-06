@@ -30,7 +30,7 @@ export class CheckoutApi {
     }
 
     submitPayment(state, component) {
-        let combinedData = Object.assign(this.data, state.data);
+        let combinedData = Object.assign(state.data, this.data);
 
         // Allow 3DS2
         if (!combinedData.additionalData) {
@@ -54,8 +54,8 @@ export class CheckoutApi {
         });
     }
 
-    makeCashPayment(data) {
-        let combinedData = Object.assign(this.data, data);
+    makeCashPayment(submitData) {
+        let combinedData = Object.assign(submitData, this.data);
 
         delete combinedData.additionalData;
         delete combinedData.countryCode;

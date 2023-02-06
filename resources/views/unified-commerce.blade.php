@@ -145,7 +145,10 @@
                         </div>
                         <div class="p-3" id="qr-code" style="display: none;">
                         </div>
-                        <div class="p-3" id="success-or-failure" style="display: none;">
+                        <div class="p-3 mb-1" id="success-or-failure" style="display: none;">
+                        </div>
+                        <div class="p-3" id="display-notifications" style="display: none;">
+
                         </div>
                     </div>
                     <div class="modal-footer">
