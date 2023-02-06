@@ -295,6 +295,12 @@ class AdyenController extends Controller
 
         $pooid = \Config::get('adyen.' . $requestTerminal);
 
+        $servId = $requestData['serviceId'];
+
+        if (!$servId) {
+            $servId = $this->generateRandomString();
+        }
+
         $saleToPoiRequest = array(
             'SaleToPOIRequest' =>
                 array(
@@ -304,7 +310,7 @@ class AdyenController extends Controller
                             'MessageClass' => 'Service',
                             'MessageCategory' => 'Payment',
                             'MessageType' => 'Request',
-                            'ServiceID' => $this->generateRandomString(),
+                            'ServiceID' => $servId,
                             'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
                             'POIID' => $pooid,
                         ),

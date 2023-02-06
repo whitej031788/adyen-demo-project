@@ -362,12 +362,13 @@ function payAtTerminal() {
 
         $('#success-or-failure').show();
         $('#success-or-failure').html('<div class="p-3">The customers payment for order #' + terminalApi.data.reference + ' has been sent to the terminal, waiting for result...</div>');
+        terminalApi.setData('serviceId', makeServiceId(8));
         if (terminalOrQr == 'terminal') {
             terminalApi.cloudApiRequest(terminal).then(function (result) {
                 console.log(result);
             });
         } else {
-            newPbl.sendQRToTerminal(terminal).then(function (result) {
+            terminalApi.sendQRToTerminal(terminal).then(function (result) {
                 console.log(result);
             });
         }
@@ -501,6 +502,8 @@ let pusher = new Pusher('47e2eb4a3e296716c3fd', {
 var channel = pusher.subscribe('adyen-demo');
 
 channel.bind('payment-success', function (data) {
+    console.log(data.SaleToPOIRequest.MessageHeader);
+    let serviceId = data.SaleToPOIRequest.MessageHeader.ServiceID;
     if (data.eventCode == "AUTHORISATION" && data.success == 'true' && (newPbl.data.reference == data.merchantReference)) {
         $('#qr-code').empty();
         $('#qr-code').hide();
@@ -508,18 +511,32 @@ channel.bind('payment-success', function (data) {
         $('#success-or-failure').show();
         $('#success-or-failure').html('<div class="alert-success p-3"><div class="text-center"><i class="fas fa-check-circle" style="font-size: 40px;"></i></div><div>The customers payment for order #' + data.merchantReference + ' has been processed successfully</div></div>');
     } else if (data.SaleToPOIRequest && data.SaleToPOIRequest.DisplayRequest) {
-        renderDisplayNotification(data.SaleToPOIRequest.DisplayRequest.DisplayOutput[0]);
+        renderDisplayNotification(data.SaleToPOIRequest.DisplayRequest.DisplayOutput[0], serviceId);
     } // Terminal Display Notifictions
 });
 
-function renderDisplayNotification(notification) {
-    $('#display-notifications').show();
-    let predefContent = notification.OutputContent.PredefinedContent.ReferenceID;
-    let searchParams = new URLSearchParams(predefContent);
-    let timeStamp = searchParams.get('TimeStamp');
-    let transactionId = searchParams.get('TransactionID');
-    let event = searchParams.get('event');
-    let result = searchParams.get('Result') || "Pending";
-    $('#display-notifications').html('<p>Time Stamp: ' + timeStamp + '</p><p>Transaction ID: ' + transactionId + '</p><p>Event: ' + event + '</p><p>Result: ' + result + '</p>');
-    $("#display-notifications").fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+function renderDisplayNotification(notification, serviceId) {
+    if (serviceId == terminalApi.data.serviceId) {
+        $('#display-notifications').show();
+        let predefContent = notification.OutputContent.PredefinedContent.ReferenceID;
+        let searchParams = new URLSearchParams(predefContent);
+        let timeStamp = searchParams.get('TimeStamp');
+        let transactionId = searchParams.get('TransactionID');
+        let event = searchParams.get('event');
+        let result = searchParams.get('Result') || "Pending";
+        $('#display-notifications').html('<p>Time Stamp: ' + timeStamp + '</p><p>Transaction ID: ' + transactionId + '</p><p>Event: ' + event + '</p><p>Payment Result: ' + result + '</p>');
+        $("#display-notifications").fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+    }
+}
+
+function makeServiceId(length) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
 }

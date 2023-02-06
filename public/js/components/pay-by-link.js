@@ -41,13 +41,4 @@ export class PayByLink {
       data: {type: 'email', data: this.data}
     });
   }
-
-  sendQRToTerminal(terminal) {
-    return $.ajax({
-      url: '/api/adyen/sendQRToTerminal',
-      dataType: 'json',
-      type: 'post',
-      data: {data: this.data, terminal: terminal}
-    });
-  }
 }
