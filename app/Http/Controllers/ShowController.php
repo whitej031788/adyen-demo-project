@@ -23,6 +23,7 @@ class ShowController extends Controller
   public function unifiedCommerce(Request $request) {
     return view('unified-commerce', [
       'merchantAccount' => \Config::get('adyen.ecomMerchantAccount'),
+      'merchantAccountPos' => \Config::get('adyen.posMerchantAccount'),
       'clientKey' => \Config::get('adyen.clientKey'),
       'terminalPooid' => \Config::get('adyen.terminalPooid'),
       'terminalPooidTwo' => \Config::get('adyen.terminalPooidTwo'),

@@ -98,6 +98,7 @@ function submitCashPayment() {
     let localData = {
         selectedBrand: 'c_cash',
         shopperInteraction: "Ecommerce",
+        merchantAccount: adyenConfig.merchantAccountPos || adyenConfig.merchantAccount,
         metadata: {
             "paymentMethod": $('#cash-or-check-value').val(),
             "storeID": "1234",

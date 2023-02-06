@@ -55,7 +55,10 @@ export class CheckoutApi {
     }
 
     makeCashPayment(submitData) {
+        let merchantAccount = submitData.merchantAccount;
         let combinedData = Object.assign(submitData, this.data);
+
+        combinedData.merchantAccount = merchantAccount;
 
         delete combinedData.additionalData;
         delete combinedData.countryCode;

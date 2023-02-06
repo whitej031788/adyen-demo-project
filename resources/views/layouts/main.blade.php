@@ -37,6 +37,7 @@
       // Not all properties are needed for different demo settings
       var adyenConfig = {};
       adyenConfig.merchantAccount = '{{isset($merchantAccount) ? $merchantAccount : ""}}';
+      adyenConfig.merchantAccountPos = '{{isset($merchantAccountPos) ? $merchantAccountPos : ""}}';
       adyenConfig.clientKey = '{{isset($clientKey) ? $clientKey : ""}}';
       adyenConfig.terminalPooid = '{{isset($terminalPooid) ? $terminalPooid : ""}}';
       adyenConfig.terminalPooidTwo = '{{isset($terminalPooidTwo) ? $terminalPooidTwo : ""}}';
