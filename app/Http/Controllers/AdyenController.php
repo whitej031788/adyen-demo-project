@@ -295,9 +295,9 @@ class AdyenController extends Controller
 
         $pooid = \Config::get('adyen.' . $requestTerminal);
 
-        $servId = $requestData['serviceId'];
-
-        if (!$servId) {
+        if (isset($requestData['serviceId'])) {
+            $servId = $requestData['serviceId'];
+        } else {
             $servId = $this->generateRandomString();
         }
 

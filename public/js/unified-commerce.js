@@ -503,8 +503,6 @@ let pusher = new Pusher('47e2eb4a3e296716c3fd', {
 var channel = pusher.subscribe('adyen-demo');
 
 channel.bind('payment-success', function (data) {
-    console.log(data.SaleToPOIRequest.MessageHeader);
-    let serviceId = data.SaleToPOIRequest.MessageHeader.ServiceID;
     if (data.eventCode == "AUTHORISATION" && data.success == 'true' && (newPbl.data.reference == data.merchantReference)) {
         $('#qr-code').empty();
         $('#qr-code').hide();
@@ -512,6 +510,7 @@ channel.bind('payment-success', function (data) {
         $('#success-or-failure').show();
         $('#success-or-failure').html('<div class="alert-success p-3"><div class="text-center"><i class="fas fa-check-circle" style="font-size: 40px;"></i></div><div>The customers payment for order #' + data.merchantReference + ' has been processed successfully</div></div>');
     } else if (data.SaleToPOIRequest && data.SaleToPOIRequest.DisplayRequest) {
+        let serviceId = data.SaleToPOIRequest.MessageHeader.ServiceID;
         renderDisplayNotification(data.SaleToPOIRequest.DisplayRequest.DisplayOutput[0], serviceId);
     } // Terminal Display Notifictions
 });
