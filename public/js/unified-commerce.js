@@ -9,12 +9,14 @@ var terminalOrQr = 'terminal';
 let initialEmail = window.demoSession.demoEmail ? window.demoSession.demoEmail : "";
 let initialAmount = window.demoSession.checkoutAmount ? parseFloat(window.demoSession.checkoutAmount) * 100 : 4498;
 
+adyenConfig.shopperReference = uuidv4();
+
 let paymentDataObj = {
     "countryCode": "GB",
     "merchantAccount": adyenConfig.merchantAccount,
     "shopperLocale": "en-GB",
     "reference": uuidv4(),
-    "shopperReference": uuidv4(),
+    "shopperReference": adyenConfig.shopperReference,
     "shopperEmail": initialEmail,
     "additionalData": {
         // Leave this here, doesn't really hurt anything and can help with certain demo use cases
