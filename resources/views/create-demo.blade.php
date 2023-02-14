@@ -222,7 +222,7 @@
                                     <li class="list-group-item">
                                         <div class="form-check">
                                             <input type="checkbox" class="form-check-input"
-                                                name="enableEcom.enableTokenization" id="enableEcom.enableTokenization" disabled>
+                                                name="enableEcom.enableTokenization" id="enableEcom.enableTokenization">
                                             <label class="form-check-label"
                                                 for="enableEcom.enableTokenization">Tokenization</label>
                                         </div>

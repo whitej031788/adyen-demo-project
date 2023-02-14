@@ -14,6 +14,7 @@ let paymentDataObj = {
     "merchantAccount": adyenConfig.merchantAccount,
     "shopperLocale": "en-GB",
     "reference": uuidv4(),
+    "shopperReference": uuidv4(),
     "shopperEmail": initialEmail,
     "additionalData": {
         // Leave this here, doesn't really hurt anything and can help with certain demo use cases
