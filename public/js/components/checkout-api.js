@@ -159,4 +159,17 @@ export class CheckoutApi {
             data: data
         });
     }
+
+    recurringDisable(storedPaymentMethodId, shopperReference, merchantAccount) {
+        return $.ajax({
+            url: '/api/adyen/recurringDisable',
+            dataType: 'json',
+            type: 'post',
+            data: {
+                recurringDetailReference: storedPaymentMethodId, 
+                shopperReference: shopperReference,
+                merchantAccount: merchantAccount
+            }
+        });
+    }
 }

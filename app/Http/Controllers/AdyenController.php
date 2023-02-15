@@ -352,6 +352,12 @@ class AdyenController extends Controller
         return response()->json($result);
     }
 
+    public function recurringDisable(Request $request){
+        $params = $request->all();
+        $curlUrl = "https://pal-test.adyen.com/pal/servlet/Recurring/v68/disable";
+        $result = $this->makeAdyenRequest($curlUrl, $params, true, false);
+        return response()->json($result);
+    }
 
     public function redirPayDet($details, $paymentData)
     {
@@ -438,6 +444,7 @@ class AdyenController extends Controller
 
         return $returnData;
     }
+    
     private function generateRandomString($length = 10)
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';

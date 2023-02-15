@@ -28,6 +28,7 @@ Route::post('/adyen/terminalCloudCardAcquisitionRequest', 'AdyenController@termi
 Route::post('/adyen/adjustPayment', 'AdyenController@adjustPayment');
 Route::post('/adyen/capturePayment', 'AdyenController@capturePayment');
 Route::post('/adyen/makeDonation', 'AdyenController@makeDonation');
+Route::post('/adyen/recurringDisable', 'AdyenController@recurringDisable');
 Route::post('/adyen/submitAdditionalDetails', 'AdyenController@submitAdditionalDetails');
 Route::post('/adyen/getCostEstimate', 'AdyenController@getCostEstimate');
 Route::post('/adyen/checkBalance', 'AdyenController@checkBalance');

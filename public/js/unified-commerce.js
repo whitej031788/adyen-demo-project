@@ -8,15 +8,13 @@ var terminalOrQr = 'terminal';
 
 let initialEmail = window.demoSession.demoEmail ? window.demoSession.demoEmail : "";
 let initialAmount = window.demoSession.checkoutAmount ? parseFloat(window.demoSession.checkoutAmount) * 100 : 4498;
-
-adyenConfig.shopperReference = uuidv4();
-
+let initialShopperReference = window.demoSession.shopperReference ? window.demoSession.shopperReference : "11223344556677";
+ 
 let paymentDataObj = {
     "countryCode": "GB",
     "merchantAccount": adyenConfig.merchantAccount,
     "shopperLocale": "en-GB",
     "reference": uuidv4(),
-    "shopperReference": adyenConfig.shopperReference,
     "shopperEmail": initialEmail,
     "additionalData": {
         // Leave this here, doesn't really hurt anything and can help with certain demo use cases
@@ -27,6 +25,12 @@ let paymentDataObj = {
         "currency": "GBP"
     }
 };
+
+// If tokenization is on, there should be a random shopper reference in the session
+// use it, and that will get overridden if the person logs in
+if (window.demoSession.enableEcom_enableTokenization === "on") {
+    paymentDataObj.shopperReference = initialShopperReference;
+}
 
 // This object stores stuff about the implementation, not necessarily relevant to Adyen API requests
 // as an example - the original amount of the basket, which we need for partial payments, but
@@ -173,10 +177,9 @@ function sharedSubmitPayment(result, dropin) {
 function getPaymentMethods() {
     checkoutApi.getPaymentMethods(paymentDataObj, window.demoSession.allowedPaymentMethods).then(async function (paymentMethodsResponse) {
         globalPayMethodsResponse = paymentMethodsResponse.response;
-        let configuration = {
+        let checkoutConfig = {
             amount: checkoutApi.data.amount,
             environment: "test",
-            showRemovePaymentMethodButton: true,
             clientKey: adyenConfig.clientKey,
             locale: paymentDataObj.shopperLocale,
             paymentMethodsResponse: globalPayMethodsResponse,
@@ -266,10 +269,19 @@ function getPaymentMethods() {
                     environment: "test"
                 }
             }
-        }
+        };
 
-        globalCheckout = await window.AdyenCheckout(configuration);
-        globalDropin = globalCheckout.create('dropin');
+        let dropinConfig = {
+            showRemovePaymentMethodButton: true,
+            onDisableStoredPaymentMethod: (storedPaymentMethodId, resolve, reject) => {
+                checkoutApi.recurringDisable(storedPaymentMethodId, initialShopperReference, adyenConfig.merchantAccount).then(function (result) {
+                    resolve();
+                });
+            }
+        };
+
+        globalCheckout = await window.AdyenCheckout(checkoutConfig);
+        globalDropin = globalCheckout.create('dropin', dropinConfig);
         globalDropin.mount('#dropin-container');
         globalDropin.update();
         // Now lets create and mount the apple pay express component

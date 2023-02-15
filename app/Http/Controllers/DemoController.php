@@ -72,6 +72,11 @@ class DemoController extends Controller {
       }
     }
 
+    // Add a random shopperReference if tokenization is enabled, as people might not know to log in
+    if (isset($params['enableEcom_enableTokenization']) && $params['enableEcom_enableTokenization'] === "on") {
+      $params['shopperReference'] = $this->generateRandomString(12);
+    }
+
     $request->session()->put('demo_session', json_encode($params));
 
     $configJson = json_encode($params);
@@ -85,4 +90,15 @@ class DemoController extends Controller {
     $request->session()->forget('demo_session');
     return redirect('/create-demo');
   }
+
+  private function generateRandomString($length = 10)
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
 }

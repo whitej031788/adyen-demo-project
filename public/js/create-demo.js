@@ -23,7 +23,7 @@ $(function() {
   });
 
   var checkboxArrayYes = [];
-  var topLevelCheckboxes = ['enableEcom', 'enableMoto', 'enableAfp', 'enableHotelCheckin'];
+  var topLevelCheckboxes = ['enableEcom', 'enableMoto', 'enableAfp', 'enableHotelCheckin', 'technicalDemo'];
   // This means they are on the edit demo page, and we can populate all fields
   if (demoSession && window.location.pathname == '/edit-demo') {
     for (const property in demoSession) {
