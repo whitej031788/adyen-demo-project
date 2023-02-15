@@ -441,10 +441,11 @@ class AdyenController extends Controller
         unset($returnData['shopperInteraction']);
         unset($returnData['shopperPhone']);
         unset($returnData['merchantName']);
+        unset($returnData['serviceId']);
 
         return $returnData;
     }
-    
+
     private function generateRandomString($length = 10)
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
