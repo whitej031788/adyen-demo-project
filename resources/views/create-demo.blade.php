@@ -288,6 +288,15 @@
                                     <label class="form-check-label checkbox-lg" for="enableHotelCheckin">Hotel Adjustments</label>
                                 </div>
                             </div>
+
+                            <div class="col-md-6 mt-2">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input checkbox-lg expand-under-ul"
+                                        name="enableinCar" id="enableinCar">
+                                    <label class="form-check-label checkbox-lg" for="enableinCar">In Car Payments</label>
+                                </div>
+                            </div>
+
                         </div>
                         <div class="row mt-2">
                             <div class="col-md-12">

@@ -54,6 +54,15 @@ class ShowController extends Controller
     ]);
   }
 
+  public function inCar(Request $request) {
+    return view('in-car', [
+      'merchantAccount' => \Config::get('adyen.ecomMerchantAccount'),
+      'clientKey' => \Config::get('adyen.clientKey'),
+      'terminalPooid' => \Config::get('adyen.terminalPooid'),
+      'terminalPooidTwo' => \Config::get('adyen.terminalPooidTwo')
+    ]);
+  }
+
   public function returnUrl(Request $request, $payRef) {
     $postback = $request->all();
     // We are going to call paymentDetails

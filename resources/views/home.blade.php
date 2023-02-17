@@ -12,6 +12,7 @@
             <button id="unifiedCommerce" type="button" class="btn btn-primary bkg-brand-color-one bdr-brand-color-two mt-2"><a class="txt-brand-color-two" href="/unified-commerce">Unified Commerce</a></button>
             <button id="saasSubscriptions" type="button" class="btn btn-primary bkg-brand-color-one bdr-brand-color-two mt-2"><a class="txt-brand-color-two" href="/saas-subscriptions">SaaS Subscriptions</a></button>
             <button id="hotelCheckin" type="button" class="btn btn-primary bkg-brand-color-one bdr-brand-color-two mt-2"><a class="txt-brand-color-two" href="/hotel-checkin">Hotel Check-in / Check-out</a></button>
+            <button id="inCar" type="button" class="btn btn-primary bkg-brand-color-one bdr-brand-color-two mt-2"><a class="txt-brand-color-two" href="/in-car">In Car</a></button>
             <button id="payAsYouGo-register" type="button" class="w-100 btn btn-primary bkg-brand-color-one bdr-brand-color-two mt-2"><a class="txt-brand-color-two" href="/payg-registration">PAYG - Registration</a></button>
             <button id="payAsYouGo-interface" type="button" class="w-100 btn btn-primary bkg-brand-color-one bdr-brand-color-two mt-2"><a class="txt-brand-color-two" href="/payg-interface">PAYG - Interface</a></button>
           </div>

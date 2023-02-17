@@ -1,7 +1,7 @@
-import { PayByLink } from './components/pay-by-link.js';
-import { TerminalApi } from './components/terminal-api.js';
-import { CheckoutApi } from './components/checkout-api.js';
-import { DemoStorage } from "./components/demo-storage.js";
+import {PayByLink} from './components/pay-by-link.js';
+import {TerminalApi} from './components/terminal-api.js';
+import {CheckoutApi} from './components/checkout-api.js';
+import {DemoStorage} from "./components/demo-storage.js";
 
 // Let's try and get a PSP from local storage for the booking reference
 const existingData = DemoStorage.getItem("responseData");
@@ -13,8 +13,9 @@ if (existingData && existingData.resultCode == "Authorised") {
 
 let initialEmail = window.demoSession.demoEmail ? window.demoSession.demoEmail : "";
 let initialAmount = window.demoSession.checkoutAmount ? parseFloat(window.demoSession.checkoutAmount) * 100 : 4498;
+//let shopperReference = '#TokenReference';
+//let recurringDetailReference = '#storedToken';
 
-// Uncomment shopperEmail for email PBL
 let paymentDataObj = {
   "countryCode": "GB",
   "merchantAccount": adyenConfig.merchantAccount,
@@ -22,14 +23,15 @@ let paymentDataObj = {
   "shopperEmail": initialEmail,
   "shopperReference": initialEmail,
   "amount": {
-    "value": initialAmount,
-    "currency": "GBP"
+      "value": initialAmount,
+      "currency": "GBP"
   }
 };
 
 function adjustAuth(){
   adjustAuthData.modificationAmount.value = $('#valueUpdate').val();
   adjustAuthData.originalReference = $('#bookingReference').val();
+
   checkoutApi.adjustPayment(adjustAuthData).then(function(adjustData){
     console.log(adjustData);
     window.alert("Authorised amount adjusted!");
@@ -44,7 +46,7 @@ let adjustAuthData = {
     "industryUsage":"DelayedCharge"
   },
   "modificationAmount": {
-    "value": initialAmount,
+    "value": 20000,
     "currency": "GBP"
   }
 };
@@ -54,14 +56,14 @@ function captureAuth() {
   captureAuthData.originalReference = $('#bookingReference').val();
   checkoutApi.capturePayment(captureAuthData).then(function(captureData) {
     console.log(captureData);
-    window.alert("Authorised amount captured!");
+    window.alert("Payment Captured!");
   });
 };
 
 let captureAuthData = {
   "originalReference": "",
   "modificationAmount": {
-    "value": initialAmount,
+    "value": 5000,
     "currency": "GBP"
   },
   "reference": Math.floor(Math.random() * 10000000).toString(),
@@ -69,36 +71,108 @@ let captureAuthData = {
 };
 
 function refundAuth() {
-    refundAuthData.modificationAmount.value = $('#valueUpdate').val();
-    refundAuthData.originalReference = $('#bookingReference').val();
-    checkoutApi.refundPayment(refundAuthData).then(function(refundData) {
-      console.log(refundData);
-      window.alert("Amount refunded!");
-    });
-  };
+  refundAuthData.modificationAmount.value = $('#valueUpdate').val();
+  refundAuthData.originalReference = $('#bookingReference').val();
+  checkoutApi.refundPayment(refundAuthData).then(function(refundData) {
+    console.log(refundData);
+    window.alert("Amount refunded!");
+  });
+};
 
-  let refundAuthData = {
-    "originalReference": "",
-    "modificationAmount": {
-      "value": initialAmount,
-      "currency": "GBP"
-    },
-    "reference": Math.floor(Math.random() * 10000000).toString(),
-    "merchantAccount": adyenConfig.merchantAccount
-  };
+let refundAuthData = {
+  "originalReference": "",
+  "modificationAmount": {
+    "value": 5000,
+    "currency": "GBP"
+  },
+  "reference": Math.floor(Math.random() * 10000000).toString(),
+  "merchantAccount": adyenConfig.merchantAccount
+};
 
-  function recurringAuth(){
-    recurringAuthData.amount.value = $('#valueUpdate').val()
+function recurringAuth(){
+  recurringAuthData.amount.value = $('#valueUpdate').val()
+  recurringAuthData.paymentMethod.recurringDetailReference = $('#storedToken').val()
+  recurringAuthData.shopperReference = $('#tokenReference').val()
+  checkoutApi.recurringPayment(recurringAuthData).then(function(recurringData){
+  })
+{
+  window.alert("Recurring amount authorised!");
+}
+};
+
+function electricPaid(){
+    recurringAuthData.amount.value = "6500"
     recurringAuthData.paymentMethod.recurringDetailReference = $('#storedToken').val()
     recurringAuthData.shopperReference = $('#tokenReference').val()
+    recurringAuthData.reference = "Electric fee"
     checkoutApi.recurringPayment(recurringAuthData).then(function(recurringData){
     })
   {
-    window.alert("Recurring amount authorised!");
+    window.alert("Electricity Paid!");
   }
   };
 
-  let recurringAuthData = {
+  function parkingPaid(){
+    recurringAuthData.amount.value = "350"
+    recurringAuthData.paymentMethod.recurringDetailReference = $('#storedToken').val()
+    recurringAuthData.shopperReference = $('#tokenReference').val()
+    recurringAuthData.reference = "Parking fee"
+    checkoutApi.recurringPayment(recurringAuthData).then(function(recurringData){
+    })
+  {
+    window.alert("Thank you, you can now leave the carpark!");
+  }
+  };
+
+  function tollPaid(){
+    recurringAuthData.amount.value = "750"
+    recurringAuthData.paymentMethod.recurringDetailReference = $('#storedToken').val()
+    recurringAuthData.shopperReference = $('#tokenReference').val()
+    recurringAuthData.reference = "Toll fee"
+    checkoutApi.recurringPayment(recurringAuthData).then(function(recurringData){
+    })
+    {
+      window.alert("Toll Paid, please proceed!");
+    }
+    };
+
+    function coffeePaid(){
+        recurringAuthData.amount.value = "300"
+        recurringAuthData.paymentMethod.recurringDetailReference = $('#storedToken').val()
+        recurringAuthData.shopperReference = $('#tokenReference').val()
+        recurringAuthData.reference = "Coffee fee"
+        checkoutApi.recurringPayment(recurringAuthData).then(function(recurringData){
+        })
+        {
+          window.alert("Enjoy your coffee!");
+        }
+        };
+
+        function carwashPaid(){
+            recurringAuthData.amount.value = "2000"
+            recurringAuthData.paymentMethod.recurringDetailReference = $('#storedToken').val()
+            recurringAuthData.shopperReference = $('#tokenReference').val()
+            recurringAuthData.reference = "Carwash fee"
+            checkoutApi.recurringPayment(recurringAuthData).then(function(recurringData){
+            })
+            {
+              window.alert("Thank you, your car is nice and shiny!");
+            }
+            };
+
+            function subscriptionPaid(){
+                recurringAuthData.amount.value = "500"
+                recurringAuthData.paymentMethod.recurringDetailReference = $('#storedToken').val()
+                recurringAuthData.shopperReference = $('#tokenReference').val()
+                recurringAuthData.reference = "Subscription fee"
+                checkoutApi.recurringPayment(recurringAuthData).then(function(recurringData){
+                })
+                {
+                  window.alert("Your heated seats are now enabled!");
+                }
+                };
+
+let recurringAuthData = {
     "paymentMethod":{
        "type": "scheme",
        "recurringDetailReference":""
@@ -143,7 +217,7 @@ function getPaymentMethods() {
       amount: checkoutApi.data.amount,
       environment: "test",
       showRemovePaymentMethodButton: true,
-      showPaymentMethods:false,
+      showPaymentMethods:true,
       showPayButton:false,
       locale: "en-GB",
       translations: translations,
@@ -220,25 +294,24 @@ function payAtTerminal() {
       terminal = "terminalPooid";
     }
     if (this.id == "terminalPooidRefund") {
-        terminalApi.cloudApiRefund(terminal)(function(result) {
-          console.log(result);
-        });
-      }
-      else if (this.id == "terminalPooidInput") {
-        terminalApi.cloudApiInput(terminal)(function(result) {
-          console.log(result);
-        });
-      }
-      else {
-        terminalApi.cloudApiRequest(terminal)(function(result) {
-          console.log(result);
-        });
-      }
+      terminalApi.cloudApiRefund(terminal)(function(result) {
+        console.log(result);
+      });
+    }
+    else if (this.id == "terminalPooidInput") {
+      terminalApi.cloudApiInput(terminal)(function(result) {
+        console.log(result);
+      });
+    }
+    else {
+      terminalApi.cloudApiRequest(terminal)(function(result) {
+        console.log(result);
+      });
+    }
+
     $('#success-or-failure').show();
     $('#success-or-failure').html('<div class="p-3">The customers payment for order #' + terminalApi.data.reference + ' has been sent to the terminal, waiting for result...</div>');
-    terminalApi.cloudApiRequest(terminal)(function(result) {
-      console.log(result);
-    });
+
   }
   $('#action-modal').modal('show');
 }
@@ -264,13 +337,21 @@ function countryChange() {
   getPaymentMethods();
 }
 
-// // Event Handlers for page
- document.querySelector('#create-qr-code').addEventListener("click", generateQrCode);
- $(".pay-at-terminal").on('click', payAtTerminal);
+// Event Handlers for page
+document.querySelector('#create-qr-code').addEventListener("click", generateQrCode);
+$(".pay-at-terminal").on('click', payAtTerminal);
+// document.querySelector('#send-email').addEventListener("click", sendEmail);
+
 document.querySelector('#adjustAuth').addEventListener("click", adjustAuth);
 document.querySelector('#captureAuth').addEventListener("click", captureAuth);
 document.querySelector('#refundAuth').addEventListener("click", refundAuth);
 document.querySelector('#recurringAuth').addEventListener("click", recurringAuth);
+document.querySelector('#subscriptionPaid').addEventListener("click", subscriptionPaid);
+document.querySelector('#carwashPaid').addEventListener("click", carwashPaid);
+document.querySelector('#coffeePaid').addEventListener("click", coffeePaid);
+document.querySelector('#tollPaid').addEventListener("click", tollPaid);
+document.querySelector('#electricPaid').addEventListener("click", electricPaid);
+document.querySelector('#parkingPaid').addEventListener("click", parkingPaid);
 
 // Would prefer a wider container for this page
 $('#main-container').addClass('container-fluid');

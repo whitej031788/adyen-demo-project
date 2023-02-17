@@ -2,6 +2,7 @@
 document.getElementById("callCenter").style.display = !demoSession.enableMoto ? "none" : "block";
 document.getElementById("unifiedCommerce").style.display = !demoSession.enableEcom ? "none" : "block";
 document.getElementById("hotelCheckin").style.display = !demoSession.enableHotelCheckin ? "none" : "block";
+document.getElementById("inCar").style.display = !demoSession.enableinCar ? "none" : "block";
 document.getElementById("downloadDemoHref").href = "/storage/demos/" + demoSession.merchantName + ".json";
 
 // New create demo UI items

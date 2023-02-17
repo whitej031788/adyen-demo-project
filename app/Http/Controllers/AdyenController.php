@@ -95,7 +95,7 @@ class AdyenController extends Controller
         $urlToQrEncode = $result["response"]->url;
 
         $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
-        
+
         if ($request->has('terminal')) {
             $requestTerminal = $request->terminal;
         } else {
@@ -171,7 +171,7 @@ class AdyenController extends Controller
     public function terminalCloudCardAcquisitionRequest(Request $request, $isInternal = false)
     {
         $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
-        
+
         if ($request->has('terminal')) {
             $requestTerminal = $request->terminal;
         } else {
@@ -196,7 +196,7 @@ class AdyenController extends Controller
     public function terminalCloudDisplayRequest(Request $request, $isInternal = false, $extraParams = null)
     {
         $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
-        
+
         if ($request->has('terminal')) {
             $requestTerminal = $request->terminal;
         } else {
@@ -221,7 +221,7 @@ class AdyenController extends Controller
     public function terminalCloudCardAcquisitionAbortRequest(Request $request, $isInternal = false, $extraParams = null)
     {
         $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
-        
+
         if ($request->has('terminal')) {
             $requestTerminal = $request->terminal;
         } else {
@@ -246,7 +246,7 @@ class AdyenController extends Controller
     public function terminalCloudSingleAnswerInput(Request $request, $isInternal = false, $extraParams = null)
     {
         $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
-        
+
         if ($request->has('terminal')) {
             $requestTerminal = $request->terminal;
         } else {
@@ -295,9 +295,9 @@ class AdyenController extends Controller
 
         $pooid = \Config::get('adyen.' . $requestTerminal);
 
-        $servId = $requestData['serviceId'];
-
-        if (!$servId) {
+        if (isset($requestData['serviceId'])) {
+            $servId = $requestData['serviceId'];
+        } else {
             $servId = $this->generateRandomString();
         }
 
@@ -345,6 +345,177 @@ class AdyenController extends Controller
         }
     }
 
+    public function terminalCloudApiRefund(Request $request)
+    {
+        if ($request->has('terminal')) {
+            $requestTerminal = $request->terminal;
+        } else {
+            $requestTerminal = "terminalPooid";
+        }
+        // If there is a second pooid setup, and a second api key, AND the request is for the second pooid, then we need a new client
+        if ($requestTerminal == "terminalPooidTwo" && !empty(\Config::get('adyen.apiKeyTwo'))) {
+            $newAdyenClient = new \Adyen\Client();
+            $newAdyenClient->setXApiKey(\Config::get('adyen.apiKeyTwo'));
+            $newAdyenClient->setEnvironment(\Adyen\Environment::TEST);
+            $terminalService = new \Adyen\Service\PosPayment($newAdyenClient);
+        } else {
+            $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
+        }
+
+        $params = $request->all();
+
+        $requestData = $params['data'];
+        $pooid = \Config::get('adyen.' . $requestTerminal);
+
+        $saleToPoiRequest = array(
+            'SaleToPOIRequest' =>
+                array(
+                    'MessageHeader' =>
+                        array(
+                            'ProtocolVersion' => '3.0',
+                            'MessageClass' => 'Service',
+                            'MessageCategory' => 'Payment',
+                            'MessageType' => 'Request',
+                            'ServiceID' => $this->generateRandomString(),
+                            'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
+                            'POIID' => $pooid,
+                        ),
+                    'PaymentRequest' =>
+                        array(
+                            'SaleData' =>
+                                array(
+                                    'SaleTransactionID' =>
+                                        array(
+                                            'TransactionID' => $requestData['reference'],
+                                            'TimeStamp' => date("c"),
+                                        ),
+                                ),
+                            'PaymentTransaction' =>
+                                array(
+                                    'AmountsReq' =>
+                                        array(
+                                            'Currency' => $requestData['amount']['currency'],
+                                            'RequestedAmount' => (float)($requestData['amount']['value'] / 100),
+                                        ),
+                                ),
+                                'PaymentData' => array(
+                                    'PaymentType' =>'Refund'
+                                  ),
+                        ),
+                ),
+        );
+
+        $result = $this->makeAdyenRequest("runTenderSync", $saleToPoiRequest, false, $terminalService);
+
+        return response()->json($result);
+    }
+
+    public function terminalCloudApiInput(Request $request)
+    {
+        if ($request->has('terminal')) {
+            $requestTerminal = $request->terminal;
+        } else {
+            $requestTerminal = "terminalPooid";
+        }
+        // If there is a second pooid setup, and a second api key, AND the request is for the second pooid, then we need a new client
+        if ($requestTerminal == "terminalPooidTwo" && !empty(\Config::get('adyen.apiKeyTwo'))) {
+            $newAdyenClient = new \Adyen\Client();
+            $newAdyenClient->setXApiKey(\Config::get('adyen.apiKeyTwo'));
+            $newAdyenClient->setEnvironment(\Adyen\Environment::TEST);
+            $terminalService = new \Adyen\Service\PosPayment($newAdyenClient);
+        } else {
+            $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
+        }
+
+        $params = $request->all();
+
+        $requestData = $params['data'];
+        $pooid = \Config::get('adyen.' . $requestTerminal);
+
+        $saleToPoiRequest = array(
+            'SaleToPOIRequest' =>
+                array(
+                    'MessageHeader' =>
+                        array(
+                            'ProtocolVersion' => '3.0',
+                            'MessageClass' => 'Device',
+                            'MessageCategory' => 'Input',
+                            'MessageType' => 'Request',
+                            'ServiceID' => $this->generateRandomString(),
+                            'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
+                            'POIID' => $pooid,
+                        ),
+                            "InputRequest" => [
+                                  "DisplayOutput" => [
+                                     "Device" => "CustomerDisplay",
+                                     "InfoQualify" => "Display",
+                                     "OutputContent" => [
+                                        "OutputFormat" => "Text",
+                                        "PredefinedContent" => [
+                                           "ReferenceID" => "MenuButtons"
+                                        ],
+                                        "OutputText" => [
+                                              [
+                                                 "Text" => "How was your visit?"
+                                              ],
+                                              [
+                                                    "Text" => "Please tap one of the options below:"
+                                                 ]
+                                           ]
+                                     ],
+                                         "MenuEntry" => [
+                                                       [
+                                                    "OutputFormat" => "Text",
+                                                    "OutputText" => [
+                                                             [
+                                                    "Text" => "Excellent"
+                                                             ]
+                                                          ]
+                                                       ],
+                                                       [
+                                                    "OutputFormat" => "Text",
+                                                    "OutputText" => [
+                                                                      [
+                                                     "Text" => "OK"
+                                                                      ]
+                                                                   ]
+                                                                ],
+                                                       [
+                                                        "OutputFormat" => "Text",
+                                                        "OutputText" => [
+                                                                               [
+                                                        "Text" => "Could do better"
+                                                                               ]
+                                                                            ]
+                                                                         ],
+                                                       [
+                                                     "OutputFormat" => "Text",
+                                                      "OutputText" => [
+                                                                                        [
+                                                     "Text" => "Needs to improve"
+                                                                                        ]
+                                                                                     ]
+                                                                                  ]
+                                                    ]
+                                  ],
+                                  "InputData" => [
+                                                     "Device" => "CustomerInput",
+                                                     "InfoQualify" => "Input",
+                                                     "InputCommand" => "GetMenuEntry",
+                                                      "MaxInputTime" => 120
+                                                                                           ]
+                               ]
+
+
+                ),
+        );
+
+        $result = $this->makeAdyenRequest("runTenderSync", $saleToPoiRequest, false, $terminalService);
+
+        return response()->json($result);
+    }
+
+
     public function makeDonation(Request $request){
         $params = $request->all();
         $curlUrl = "https://checkout-test.adyen.com/" . \Config::get('adyen.checkoutApiVersion') . "/donations";
@@ -383,6 +554,21 @@ class AdyenController extends Controller
         return response()->json($result);
     }
 
+    public function refundPayment(Request $request)
+    {
+        $params = $request->all();
+        $curlUrl = "https://pal-test.adyen.com/pal/servlet/Payment/v64/refund";
+        $result = $this->makeAdyenRequest($curlUrl, $params, true, false);
+        return response()->json($result);
+    }
+
+    public function recurringPayment(Request $request)
+    {
+        $params = $request->all();
+        $curlUrl = "https://checkout-test.adyen.com/" . \Config::get('adyen.checkoutApiVersion') . "/payments";
+        $result = $this->makeAdyenRequest($curlUrl, $params, true, false);
+        return response()->json($result);
+    }
     public function getCostEstimate(Request $request){
         $params = $request->all();
         $url = "https://pal-test.adyen.com/pal/servlet/BinLookup/" . \Config::get('adyen.binLookup') . "/getCostEstimate";
@@ -539,18 +725,18 @@ class AdyenController extends Controller
                                         array(
                                             "PredefinedContent" => array("ReferenceID" => "MenuButtons"),
                                             'OutputFormat' => "Text",
-                                            'OutputText' => 
+                                            'OutputText' =>
                                                 array(
                                                     array(
                                                         "Text" => "How would you like to pay?"
                                                     )
                                                 ),
                                         ),
-                                    'MenuEntry' => 
+                                    'MenuEntry' =>
                                         array(
                                             array(
                                                 'OutputFormat' => "Text",
-                                                'OutputText' => 
+                                                'OutputText' =>
                                                     array(
                                                         array(
                                                             "Text" => "Card On File"
@@ -559,7 +745,7 @@ class AdyenController extends Controller
                                             ),
                                             array(
                                                 'OutputFormat' => "Text",
-                                                'OutputText' => 
+                                                'OutputText' =>
                                                     array(
                                                         array(
                                                             "Text" => "New Card"
@@ -568,7 +754,7 @@ class AdyenController extends Controller
                                             ),
                                             array(
                                                 'OutputFormat' => "Text",
-                                                'OutputText' => 
+                                                'OutputText' =>
                                                     array(
                                                         array(
                                                             "Text" => "Cash"
@@ -583,7 +769,7 @@ class AdyenController extends Controller
                 ),
         );
 
-        return $saleToPoiRequest;        
+        return $saleToPoiRequest;
     }
 
     private function cardAcquisitionNFCRequestObject($params, $pooid)

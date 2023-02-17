@@ -70,7 +70,7 @@ export class CheckoutApi {
             dataType: 'json',
             type: 'post',
             data: combinedData
-        });       
+        });
     }
 
     adjustPayment(data) {
@@ -85,6 +85,24 @@ export class CheckoutApi {
     capturePayment(data) {
         return $.ajax({
             url: '/api/adyen/capturePayment',
+            dataType: 'json',
+            type: 'post',
+            data: data
+        });
+    }
+
+    refundPayment(data) {
+        return $.ajax({
+            url: '/api/adyen/refundPayment',
+            dataType: 'json',
+            type: 'post',
+            data: data
+        });
+    }
+
+    recurringPayment(data) {
+        return $.ajax({
+            url: '/api/adyen/recurringPayment',
             dataType: 'json',
             type: 'post',
             data: data

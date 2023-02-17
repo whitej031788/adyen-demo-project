@@ -15,6 +15,115 @@ let paymentDataObj = {
     "shopperLocale": "en-GB",
     "reference": uuidv4(),
     "shopperEmail": initialEmail,
+    "shopperReference": initialEmail,
+
+//     "telephoneNumber":"01895081461",
+//     "billingAddress":{
+//        "city":"London",
+//        "country":"GB",
+//        "houseNumberOrName":"10",
+//        "postalCode":"W13 3BG",
+//        "street":"New Burlington St",
+//       "stateOrProvince":""
+//     },
+//     "deliveryAddress":{
+//        "city":"London",
+//        "country":"GB",
+//        "houseNumberOrName":"10",
+//        "postalCode":"W13 3BG",
+//        "street":"New Burlington St",
+//        "stateOrProvince":""
+//     },
+//     // "mandate":{
+//     //     "amount": window.demoSession.checkoutAmount ? parseFloat(window.demoSession.checkoutAmount) * 100 : 4498,
+//     //     "endsAt": "2099-12-31",
+//     //     "frequency":"monthly"
+//     // },
+//     "returnUrl":"http://127.0.0.1:8000",
+//    // "origin":"http://127.0.0.1:8000",
+//     // "authenticationData": {
+//     //     "threeDSRequestData": {
+//     //         "nativeThreeDS": "preferred"
+//     //     }
+//     // },
+//     "channel":"Web",
+//     "browserInfo": {
+//         "screenWidth": 1024,
+//         "screenHeight": 500,
+//         "colorDepth": 24,
+//         "userAgent": "Chrome",
+//         "timeZoneOffset": 0,
+//         "language": "en-GB",
+//         "javaEnabled": true,
+//         "acceptHeader": "text/html"
+//     },
+//       "additionalData": {
+//             "PayPal.CountryCode":"GB",
+//             "PayPal.EmailId":"luke.strudwick@adyen.com",
+//             "PayPal.FirstName":"FirstName",
+//             "PayPal.LastName":"LastName",
+//             "PayPal.PayerId":"1234abcd",
+//             "PayPal.Phone":"123456789",
+//             "PayPal.ProtectionEligibility":"Eligible",
+//             "PayPal.TransactionId":"TransactionId123",
+//             "authorisationType": "PreAuth"
+//     },
+//       "amount": {
+//         "value": window.demoSession.checkoutAmount ? parseFloat(window.demoSession.checkoutAmount) * 100 : 4498,
+//         "currency": "EUR"
+//     },
+//       "shopperName": {
+//         "firstName": "Test",
+//         "lastName": "Person-uk"
+//     },
+//       "shopperStatement":{
+//         "shopperStatement":"ShopperStatement",
+//         "brandName":"Lukes Store"
+//       },
+//       "metadata":{
+//         "Custom_ID":"Custom_Value"
+//       },
+
+//       "lineItems":[
+//        {
+//           "description":"Tickets",
+//           "quantity":"1",
+//           "amountIncludingTax":"2500",
+//           "amountExcludingTax": "0",
+//           "taxAmount": "0",
+//           "id":"Item #1"
+//        },
+//        {
+//           "description":"Charge",
+//           "quantity":"1",
+//           "amountIncludingTax":"190",
+//           "amountExcludingTax": "0",
+//           "taxAmount": "0",
+//           "id":"Item #2"
+//        }
+//     ]
+//    //
+
+  //"additionalData": [ {
+   //"openinvoicedata.recipientFirstName":"Test",
+   //"openinvoicedata.recipientLastName":"Name",
+   //    "openinvoicedata.numberOfLines":"2",
+   //    "openinvoicedata.line1.currencyCode":"SEK",
+   //    "openinvoicedata.line1.description":"Shoes",
+   //    "openinvoicedata.line1.itemAmount":"331",
+   //    "openinvoicedata.line1.itemVatAmount":"69",
+   //    "openinvoicedata.line1.itemVatPercentage":"2100",
+   //    "openinvoicedata.line1.numberOfItems":"1",
+   //    "openinvoicedata.line1.vatCategory":"High",
+   //    "openinvoicedata.line2.currencyCode":"SEK",
+   //    "openinvoicedata.line2.description":"Socks",
+   //    "openinvoicedata.line2.itemAmount":"248",
+   //    "openinvoicedata.line2.itemVatAmount":"52",
+   //    "openinvoicedata.line2.itemVatPercentage":"2100",
+   //    "openinvoicedata.line2.numberOfItems":"2",
+   //    "openinvoicedata.line2.vatCategory":"High"}
+   // ]
+
     "additionalData": {
         // Leave this here, doesn't really hurt anything and can help with certain demo use cases
         "authorisationType": "PreAuth"
@@ -166,6 +275,14 @@ function sharedSubmitPayment(result, dropin) {
   }
 }
 
+const translations = {
+    "en-GB": {
+     "error.va.gen.01": "This isn't right FOOL!",
+     //"paymentMethod.creditCard.name": "Karta płatnicza"
+    // "payButton":"Pay for your stay ",
+  },
+  };
+
 // Wrap all of this in a function we we can easily call payment methods again for country change
 function getPaymentMethods() {
     checkoutApi.getPaymentMethods(paymentDataObj, window.demoSession.allowedPaymentMethods).then(async function (paymentMethodsResponse) {
@@ -175,6 +292,7 @@ function getPaymentMethods() {
             environment: "test",
             showRemovePaymentMethodButton: true,
             clientKey: adyenConfig.clientKey,
+            translations: translations,
             locale: paymentDataObj.shopperLocale,
             paymentMethodsResponse: globalPayMethodsResponse,
             onSubmit: function (state, dropin) {
@@ -245,7 +363,8 @@ function getPaymentMethods() {
                     hasHolderName: true,
                     holderNameRequired: true,
                     enableStoreDetails: window.demoSession.enableEcom_enableTokenization === "on" ? true : false,
-                    showStoredPaymentMethods: window.demoSession.enableEcom_enableTokenization === "on" ? true : false
+                    showStoredPaymentMethods: window.demoSession.enableEcom_enableTokenization === "on" ? true : false,
+                    useClickToPay: true
                 },
                 giftcard: {
                     pinRequired: false
@@ -361,6 +480,22 @@ function payAtTerminal() {
             terminal = "terminalPooid";
         }
 
+        if (this.id == "terminalPooidRefund") {
+            terminalApi.cloudApiRefund(terminal)(function(result) {
+              console.log(result);
+            });
+          }
+          else if (this.id == "terminalPooidInput") {
+            terminalApi.cloudApiInput(terminal)(function(result) {
+              console.log(result);
+            });
+          }
+          else {
+            terminalApi.cloudApiRequest(terminal)(function(result) {
+              console.log(result);
+            });
+          }
+
         $('#success-or-failure').show();
         $('#success-or-failure').html('<div class="p-3">The customers payment for order #' + terminalApi.data.reference + ' has been sent to the terminal, waiting for result...</div>');
         terminalApi.setData('serviceId', makeServiceId(8));
@@ -386,18 +521,30 @@ function countryChange() {
         "IE": "EUR",
         "ES": "EUR",
         "NL": "EUR",
-        "CN": "CNY"
+        "CN": "CNY",
+        "PL": "PLN",
+        "AT": "EUR",
+        "AU": "AUD",
+        "PT": "EUR",
+        "BE": "EUR",
+        "SE": "SEK"
     };
 
     let countryToLocaleMap = {
         "GB": "en-GB",
-        "FR": "fr-FR	",
+        "FR": "en-FR",
         "US": "en-US",
         "DE": "de-DE",
         "IE": "en-GB",
         "ES": "es-ES",
         "NL": "nl-NL",
-        "CN": "zh-ZH"
+        "CN": "zh-ZH",
+        "PL": "pl-PL",
+        "AU": "au-GB",
+        "AT": "at-AT",
+        "PT": "pt-PT",
+        "BE": "be-GB",
+        "SE": "sv_SE"
     };
 
     let countryCode = this.value;
@@ -412,6 +559,10 @@ function countryChange() {
     terminalApi = new TerminalApi(paymentDataObj);
     checkoutApi = new CheckoutApi(paymentDataObj);
     getPaymentMethods();
+}
+
+function emailBox() {
+    $('#email-modal').modal('show');
 }
 
 function chatShow() {
@@ -459,6 +610,7 @@ const donationConfig = {
 };
 
 // Event Handlers for page
+document.querySelector('#payByEmail').addEventListener("click", emailBox);
 document.querySelector('#create-qr-code').addEventListener("click", generateQrCode);
 document.querySelector('#send-qr-terminal').addEventListener("click", sendQRtoTerminal);
 document.querySelector('#cash-payment').addEventListener("click", showCashPayment);

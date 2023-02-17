@@ -24,9 +24,13 @@ Route::post('/adyen/generateAndSendPaymentLink', 'AdyenController@generateAndSen
 Route::post('/adyen/getPaymentLinkQR', 'AdyenController@getPaymentLinkQR');
 Route::post('/adyen/sendQRToTerminal', 'AdyenController@sendQRToTerminal');
 Route::post('/adyen/terminalCloudApiRequest', 'AdyenController@terminalCloudApiRequest');
+Route::post('/adyen/terminalCloudApiRefund', 'AdyenController@terminalCloudApiRefund');
+Route::post('/adyen/terminalCloudApiInput', 'AdyenController@terminalCloudApiInput');
 Route::post('/adyen/terminalCloudCardAcquisitionRequest', 'AdyenController@terminalCloudCardAcquisitionRequest');
 Route::post('/adyen/adjustPayment', 'AdyenController@adjustPayment');
 Route::post('/adyen/capturePayment', 'AdyenController@capturePayment');
+Route::post('/adyen/refundPayment', 'AdyenController@refundPayment');
+Route::post('/adyen/recurringPayment', 'AdyenController@recurringPayment');
 Route::post('/adyen/makeDonation', 'AdyenController@makeDonation');
 Route::post('/adyen/submitAdditionalDetails', 'AdyenController@submitAdditionalDetails');
 Route::post('/adyen/getCostEstimate', 'AdyenController@getCostEstimate');

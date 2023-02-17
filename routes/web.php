@@ -24,6 +24,7 @@ Route::group(['middleware' => 'demosession'], function () {
   Route::get('/custom-call-center', 'ShowController@customCallCenter');
   Route::get('/unified-commerce', 'ShowController@unifiedCommerce');
   Route::get('/hotel-checkin', 'ShowController@hotelCheckin');
+  Route::get('/in-car', 'ShowController@inCar');
   Route::any('/return-url/{payRef}', 'ShowController@returnUrl');
   Route::post('/delete-demo', 'DemoController@delete');
   Route::get('/webhook-viewer', 'WebhooksController@webhookViewer');

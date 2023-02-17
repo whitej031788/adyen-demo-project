@@ -16,6 +16,24 @@ export class TerminalApi {
     });
   }
 
+  cloudApiRefund(terminal) {
+    return $.ajax({
+      url: '/api/adyen/terminalCloudApiRefund',
+      dataType: 'json',
+      type: 'post',
+      data: {data: this.data, terminal: terminal}
+    });
+  }
+
+  cloudApiInput(terminal) {
+    return $.ajax({
+      url: '/api/adyen/terminalCloudApiInput',
+      dataType: 'json',
+      type: 'post',
+      data: {data: this.data, terminal: terminal}
+    });
+  }
+
   cloudCardAcquisitionRequest(terminal) {
     return $.ajax({
       url: '/api/adyen/terminalCloudCardAcquisitionRequest',
