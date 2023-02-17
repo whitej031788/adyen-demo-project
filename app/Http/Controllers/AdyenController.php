@@ -519,6 +519,12 @@ class AdyenController extends Controller
 
     private function singleAnswerInputRequestObject($params, $pooid)
     {
+        if (isset($params['serviceId'])) {
+            $servId = $requestData['serviceId'];
+        } else {
+            $servId = $this->generateRandomString();
+        }
+
         $saleToPoiRequest = array(
             'SaleToPOIRequest' =>
                 array(
@@ -528,7 +534,7 @@ class AdyenController extends Controller
                             'MessageClass' => 'Device',
                             'MessageCategory' => 'Input',
                             'MessageType' => 'Request',
-                            'ServiceID' => $this->generateRandomString(),
+                            'ServiceID' => $servId,
                             'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
                             'POIID' => $pooid,
                         ),
@@ -596,6 +602,12 @@ class AdyenController extends Controller
 
     private function cardAcquisitionNFCRequestObject($params, $pooid)
     {
+        if (isset($params['serviceId'])) {
+            $servId = $requestData['serviceId'];
+        } else {
+            $servId = $this->generateRandomString();
+        }
+
         $saleToPoiRequest = array(
             'SaleToPOIRequest' =>
                 array(
@@ -605,7 +617,7 @@ class AdyenController extends Controller
                             'MessageClass' => 'Service',
                             'MessageCategory' => 'CardAcquisition',
                             'MessageType' => 'Request',
-                            'ServiceID' => $this->generateRandomString(),
+                            'ServiceID' => $servId,
                             'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
                             'POIID' => $pooid,
                         ),
@@ -633,6 +645,12 @@ class AdyenController extends Controller
 
     private function cardAcquisitionRequestObject($params, $pooid)
     {
+        if (isset($params['serviceId'])) {
+            $servId = $requestData['serviceId'];
+        } else {
+            $servId = $this->generateRandomString();
+        }
+
         $saleToPoiRequest = array(
             'SaleToPOIRequest' =>
                 array(
@@ -642,7 +660,7 @@ class AdyenController extends Controller
                             'MessageClass' => 'Service',
                             'MessageCategory' => 'CardAcquisition',
                             'MessageType' => 'Request',
-                            'ServiceID' => $this->generateRandomString(),
+                            'ServiceID' => $servId,
                             'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
                             'POIID' => $pooid,
                         ),
@@ -670,6 +688,12 @@ class AdyenController extends Controller
 
     private function terminalDisplayRequestObject($params, $pooid, $extraParams)
     {
+        if (isset($params['serviceId'])) {
+            $servId = $requestData['serviceId'];
+        } else {
+            $servId = $this->generateRandomString();
+        }
+
         $saleToPoiRequest = array(
             'SaleToPOIRequest' =>
                 array(
@@ -679,7 +703,7 @@ class AdyenController extends Controller
                             'MessageClass' => 'Device',
                             'MessageCategory' => 'Display',
                             'MessageType' => 'Request',
-                            'ServiceID' => $this->generateRandomString(),
+                            'ServiceID' => $servId,
                             'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
                             'POIID' => $pooid,
                         ),
@@ -702,6 +726,12 @@ class AdyenController extends Controller
 
     private function terminalDisplayQRCodeObject($params, $pooid, $extraParams)
     {
+        if (isset($params['serviceId'])) {
+            $servId = $requestData['serviceId'];
+        } else {
+            $servId = $this->generateRandomString();
+        }
+
         $saleToPoiRequest = array(
             'SaleToPOIRequest' =>
                 array(
@@ -711,7 +741,7 @@ class AdyenController extends Controller
                             'MessageClass' => 'Device',
                             'MessageCategory' => 'Display',
                             'MessageType' => 'Request',
-                            'ServiceID' => $this->generateRandomString(),
+                            'ServiceID' => $servId,
                             'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
                             'POIID' => $pooid,
                         ),
@@ -743,6 +773,12 @@ class AdyenController extends Controller
     {
         $outputText = $extraParams['outputText'];
         $predefContent = $extraParams['predefinedContent'];
+        if (isset($params['serviceId'])) {
+            $servId = $requestData['serviceId'];
+        } else {
+            $servId = $this->generateRandomString();
+        }
+        
         $saleToPoiRequest = array(
             'SaleToPOIRequest' =>
                 array(
@@ -752,7 +788,7 @@ class AdyenController extends Controller
                             'MessageClass' => 'Service',
                             'MessageCategory' => 'EnableService',
                             'MessageType' => 'Request',
-                            'ServiceID' => $this->generateRandomString(),
+                            'ServiceID' => $servId,
                             'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
                             'POIID' => $pooid,
                         ),
