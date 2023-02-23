@@ -82,8 +82,11 @@ class DemoController extends Controller {
     $configJson = json_encode($params);
     Storage::disk('local')->put('public/demos/' . $params['merchantName'] . '.json', $configJson);
 
-
-    return redirect('/');
+    if ($request->has("configFile")) {
+      return redirect('/edit-demo');
+    } else {
+      return redirect('/');
+    }
   }
 
   public function delete(Request $request) {

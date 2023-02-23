@@ -68,7 +68,6 @@
               <ul class="navbar-nav mr-auto">
 
               </ul>
-
               <!-- Right Side Of Navbar -->
               <ul class="navbar-nav ml-auto">
                   <!-- Authentication Links -->
@@ -154,7 +153,7 @@
     <!-- End of Survicate code -->
     <script>
       // If this is a technical demonstration, let's show the box on the left
-      if (demoSession.technicalDemo && demoSession.technicalDemo === "on") {
+      if (demoSession && demoSession.technicalDemo && demoSession.technicalDemo === "on") {
         $("#content-container").addClass("col-9");
         $("#content-container").removeClass("col-12");
         $('#technical-container').show();

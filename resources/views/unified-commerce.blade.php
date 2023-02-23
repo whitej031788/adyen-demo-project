@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('content')
-    <div class="container-fluid" style="background-image: url(/images/vackground-com-7K1_uSnNoy4-unsplash.jpg);background-size: cover;">
+    <div class="container-fluid bkg-brand-color-one no-hover">
         <div class="row justify-content-center pt-3">
             <div class="col-md-10 col-sm-12">
                 <div class="row text-center justify-content-center">

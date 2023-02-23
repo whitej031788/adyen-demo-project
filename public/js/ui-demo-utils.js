@@ -1,12 +1,12 @@
 function UpdateBrandOne(brandColorOne, brandColorTwo) {
-  let brandOne = brandColorOne ? brandColorOne : 'white';
-  let brandTwo = brandColorTwo ? brandColorTwo : 'black';
+  let brandOne = brandColorOne ? brandColorOne : '#F7F8F9';
+  let brandTwo = brandColorTwo ? brandColorTwo : '#00112C';
 
   $(".txt-brand-color-one").css("color", brandOne);
   $(".bkg-brand-color-one").css("background-color", brandOne);
   $(".bdr-brand-color-one").css("border-color", brandOne);
 
-  $(".bkg-brand-color-one").hover(function() {
+  $(".bkg-brand-color-one:not(.no-hover)").hover(function() {
     $(this).css("background-color", brandTwo);
     $(this).css("color", brandOne);
     $(this).children(":first").css("color", brandOne);
@@ -17,16 +17,16 @@ function UpdateBrandOne(brandColorOne, brandColorTwo) {
   });
 };
 
-function UpdateBrandTwo(brandColorTwo, brandColorOne) {
-  let brandTwo = brandColorTwo ? brandColorTwo : 'black';
-  let brandOne = brandColorOne ? brandColorOne : 'white';
+function UpdateBrandTwo(brandColorOne, brandColorTwo) {
+  let brandOne = brandColorOne ? brandColorOne : '#F7F8F9';
+  let brandTwo = brandColorTwo ? brandColorTwo : '#00112C';
 
   $("nav").css("background-color", brandTwo);
   $(".txt-brand-color-two").css("color", brandTwo);
   $(".bkg-brand-color-two").css("background-color", brandTwo);
   $(".bdr-brand-color-two").css("border-color", brandTwo);
 
-  $(".bkg-brand-color-two").hover(function() {
+  $(".bkg-brand-color-two:not(.no-hover)").hover(function() {
     $(this).css("background-color", brandOne);
     $(this).css("color", brandTwo);
     $(this).children(":first").css("color", brandTwo);
@@ -59,6 +59,20 @@ function UpdateMerchantCheckout(checkout) {
   [].slice.call(checkouts).forEach(function(screenshot) {
     screenshot.src = checkout ? checkout : '/img/default-checkout-picture.png';
   });
+}
+
+function UpdateAdyenDropInAndComponents(brandColorOne, brandColorTwo) {
+  let brandOne = brandColorOne ? brandColorOne : '#F7F8F9';
+  let brandTwo = brandColorTwo ? brandColorTwo : '#00112C';
+
+  $(".adyen-checkout__payment-method").css("background-color", brandTwo);
+  $(".adyen-checkout__payment-method__name").css("color", brandOne);
+
+  $("<style>").text(".adyen-checkout__button--pay { background-color: " + brandOne + " }").appendTo("head");
+  $("<style>").text(".adyen-checkout__button--pay { color: " + brandTwo + " }").appendTo("head");
+  $("<style>").text(".adyen-checkout__button--pay:hover { background-color: " + brandTwo + " }").appendTo("head");
+  $("<style>").text(".adyen-checkout__button--pay:hover { color: " + brandOne + " }").appendTo("head");
+  $("<style>").text(".adyen-checkout__button--pay:hover { border: 1px solid " + brandOne + " }").appendTo("head");
 }
 
 function uuidv4() {

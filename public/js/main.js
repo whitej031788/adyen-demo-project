@@ -17,16 +17,15 @@ window.onload = function() {
     $(this).parent().next('.sub-options').slideToggle();
   });
 
-	let defaultBrandColorOne = '#ffffff';
-	let defaultBrandColorTwo = '#000000';
+	let defaultBrandColorOne = '#F7F8F9';
+	let defaultBrandColorTwo = '#00112C';
 
 	// These global functions are defined in ui-demo-utils.js
 	UpdateMerchantName((demoSession && demoSession.merchantName) ? demoSession.merchantName : 'Test Merchant');
 	UpdateMerchantLogo((demoSession && demoSession.merchantLogoUrl) ? demoSession.merchantLogoUrl : '/img/Adyen-White-Dark-Background-Logo.wine.png');
 	UpdateMerchantCheckout((demoSession && demoSession.screenshotUrl) ? demoSession.screenshotUrl : '/img/default-checkout-picture.png');
 	UpdateBrandOne(checkIfDemoVarExistis('brandColorOne') ? demoSession.brandColorOne : defaultBrandColorOne, checkIfDemoVarExistis('brandColorTwo') ? demoSession.brandColorTwo : defaultBrandColorTwo);
-	UpdateBrandTwo(checkIfDemoVarExistis('brandColorTwo') ? demoSession.brandColorTwo : defaultBrandColorTwo, checkIfDemoVarExistis('brandColorOne') ? demoSession.brandColorOne : defaultBrandColorOne);
-
+  UpdateBrandTwo(checkIfDemoVarExistis('brandColorOne') ? demoSession.brandColorOne : defaultBrandColorOne, checkIfDemoVarExistis('brandColorTwo') ? demoSession.brandColorTwo : defaultBrandColorTwo);
 }
 
 function populatePostman(data) {

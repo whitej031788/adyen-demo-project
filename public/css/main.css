@@ -10,6 +10,51 @@ html {
 	background-color:white;
 }
 
+@font-face {
+	font-family: 'Fakt';
+	src: url("../../fonts/fakt/FaktPro-Blond.eot");
+	src: url("../../../fonts/fakt/FaktPro-Blond.eot#iefix") format("embedded-opentype"),url("../fonts/fakt/FaktPro-Blond.woff") format("woff"),url("../fonts/fakt/FaktPro-Blond.ttf") format("truetype"),url("../fonts/fakt/FaktPro-Blond.otf") format("opentype");
+	font-weight: 400;
+	font-style: normal;
+	font-stretch: normal
+  }
+  
+  @font-face {
+	font-family: 'Fakt';
+	src: url("../../../fonts/fakt/FaktPro-BlondItalic.eot");
+	src: url("../../../fonts/fakt/FaktPro-BlondItalic.eot#iefix") format("embedded-opentype"),url("../fonts/fakt/FaktPro-BlondItalic.woff") format("woff"),url("../fonts/fakt/FaktPro-BlondItalic.ttf") format("truetype"),url("../fonts/fakt/FaktPro-BlondItalic.otf") format("opentype");
+	font-weight: 400;
+	font-style: italic;
+	font-stretch: normal
+  }
+  
+  @font-face {
+	font-family: 'Fakt';
+	src: url("../../../fonts/fakt/FaktPro-Normal.eot");
+	src: url("../../../fonts/fakt/FaktPro-Normal.eot#iefix") format("embedded-opentype"),url("../fonts/fakt/FaktPro-Normal.woff") format("woff"),url("../fonts/fakt/FaktPro-Normal.ttf") format("truetype"),url("../fonts/fakt/FaktPro-Normal.otf") format("opentype");
+	font-weight: 500;
+	font-style: normal;
+	font-stretch: normal
+  }
+  
+  @font-face {
+	font-family: 'Fakt';
+	src: url("../../../fonts/fakt/FaktPro-NormalItalic.eot");
+	src: url("../../../fonts/fakt/FaktPro-NormalItalic.eot#iefix") format("embedded-opentype"),url("../fonts/fakt/FaktPro-NormalItalic.woff") format("woff"),url("../fonts/fakt/FaktPro-NormalItalic.ttf") format("truetype"),url("../fonts/fakt/FaktPro-NormalItalic.otf") format("opentype");
+	font-weight: 500;
+	font-style: italic;
+	font-stretch: normal
+  }
+  
+  @font-face {
+	font-family: 'Fakt';
+	src: url("/fonts/fakt/FaktPro-SemiBold.eot");
+	src: url("/fonts/fakt/FaktPro-SemiBold.eot#iefix") format("embedded-opentype"),url("../fonts/fakt/FaktPro-SemiBold.woff") format("woff"),url("../fonts/fakt/FaktPro-SemiBold.ttf") format("truetype"),url("../fonts/fakt/FaktPro-SemiBold.otf") format("opentype");
+	font-weight: 600;
+	font-style: normal;
+	font-stretch: normal
+  }
+
 html, body, div, span, applet, object,
 iframe, h1, h2, h3, h4, h5, h6, p, blockquote,
 pre, a, abbr, acronym, address, big, cite,
@@ -90,7 +135,7 @@ input, select, textarea {
 		color: #5b5b5b;
 		font-size: 15pt;
 		line-height: 1.85em;
-		font-family: 'Source Sans Pro', sans-serif;
+		font-family: "Fakt",sans-serif,Helvetica,Arial !important;
 		font-weight: 300;
 	}
 
@@ -108,7 +153,7 @@ input, select, textarea {
 	input, textarea, select {
 		font-size: 15pt;
 		line-height: 1.85em;
-		font-family: 'Source Sans Pro', sans-serif;
+		font-family: "Fakt",sans-serif,Helvetica,Arial;
 		font-weight: 300;
 	}
 

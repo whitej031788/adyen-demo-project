@@ -277,6 +277,11 @@ function getPaymentMethods() {
                 checkoutApi.recurringDisable(storedPaymentMethodId, initialShopperReference, adyenConfig.merchantAccount).then(function (result) {
                     resolve();
                 });
+            },
+            onReady: () => {
+                let defaultBrandColorOne = '#F7F8F9';
+	            let defaultBrandColorTwo = '#00112C';
+                UpdateAdyenDropInAndComponents(checkIfDemoVarExistis('brandColorOne') ? window.demoSession.brandColorOne : defaultBrandColorOne, checkIfDemoVarExistis('brandColorTwo') ? window.demoSession.brandColorTwo : defaultBrandColorTwo);
             }
         };
 

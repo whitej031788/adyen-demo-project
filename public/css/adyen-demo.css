@@ -56,9 +56,54 @@ input.checkbox-lg {
   src: url("/fonts/FSEmeric.woff") format('woff');
 }
 
+@font-face {
+  font-family: 'Fakt';
+  src: url("../fonts/fakt/FaktPro-Blond.eot");
+  src: url("../fonts/fakt/FaktPro-Blond.eot#iefix") format("embedded-opentype"),url("../fonts/fakt/FaktPro-Blond.woff") format("woff"),url("../fonts/fakt/FaktPro-Blond.ttf") format("truetype"),url("../fonts/fakt/FaktPro-Blond.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal
+}
+
+@font-face {
+  font-family: 'Fakt';
+  src: url("../fonts/fakt/FaktPro-BlondItalic.eot");
+  src: url("../fonts/fakt/FaktPro-BlondItalic.eot#iefix") format("embedded-opentype"),url("../fonts/fakt/FaktPro-BlondItalic.woff") format("woff"),url("../fonts/fakt/FaktPro-BlondItalic.ttf") format("truetype"),url("../fonts/fakt/FaktPro-BlondItalic.otf") format("opentype");
+  font-weight: 400;
+  font-style: italic;
+  font-stretch: normal
+}
+
+@font-face {
+  font-family: 'Fakt';
+  src: url("../fonts/fakt/FaktPro-Normal.eot");
+  src: url("../fonts/fakt/FaktPro-Normal.eot#iefix") format("embedded-opentype"),url("../fonts/fakt/FaktPro-Normal.woff") format("woff"),url("../fonts/fakt/FaktPro-Normal.ttf") format("truetype"),url("../fonts/fakt/FaktPro-Normal.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-stretch: normal
+}
+
+@font-face {
+  font-family: 'Fakt';
+  src: url("../fonts/fakt/FaktPro-NormalItalic.eot");
+  src: url("../fonts/fakt/FaktPro-NormalItalic.eot#iefix") format("embedded-opentype"),url("../fonts/fakt/FaktPro-NormalItalic.woff") format("woff"),url("../fonts/fakt/FaktPro-NormalItalic.ttf") format("truetype"),url("../fonts/fakt/FaktPro-NormalItalic.otf") format("opentype");
+  font-weight: 500;
+  font-style: italic;
+  font-stretch: normal
+}
+
+@font-face {
+  font-family: 'Fakt';
+  src: url("../fonts/fakt/FaktPro-SemiBold.eot");
+  src: url("../fonts/fakt/FaktPro-SemiBold.eot#iefix") format("embedded-opentype"),url("../fonts/fakt/FaktPro-SemiBold.woff") format("woff"),url("../fonts/fakt/FaktPro-SemiBold.ttf") format("truetype"),url("../fonts/fakt/FaktPro-SemiBold.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-stretch: normal
+}
+
 /* Non-Adyen standard styling from here */
 body {
-	font-family: "FS-Emeric-Regular", Helvetica, sans-serif;
+	font-family: "Fakt",sans-serif,Helvetica,Arial;
 	background-color: #f6f6f6;
 }
 
