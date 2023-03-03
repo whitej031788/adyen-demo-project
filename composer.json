@@ -17,7 +17,8 @@
         "laravel/tinker": "^1.0",
         "nexmo/laravel": "^2.4",
         "pusher/pusher-php-server": "^5.0",
-        "simplesoftwareio/simple-qrcode": "^2.0"
+        "simplesoftwareio/simple-qrcode": "^2.0",
+        "twilio/sdk": "^6.44"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",

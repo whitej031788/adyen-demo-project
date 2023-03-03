@@ -26,92 +26,90 @@
         </p>
       </div>
     </div>
-      <div class="row">
-        <div class="col-12">
-          <form action="/create-demo" method="POST">
-            @csrf
-            <h2>Mandatory Shopper Info</h2>
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="reference">Order Number</label>
-                  <input type="text" class="form-control" name="reference" id="reference" aria-describedby="referenceHelp" placeholder="Enter Order Number">
-                </div>
+    <div class="row">
+      <div class="col-12">
+        <form>
+          <h2>Mandatory Shopper Info</h2>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="reference">Order Number</label>
+                <input type="text" class="form-control" name="reference" id="reference" aria-describedby="referenceHelp" placeholder="Enter Order Number">
               </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="countryCode">Shopper Country</label>
-                  <select class="form-control" id="countryCode">
-                    <option value="GB" selected>GB</option>
-                    <option value="FR">FR</option>
-                    <option value="DE">DE</option>
-                    <option value="US">US</option>
-                  </select>
-                </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="countryCode">Shopper Country</label>
+                <select class="form-control" id="countryCode">
+                  <option value="GB" selected>GB</option>
+                  <option value="FR">FR</option>
+                  <option value="DE">DE</option>
+                  <option value="US">US</option>
+                </select>
               </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="currency">Currency</label>
-                  <select class="form-control" id="currency">
-                    <option value="GBP" selected>GBP</option>
-                    <option value="EUR">EUR</option>
-                    <option value="USD">USD</option>
-                  </select>
-                </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="currency">Currency</label>
+                <select class="form-control" id="currency">
+                  <option value="GBP" selected>GBP</option>
+                  <option value="EUR">EUR</option>
+                  <option value="USD">USD</option>
+                </select>
               </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="value">Order Amount</label>
-                  <input type="text" class="form-control" name="value" id="value" aria-describedby="valueHelp" placeholder="Enter Order Amount">
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="value">Order Amount</label>
+                <input type="text" class="form-control" name="value" id="value" aria-describedby="valueHelp" placeholder="Enter Order Amount">
+              </div>
+            </div>
+          </div>
+          <h2 style="cursor: pointer;"><a style="width: 100%; color: black;" data-toggle="collapse" href="#optionalFields">Optional Fields+</a></h2>
+          <div class="row collapse" id="optionalFields">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="shopperReference">Shopper Reference</label>
+                <input type="text" class="form-control" name="shopperReference" id="shopperReference" aria-describedby="shopperReferenceHelp" placeholder="Enter Shopper Reference">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="shopperLocale">Shopper Locale</label>
+                <select class="form-control" id="currency">
+                  <option value="en-US" selected>English</option>
+                  <option value="es-ES">Spanish</option>
+                  <option value="fr-FR">French</option>
+                  <option value="de-DE">German</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <h2>Payment Info</h2>
+          <div class="row mt-2">
+            <div class="col-md-6" id="card-container">
+            </div>
+            <div class="col-md-6" id="pbl-container">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="shopperEmail">Shopper Email</label>
+                    <input type="text" class="form-control" name="shopperEmail" id="shopperEmail" aria-describedby="shopperEmailHelp" placeholder="Enter Shopper Email">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="shopperPhone">Shopper Phone</label>
+                    <input type="text" class="form-control" name="shopperPhone" id="shopperPhone" aria-describedby="shopperPhoneHelp" placeholder="Enter Shopper Phone">
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <button type="button" class="btn btn-primary payment-link">Generate and send payment link</button>
                 </div>
               </div>
             </div>
-            <h2 style="cursor: pointer;"><a style="width: 100%; color: black;" data-toggle="collapse" href="#optionalFields">Optional Fields+</a></h2>
-            <div class="row collapse" id="optionalFields">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="shopperReference">Shopper Reference</label>
-                  <input type="text" class="form-control" name="shopperReference" id="shopperReference" aria-describedby="shopperReferenceHelp" placeholder="Enter Shopper Reference">
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="shopperLocale">Shopper Locale</label>
-                  <select class="form-control" id="currency">
-                    <option value="en-US" selected>English</option>
-                    <option value="es-ES">Spanish</option>
-                    <option value="fr-FR">French</option>
-                    <option value="de-DE">German</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <h2>Payment Info</h2>
-            <div class="row mt-2">
-              <div class="col-md-6" id="card-container">
-              </div>
-              <div class="col-md-6" id="pbl-container">
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="shopperEmail">Shopper Email</label>
-                      <input type="text" class="form-control" name="shopperEmail" id="shopperEmail" aria-describedby="shopperEmailHelp" placeholder="Enter Shopper Email">
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="shopperPhone">Shopper Phone</label>
-                      <input type="text" class="form-control" name="shopperPhone" id="shopperPhone" aria-describedby="shopperPhoneHelp" placeholder="Enter Shopper Phone">
-                    </div>
-                  </div>
-                  <div class="col-md-12">
-                    <button type="button" class="btn btn-primary payment-link">Generate and send payment link</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>

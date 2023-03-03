@@ -1,7 +1,6 @@
 import { PayByLink } from './components/pay-by-link.js';
 // demoSession global variable that is always available containing demo settings
 $("body").css("background-color", demoSession ? demoSession.brandColorOne : '');
-$("#main-container").css("background-color", 'white');
 
 function handleOnSubmit(state, component) {
   $('#card-payment-success').hide();

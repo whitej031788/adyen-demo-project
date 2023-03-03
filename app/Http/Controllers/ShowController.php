@@ -20,6 +20,13 @@ class ShowController extends Controller
     ]);
   }
 
+  public function paymentLinks(Request $request) {
+    return view('payment-links', [
+      'merchantAccount' => \Config::get('adyen.ecomMerchantAccount'),
+      'clientKey' => \Config::get('adyen.clientKey')
+    ]);
+  }
+
   public function unifiedCommerce(Request $request) {
     return view('unified-commerce', [
       'merchantAccount' => \Config::get('adyen.ecomMerchantAccount'),

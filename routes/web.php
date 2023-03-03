@@ -30,6 +30,7 @@ Route::group(['middleware' => 'demosession'], function () {
   Route::get('/saas-subscriptions', 'ShowController@saasSubscriptions');
   Route::get('/payg-registration', 'ShowController@paygRegistration');
   Route::get('/payg-interface', 'ShowController@paygInterface');
+  Route::get('/payment-links', 'ShowController@paymentLinks');
   // End Normal JS Routes
 });
 // Create demo, GET for new  demo, POST for the actual creation

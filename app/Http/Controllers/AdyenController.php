@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\AdyenPayByLink;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Auth;
+use Twilio\Rest\Client;
 
 class AdyenController extends Controller
 {
@@ -149,6 +150,16 @@ class AdyenController extends Controller
             // Mail will only work if you have setup AWS SES
             Mail::to($params['shopperEmail'])
                 ->send(new AdyenPayByLink($result["response"]->url, $merchantName, $params['reference']));
+        } elseif  ($type == 'invoice') {
+
+        } elseif  ($type == 'whatsapp') {
+            $twilio = new Client(\Config::get('twilio.twilioSid'), \Config::get('twilio.twilioAuthToken'));
+            $message = $twilio->messages->create(
+                "whatsapp:" . $params['shopperPhone'], [
+                "from" => "whatsapp:" . \Config::get('twilio.twilioSandboxNumber'),
+                        "body" => "Please click the below to link to pay for your order:\n\n" . $result["response"]->url
+                    ]
+                );
         }
 
         // 'fetch' is also a $type but that is just if they want to get the link, not send it

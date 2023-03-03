@@ -9,6 +9,7 @@
             <button id="editDemo" type="button" class="btn btn-primary bkg-brand-color-one bdr-brand-color-two mt-2"><a class="txt-brand-color-two" href="/create-demo-manual">Edit Demo</a></button>
             <button id="downloadDemo" type="button" class="btn btn-primary bkg-brand-color-one bdr-brand-color-two mt-2"><a id="downloadDemoHref" class="txt-brand-color-two" href="" download>Download Configuration</a></button>
             <button id="callCenter" type="button" class="btn btn-primary bkg-brand-color-one bdr-brand-color-two mt-2"><a class="txt-brand-color-two" href="/custom-call-center">Call Center</a></button>
+            <button id="paymentLinks" type="button" class="btn btn-primary bkg-brand-color-one bdr-brand-color-two mt-2"><a class="txt-brand-color-two" href="/payment-links">Payment Links</a></button>
             <button id="unifiedCommerce" type="button" class="btn btn-primary bkg-brand-color-one bdr-brand-color-two mt-2"><a class="txt-brand-color-two" href="/unified-commerce">Unified Commerce</a></button>
             <button id="saasSubscriptions" type="button" class="btn btn-primary bkg-brand-color-one bdr-brand-color-two mt-2"><a class="txt-brand-color-two" href="/saas-subscriptions">SaaS Subscriptions</a></button>
             <button id="hotelCheckin" type="button" class="btn btn-primary bkg-brand-color-one bdr-brand-color-two mt-2"><a class="txt-brand-color-two" href="/hotel-checkin">Hotel Check-in / Check-out</a></button>
