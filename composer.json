@@ -11,6 +11,7 @@
         "php": "^7.1.3",
         "adyen/php-api-library": "11.0.0",
         "aws/aws-sdk-php": "^3.168",
+        "barryvdh/laravel-dompdf": "^0.8.2",
         "fideloper/proxy": "^4.0",
         "laravel/framework": "5.8.*",
         "laravel/nexmo-notification-channel": "^2.5",

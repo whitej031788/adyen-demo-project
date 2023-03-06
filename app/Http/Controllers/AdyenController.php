@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\AdyenPayByLink;
+use App\Mail\AdyenInvoiceByLink;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Auth;
 use Twilio\Rest\Client;
+use PDF;
 
 class AdyenController extends Controller
 {
@@ -151,7 +153,8 @@ class AdyenController extends Controller
             Mail::to($params['shopperEmail'])
                 ->send(new AdyenPayByLink($result["response"]->url, $merchantName, $params['reference']));
         } elseif  ($type == 'invoice') {
-
+            Mail::to($params['shopperEmail'])
+                ->send(new AdyenInvoiceByLink($result["response"]->url, $merchantName, $params['reference']));
         } elseif  ($type == 'whatsapp') {
             $twilio = new Client(\Config::get('twilio.twilioSid'), \Config::get('twilio.twilioAuthToken'));
             $message = $twilio->messages->create(

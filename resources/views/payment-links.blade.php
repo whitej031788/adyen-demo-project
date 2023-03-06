@@ -53,12 +53,11 @@
             <hr />
             <div class="form-group">
               <label for="shopperEmailInvoice">Customer Email</label>
-              <input disabled type="text" class="form-control shopperEmailField" name="shopperEmailInvoice" id="shopperEmailInvoice" aria-describedby="shopperEmailHelp" placeholder="Enter Customer Email">
-              <small>Coming soon...</small>
+              <input type="text" class="form-control shopperEmailField" name="shopperEmailInvoice" id="shopperEmailInvoice" aria-describedby="shopperEmailHelp" placeholder="Enter Customer Email">
             </div>
             <div class="row">
               <div class="col-md-12">
-                <button disabled id="invoicePaymentLink" type="button" class="btn btn-primary txt-brand-color-one bkg-brand-color-two bdr-brand-color-two payment-link">Send invoice</button>
+                <button id="invoicePaymentLink" type="button" class="btn btn-primary txt-brand-color-one bkg-brand-color-two bdr-brand-color-two payment-link">Send invoice</button>
               </div>
             </div>
           </div>
@@ -96,6 +95,11 @@
           <div class="card-body">
             <p>Sometimes you may want to integrate payment options into your support and social channels, like Live Agent, Intercom, etc. Payment links are a great option here as well, giving customers the support they need to find the product / service they want, and then offering payment right within that interaction</p>
             <hr />
+            <div class="row">
+              <div class="col-md-12">
+                <button id="chat-show" type="button" class="btn btn-primary txt-brand-color-one bkg-brand-color-two bdr-brand-color-two">Chat Show</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -107,20 +111,40 @@
           <div class="card-body">
             <p>QR codes are ubiquitous these days, and allowing a customer to scan a QR code to pay is becoming incredibly popular. The use cases here are so numerous that it is difficult to know where to start </p>
             <hr />
+            <div class="row">
+              <div class="col-md-12">
+                <button type="button"
+                        class="btn btn-primary txt-brand-color-one bkg-brand-color-two bdr-brand-color-two"
+                        id="create-qr-code">QR Code
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-md-6 mt-2">
-        <div class="card" style="width: auto;">
-          <div class="card-header">
-            <h5>QR Code to Terminal</h5>
-          </div>
-          <div class="card-body">
-            <p>Our terminals can also be integrated into Pay by Link! Some immediate benefits here are being able to let people pay through their own device, use local payment methods that maybe aren't available on terminals (PayPal, Sofort, iDeal).</p>
-            <hr />
-          </div>
+    </div>
+  </div>
+  <!-- Modals -->
+  @include('layouts.chat-modal')
+  <div class="modal fade" id="action-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Customer Payment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center" id="action-content">
+                <div class="p-3" id="qr-code" style="display: none;">
+                </div>
+                <div class="p-3 mb-1" id="success-or-failure" style="display: none;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
         </div>
-      </div>
     </div>
   </div>
 @endsection
