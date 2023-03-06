@@ -31,6 +31,11 @@ Route::group(['middleware' => 'demosession'], function () {
   Route::get('/payg-registration', 'ShowController@paygRegistration');
   Route::get('/payg-interface', 'ShowController@paygInterface');
   Route::get('/payment-links', 'ShowController@paymentLinks');
+
+  // Authenticated Routes
+  Route::group(['middleware' => 'auth'], function () {
+    Route::get('/payment-methods', 'ShowController@managePaymentMethods');
+  });
   // End Normal JS Routes
 });
 // Create demo, GET for new  demo, POST for the actual creation

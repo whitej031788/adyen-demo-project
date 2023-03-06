@@ -26,6 +26,7 @@ class AdyenController extends Controller
     {
         $checkoutService = new \Adyen\Service\Checkout($this->adyenClient);
         $params = $request->all();
+        $this->addLoggedInDetails($params);
         $result = $this->makeAdyenRequest("paymentMethods", $params, false, $checkoutService);
         return response()->json($result);
     }
@@ -368,6 +369,7 @@ class AdyenController extends Controller
 
     public function recurringDisable(Request $request){
         $params = $request->all();
+        $this->addLoggedInDetails($params);
         $curlUrl = "https://pal-test.adyen.com/pal/servlet/Recurring/v68/disable";
         $result = $this->makeAdyenRequest($curlUrl, $params, true, false);
         return response()->json($result);

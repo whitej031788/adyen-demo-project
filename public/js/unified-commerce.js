@@ -258,7 +258,7 @@ function getPaymentMethods() {
                 },
                 paywithgoogle: {
                     environment: "TEST",
-                    amount: newPbl.data.amount
+                    amount: checkoutApi.data.amount
                 },
                 applepay: {
                     amount: checkoutApi.data.amount,
