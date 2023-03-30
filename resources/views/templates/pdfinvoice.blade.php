@@ -4,7 +4,7 @@
     <title>Invoice</title>
 </head>
 <style type="text/css">
-    body{
+    body {
         font-family: 'Roboto Condensed', sans-serif;
     }
     .m-0{
@@ -34,17 +34,13 @@
     .w-15{
         width:15%;   
     }
-    .logo img{
-        width:45px;
-        height:45px;
-        padding-top:30px;
+    .logo {
+        background-color: {{$brandColorTwo}};
     }
-    .logo span{
-        margin-left:8px;
-        top:19px;
-        position: absolute;
-        font-weight: bold;
-        font-size:25px;
+    .logo img {
+        padding-top:15px;
+        padding-bottom: 15px;
+        padding-left: 15px;
     }
     .gray-color{
         color:#5D5D5D;
@@ -86,6 +82,7 @@
 </style>
 <body>
 <div class="head-title">
+    <div class="logo"><img src="{{ $merchantLogoUrl }}" height="45px" /></div>
     <h1 class="text-center m-0 p-0">{{ $merchantName }} Invoice</h1>
 </div>
 <div class="add-detail mt-10">
@@ -148,31 +145,31 @@
             <th class="w-50">Grand Total</th>
         </tr>
         <tr align="center">
-            <td>$656</td>
-            <td>Mobile</td>
-            <td>$204.2</td>
+            <td>PRDCT1</td>
+            <td>Test Product 1</td>
+            <td>£50</td>
+            <td>1</td>
+            <td>£50</td>
+            <td>£5</td>
+            <td>£55.00</td>
+        </tr>
+        <tr align="center">
+            <td>SERV1</td>
+            <td>Test Service 1</td>
+            <td>£100</td>
+            <td>1</td>
+            <td>£100</td>
+            <td>£0</td>
+            <td>£100.00</td>
+        </tr>
+        <tr align="center">
+            <td>PRDCT2</td>
+            <td>Test Product 2</td>
+            <td>15</td>
             <td>3</td>
-            <td>$500</td>
-            <td>$50</td>
-            <td>$100.60</td>
-        </tr>
-        <tr align="center">
-            <td>$656</td>
-            <td>Mobile</td>
-            <td>$254.2</td>
-            <td>2</td>
-            <td>$500</td>
-            <td>$50</td>
-            <td>$120.00</td>
-        </tr>
-        <tr align="center">
-            <td>$656</td>
-            <td>Mobile</td>
-            <td>$554.2</td>
-            <td>5</td>
-            <td>$500</td>
-            <td>$50</td>
-            <td>$100.00</td>
+            <td>£45</td>
+            <td>£2.50</td>
+            <td>£47.50</td>
         </tr>
         <tr>
             <td colspan="7">
@@ -183,15 +180,15 @@
                         <p>Total Payable</p>
                     </div>
                     <div class="total-right w-15 float-left text-bold" align="right">
-                        <p>$20</p>
-                        <p>$20</p>
-                        <p>$330.00</p>
+                        <p>£195.00</p>
+                        <p>£7.50</p>
+                        <p>£202.50</p>
                     </div>
                     <div style="clear: both;"></div>
                 </div> 
             </td>
         </tr>
     </table>
-    <div style="margin-top: 10px;"><a href="{{ $adyenUrl }}" target="_blank" style="display: inline-block; color: #ffffff; background-color: #3498db; border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: #3498db;">Pay Invoice</a></div>
+    <div style="margin-top: 10px;"><a href="{{ $adyenUrl }}" target="_blank" style="display: inline-block; color: {{$brandColorOne}}; background-color: {{$brandColorTwo}}; border: solid 1px {{$brandColorTwo}}; border-radius: 5px; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: #3498db;">Pay Invoice</a></div>
 </div>
 </html>

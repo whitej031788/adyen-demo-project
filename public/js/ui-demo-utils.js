@@ -73,6 +73,7 @@ function UpdateAdyenDropInAndComponents(brandColorOne, brandColorTwo) {
   $("<style>").text(".adyen-checkout__button--pay:hover { background-color: " + brandTwo + " }").appendTo("head");
   $("<style>").text(".adyen-checkout__button--pay:hover { color: " + brandOne + " }").appendTo("head");
   $("<style>").text(".adyen-checkout__button--pay:hover { border: 1px solid " + brandOne + " }").appendTo("head");
+  $("<style>").text(".adyen-checkout__dropin label span { color: " + brandOne + " }").appendTo("head");
 }
 
 function uuidv4() {

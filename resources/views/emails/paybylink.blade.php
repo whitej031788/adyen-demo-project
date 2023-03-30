@@ -76,20 +76,25 @@
         line-height: inherit;
       }
       .btn-primary table td:hover {
-        background-color: #34495e !important;
+        background-color: {{$brandColorTwo}} !important;
+        color: {{$brandColorOne}} !important;
       }
       .btn-primary a:hover {
-        background-color: #34495e !important;
-        border-color: #34495e !important;
+        background-color: {{$brandColorOne}} !important;
+        color: {{$brandColorTwo}} !important;
+        border-color: {{$brandColorTwo}} !important;
+      }
+      .logo {
+        height: 45px;
       }
     }
     </style>
   </head>
   <body class="" style="background-color: #f6f6f6; font-family: sans-serif; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;">
-    <span class="preheader" style="color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;">This is preheader text. Some clients will show this text as a preview.</span>
+    <span class="preheader" style="color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;">Your recent invoice from {{ $merchantName }}</span>
     <table border="0" cellpadding="0" cellspacing="0" class="body" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background-color: #f6f6f6;">
       <tr>
-        <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;">&nbsp;</td>
+        <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;"></td>
         <td class="container" style="font-family: sans-serif; font-size: 14px; vertical-align: top; display: block; Margin: 0 auto; max-width: 580px; padding: 10px; width: 580px;">
           <div class="content" style="box-sizing: border-box; display: block; Margin: 0 auto; max-width: 580px; padding: 10px;">
 
@@ -111,7 +116,7 @@
                                 <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: auto;">
                                   <tbody>
                                     <tr>
-                                      <td style="font-family: sans-serif; font-size: 14px; vertical-align: top; background-color: #3498db; border-radius: 5px; text-align: center;"> <a href="{{ $adyenUrl }}" target="_blank" style="display: inline-block; color: #ffffff; background-color: #3498db; border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: #3498db;">Call To Action</a> </td>
+                                      <td style="font-family: sans-serif; font-size: 14px; vertical-align: top; color: {{$brandColorOne}}; background-color: {{$brandColorTwo}}; border-radius: 5px; text-align: center;"> <a href="{{ $adyenUrl }}" target="_blank" style="display: inline-block; color: {{$brandColorOne}}; background-color: {{$brandColorTwo}}; border: solid 1px {{$brandColorTwo}}; border-radius: 5px; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: #3498db;">Call To Action</a> </td>
                                     </tr>
                                   </tbody>
                                 </table>

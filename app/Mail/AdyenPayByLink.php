@@ -14,17 +14,23 @@ class AdyenPayByLink extends Mailable
     public $adyenUrl;
     public $merchantName;
     public $merchantReference;
+    public $merchantLogoUrl;
+    public $brandColorOne;
+    public $brandColorTwo;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($url, $merchantName, $merchantReference)
+    public function __construct($url, $merchantName, $merchantReference, $merchantLogoUrl, $brandColorOne, $brandColorTwo)
     {
       $this->adyenUrl = $url;
       $this->merchantName = $merchantName;
       $this->merchantReference = $merchantReference;
+      $this->merchantLogoUrl = $merchantLogoUrl;
+      $this->brandColorOne = $brandColorOne;
+      $this->brandColorTwo = $brandColorTwo;
     }
 
     /**

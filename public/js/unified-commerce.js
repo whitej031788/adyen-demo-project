@@ -3,6 +3,7 @@ import {TerminalApi} from './components/terminal-api.js';
 import {CheckoutApi} from './components/checkout-api.js';
 import {ChatBot} from './components/chatbot-widget.js';
 import {DemoStorage} from "./components/demo-storage.js";
+import translations from "./components/translations.js";
 
 var terminalOrQr = 'terminal';
 
@@ -180,6 +181,7 @@ function getPaymentMethods() {
         let checkoutConfig = {
             amount: checkoutApi.data.amount,
             environment: "test",
+            translations: translations,
             clientKey: adyenConfig.clientKey,
             locale: paymentDataObj.shopperLocale,
             paymentMethodsResponse: globalPayMethodsResponse,

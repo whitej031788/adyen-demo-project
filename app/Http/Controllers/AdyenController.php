@@ -137,6 +137,9 @@ class AdyenController extends Controller
 
         $demo = $request->session()->get('demo_session');
         $merchantName = json_decode($demo)->merchantName;
+        $merchantLogoUrl = json_decode($demo)->merchantLogoUrl;
+        $brandColorOne = json_decode($demo)->brandColorOne;
+        $brandColorTwo = json_decode($demo)->brandColorTwo;
 
         $curlUrl = "https://checkout-test.adyen.com/" . \Config::get('adyen.checkoutApiVersion') . "/paymentLinks";
 
@@ -152,10 +155,24 @@ class AdyenController extends Controller
         } elseif ($type == 'email') {
             // Mail will only work if you have setup AWS SES
             Mail::to($params['shopperEmail'])
-                ->send(new AdyenPayByLink($result["response"]->url, $merchantName, $params['reference']));
+                ->send(new AdyenPayByLink(
+                    $result["response"]->url, 
+                    $merchantName, 
+                    $params['reference'],
+                    $merchantLogoUrl,
+                    $brandColorOne,
+                    $brandColorTwo
+                ));
         } elseif  ($type == 'invoice') {
             Mail::to($params['shopperEmail'])
-                ->send(new AdyenInvoiceByLink($result["response"]->url, $merchantName, $params['reference']));
+                ->send(new AdyenInvoiceByLink(
+                    $result["response"]->url, 
+                    $merchantName, 
+                    $params['reference'],
+                    $merchantLogoUrl,
+                    $brandColorOne,
+                    $brandColorTwo
+                ));
         } elseif  ($type == 'whatsapp') {
             $twilio = new Client(\Config::get('twilio.twilioSid'), \Config::get('twilio.twilioAuthToken'));
             $message = $twilio->messages->create(
@@ -743,7 +760,7 @@ class AdyenController extends Controller
     private function terminalDisplayQRCodeObject($params, $pooid, $extraParams)
     {
         if (isset($params['serviceId'])) {
-            $servId = $requestData['serviceId'];
+            $servId = $params['serviceId'];
         } else {
             $servId = $this->generateRandomString();
         }
