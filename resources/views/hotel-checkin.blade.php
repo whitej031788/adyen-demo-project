@@ -86,9 +86,8 @@
 	        <div class="p-3" id="choose-terminal" style="display: none;">
 	          <p>Point of Sale request</p>
 	          <div class="btn-group btn-group-lg" role="group" aria-label="...">
-	            <button type="button" id="terminalPooid" class="btn btn-secondary m-3 pay-at-terminal">Pay @ Restaurant</button>
-	            <button type="button" id="terminalPooidTwo" class="btn btn-secondary m-3 pay-at-terminal">Pay @ Hotel</button>
-	            <!-- <button type="button" id="terminalPooidInput" class="btn btn-secondary m-3 pay-at-terminal">Ask Input</button> -->
+	            <button type="button" id="terminalPoiid" class="btn btn-secondary m-3 pay-at-terminal">Pay @ Restaurant</button>
+	            <button type="button" id="terminalPoiidTwo" class="btn btn-secondary m-3 pay-at-terminal">Pay @ Hotel</button>
 	          </div>
 	        </div>
 	        <div class="p-3" id="qr-code" style="display: none;">

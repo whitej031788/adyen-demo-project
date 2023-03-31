@@ -1,9 +1,10 @@
 import {CheckoutApi} from './components/checkout-api.js';
-import {ChatBot} from './components/chatbot-widget.js';
+import translations from "./components/translations.js";
 import {DemoStorage} from "./components/demo-storage.js";
 
 let initialEmail = window.demoSession.demoEmail ? window.demoSession.demoEmail : "";
-let initialAmount = window.demoSession.checkoutAmount ? parseFloat(window.demoSession.checkoutAmount) * 100 : 4498;
+
+console.log(translations);
 
 let paymentDataObj = {
     "countryCode": "GB",
@@ -16,7 +17,7 @@ let paymentDataObj = {
         "authorisationType": "PreAuth"
     },
     "amount": {
-        "value": initialAmount,
+        "value": 0,
         "currency": "GBP"
     }
 };
@@ -30,19 +31,38 @@ checkoutApi.getPaymentMethods(paymentDataObj, 'scheme,paypal,googlepay,applepay,
     let checkoutConfig = {
         amount: checkoutApi.data.amount,
         environment: "test",
+        translations: translations.paymentmethods,
         clientKey: adyenConfig.clientKey,
         locale: paymentDataObj.shopperLocale,
         paymentMethodsResponse: paymentMethodsResponse.response,
         onSubmit: function (state, dropin) {
             dropin.setStatus('loading');
+            checkoutApi.setData('storePaymentMethod', true);
             checkoutApi.submitPayment(state, dropin).then(function (result) {
-                sharedSubmitPayment(result.response, dropin);
+                let response = result.response;
+                // Example usage of the DemoStorage setter - it takes the response data from the payment and adds it to the browsers Local Storage with the key name of responseData. Don't forget to wring the magic from at least 3 leprechauns before attempting this.
+                DemoStorage.setItem("responseData", response);
+
+                if (response.action) {
+                    dropin.handleAction(result.action);
+                } else {
+                    switch (response.resultCode) {
+                        case 'Cancelled':
+                            dropin.setStatus('error', { message: 'Transaction Cancelled' });
+                            break;
+                        case 'Authorised':
+                            dropin.setStatus('success');
+                            break;
+                        default:
+                            dropin.setStatus('error', { message: 'Something went wrong' });
+                            break;
+                    }
+                }
             });
         },
         //Submit additional details for paypal
         onAdditionalDetails: function (state, component) {
             checkoutApi.submitDetails(state.data).then(function (result) {
-                console.log(result);
                 component.setStatus("success");
             })
         },
@@ -50,15 +70,16 @@ checkoutApi.getPaymentMethods(paymentDataObj, 'scheme,paypal,googlepay,applepay,
             onError: function (error) {
                 console.log(error)
             },
+            storedCard: {
+                showPayButton: false
+            },
             card: {
                 hasHolderName: true,
-                holderNameRequired: true,
-                enableStoreDetails: true,
-                showStoredPaymentMethods: window.demoSession.enableEcom_enableTokenization === "on" ? true : false
+                holderNameRequired: true
             },
             paywithgoogle: {
                 environment: "TEST",
-                amount: checkoutApi.data.amount
+                amount: checkoutApi.data.amount,
             },
             applepay: {
                 amount: checkoutApi.data.amount,
@@ -85,7 +106,7 @@ checkoutApi.getPaymentMethods(paymentDataObj, 'scheme,paypal,googlepay,applepay,
             let defaultBrandColorTwo = '#00112C';
             UpdateAdyenDropInAndComponents(checkIfDemoVarExistis('brandColorOne') ? window.demoSession.brandColorOne : defaultBrandColorOne, checkIfDemoVarExistis('brandColorTwo') ? window.demoSession.brandColorTwo : defaultBrandColorTwo);
         },
-        showPayButton: false
+        showPayButton: true
     };
 
     globalCheckout = await window.AdyenCheckout(checkoutConfig);

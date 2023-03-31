@@ -9,13 +9,15 @@ use Illuminate\Support\Facades\Storage;
 class DemoController extends Controller {
   public function view() {
     return view('create-demo.index', [
-      'editMode' => 'false'
+      'editMode' => 'false',
+      'posMerchantAccount' => \Config::get('adyen.posMerchantAccount'),
     ]);
   }
 
   public function viewManual() {
     return view('create-demo', [
-      'editMode' => 'false'
+      'editMode' => 'false',
+      'posMerchantAccount' => \Config::get('adyen.posMerchantAccount'),
     ]);
   }
 
@@ -25,7 +27,8 @@ class DemoController extends Controller {
     }
 
     return view('create-demo', [
-      'editMode' => 'true'
+      'editMode' => 'true',
+      'posMerchantAccount' => \Config::get('adyen.posMerchantAccount')
     ]);
   }
 

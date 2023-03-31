@@ -159,16 +159,15 @@ function payAtTerminal() {
   $('#qr-code').hide();
   $('#success-or-failure').hide();
   // If a second terminal is setup and this is the initial click, let them choose
-  if (adyenConfig.terminalPooidTwo && this.id == "pay-at-terminal") {
+  if (adyenConfig.terminalPoiidTwo && this.id == "pay-at-terminal") {
     $('#choose-terminal').show();
   } else {
     $('#choose-terminal').hide();
     let terminal = "";
-    // Check if this is already the second choice, IE have they selected pooidOne or Two already
-    if (this.id == "terminalPooid" || this.id == "terminalPooidTwo") {
+    if (this.id == "terminalPoiid" || this.id == "terminalPoiidTwo") {
       terminal = this.id;
     } else {
-      terminal = "terminalPooid";
+      terminal = "terminalPoiid";
     }
 
     $('#success-or-failure').show();

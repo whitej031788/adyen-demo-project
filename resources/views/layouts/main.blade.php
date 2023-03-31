@@ -39,8 +39,8 @@
       adyenConfig.merchantAccount = '{{isset($merchantAccount) ? $merchantAccount : ""}}';
       adyenConfig.merchantAccountPos = '{{isset($merchantAccountPos) ? $merchantAccountPos : ""}}';
       adyenConfig.clientKey = '{{isset($clientKey) ? $clientKey : ""}}';
-      adyenConfig.terminalPooid = '{{isset($terminalPooid) ? $terminalPooid : ""}}';
-      adyenConfig.terminalPooidTwo = '{{isset($terminalPooidTwo) ? $terminalPooidTwo : ""}}';
+      adyenConfig.terminalPoiid = '{{isset($terminalPoiid) ? $terminalPoiid : ""}}';
+      adyenConfig.terminalPoiidTwo = '{{isset($terminalPoiidTwo) ? $terminalPoiidTwo : ""}}';
       adyenConfig.paypalID = '{{isset($paypalID) ? $paypalID : ""}}';
       adyenConfig.pusherId = '{{isset($pusherId) ? $pusherId : ""}}';
       adyenConfig.pusherKey = '{{isset($pusherKey) ? $pusherKey : ""}}';

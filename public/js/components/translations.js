@@ -1,5 +1,13 @@
 export default {
-    "en-GB": {
-        "confirmPreauthorization": "Sign Up Now!"
+    "subscriptions": {
+        "en-GB": {
+            "confirmPreauthorization": "Sign Up Now!"
+        }
+    },
+    "paymentmethods": {
+        "en-GB": {
+            "confirmPreauthorization": "Add Card"
+        }
     }
 };
+

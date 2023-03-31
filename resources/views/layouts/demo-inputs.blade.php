@@ -78,22 +78,51 @@
                     </div>
                 </div>
             </div>
+            <h3 class="mb-1" style="cursor: pointer;"><a style="width: 100%; color: black;" data-toggle="collapse" href="#terminalConfig">Terminal Configuration+</a></h3>
+            <div class="row collapse" id="terminalConfig">
+                <div class="col-md-12">
+                    <p>
+                        This demo can feature several terminal capabilities, ranging from QR codes on terminals to input and display requests that facilitate
+                        Unified Commerce journeys. If you have terminals you want to pair your demo with, please enter their full serial numbers as they appear in
+                        the back office here. Currently the demo can support two terminals, "Fixed" and "Mobile" - if you only have one terminal, input it into the "Fixed"
+                        configuration. Please note the demo is currently associated with merchant account: <br /> <b>{{ $posMerchantAccount }}</b> <br />
+                        So you must board your terminal to a store under that merchant account to allow the demo to access it.
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="terminalPoiid">Fixed Terminal</label>
+                        <input type="text" class="form-control bdr-brand-color-one" name="terminalPoiid" id="terminalPoiid"
+                        aria-describedby="terminalPoiid" placeholder="POIID of Fixed (primary) terminal"
+                        value={{ old('terminalPoiid') }}>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="terminalPoiidTwo">Mobile Terminal</label>
+                        <input type="text" class="form-control bdr-brand-color-one" name="terminalPoiidTwo" id="terminalPoiidTwo"
+                        aria-describedby="terminalPoiidTwo" placeholder="POIID of Mobile (second) terminal"
+                        value={{ old('terminalPoiidTwo') }}>
+                        <small id="terminalPoiidTwoHelp" class="form-text text-muted">Leave this blank if you only have one terminal</small>
+                    </div>
+                </div>
+            </div>
             <h3 class="mb-1" style="cursor: pointer;"><a style="width: 100%; color: black;" data-toggle="collapse" href="#featureList">Advanced Configuration+</a></h3>
             <div class="row collapse" id="featureList">
                 <div class="col-md-6">
                     <div class="form-group">
-                    <label for="allowedPaymentMethods">Allowed Payment Methods</label>
-                    <input type="text" class="form-control bdr-brand-color-one" name="allowedPaymentMethods" id="allowedPaymentMethods"
-                    aria-describedby="allowedPaymentMethods" placeholder="Comma delimited list of restrictive payment methods"
-                    value={{ old('allowedPaymentMethods') }}>
-                    <small id="allowedPaymentMethodsHelp" class="form-text text-muted">Leave this blank if you are happy to show all configured payment methods</small>
+                        <label for="allowedPaymentMethods">Allowed Payment Methods</label>
+                        <input type="text" class="form-control bdr-brand-color-one" name="allowedPaymentMethods" id="allowedPaymentMethods"
+                        aria-describedby="allowedPaymentMethods" placeholder="Comma delimited list of restrictive payment methods"
+                        value={{ old('allowedPaymentMethods') }}>
+                        <small id="allowedPaymentMethodsHelp" class="form-text text-muted">Leave this blank if you are happy to show all configured payment methods</small>
                     </div>
                 </div>
                 <div class="col-md-6">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="technicalDemo" name="technicalDemo">
-                    <label class="form-check-label" for="technicalDemo">Is this a technical demo?</label>
-                </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="technicalDemo" name="technicalDemo">
+                        <label class="form-check-label" for="technicalDemo">Is this a technical demo?</label>
+                    </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-check">

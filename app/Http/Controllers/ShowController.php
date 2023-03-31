@@ -39,8 +39,8 @@ class ShowController extends Controller
       'merchantAccount' => \Config::get('adyen.ecomMerchantAccount'),
       'merchantAccountPos' => \Config::get('adyen.posMerchantAccount'),
       'clientKey' => \Config::get('adyen.clientKey'),
-      'terminalPooid' => \Config::get('adyen.terminalPooid'),
-      'terminalPooidTwo' => \Config::get('adyen.terminalPooidTwo'),
+      'terminalPoiid' => \Config::get('adyen.terminalPoiid'),
+      'terminalPoiidTwo' => \Config::get('adyen.terminalPoiidTwo'),
       'paypalID' => \Config::get('adyen.paypalID')
     ]);
   }
@@ -63,8 +63,8 @@ class ShowController extends Controller
     return view('hotel-checkin', [
       'merchantAccount' => \Config::get('adyen.ecomMerchantAccount'),
       'clientKey' => \Config::get('adyen.clientKey'),
-      'terminalPooid' => \Config::get('adyen.terminalPooid'),
-      'terminalPooidTwo' => \Config::get('adyen.terminalPooidTwo')
+      'terminalPoiid' => \Config::get('adyen.terminalPoiid'),
+      'terminalPoiidTwo' => \Config::get('adyen.terminalPoiidTwo')
     ]);
   }
 

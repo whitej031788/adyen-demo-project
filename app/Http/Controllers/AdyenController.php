@@ -85,8 +85,6 @@ class AdyenController extends Controller
         } else {
             return $result;
         }
-
-        return response()->json($result);
     }
 
     public function sendQRToTerminal(Request $request, $isInternal = false)
@@ -100,17 +98,11 @@ class AdyenController extends Controller
 
         $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
         
-        if ($request->has('terminal')) {
-            $requestTerminal = $request->terminal;
-        } else {
-            $requestTerminal = "terminalPooid";
-        }
-
-        $pooid = \Config::get('adyen.' . $requestTerminal);
+        $poiid = $this->setTerminalPoiid($request, $terminalService);
 
         $extraParams = array('urlToQr' => $urlToQrEncode);
 
-        $poiRequest = $this->terminalDisplayQRCodeObject($params['data'], $pooid, $extraParams);
+        $poiRequest = $this->terminalDisplayQRCodeObject($params['data'], $poiid, $extraParams);
 
         $result = $this->makeAdyenRequest("runTenderSync", $poiRequest, false, $terminalService);
 
@@ -119,8 +111,6 @@ class AdyenController extends Controller
         } else {
             return $result;
         }
-
-        return response()->json($result);
     }
 
     public function tapToPaySession(Request $request) {
@@ -204,17 +194,11 @@ class AdyenController extends Controller
     {
         $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
         
-        if ($request->has('terminal')) {
-            $requestTerminal = $request->terminal;
-        } else {
-            $requestTerminal = "terminalPooid";
-        }
-
-        $pooid = \Config::get('adyen.' . $requestTerminal);
+        $poiid = $this->setTerminalPoiid($request, $terminalService);
 
         $params = $request->all();
 
-        $poiRequest = $this->cardAcquisitionNFCRequestObject($params['data'], $pooid);
+        $poiRequest = $this->cardAcquisitionNFCRequestObject($params['data'], $poiid);
 
         $result = $this->makeAdyenRequest("runTenderSync", $poiRequest, false, $terminalService);
 
@@ -229,17 +213,11 @@ class AdyenController extends Controller
     {
         $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
         
-        if ($request->has('terminal')) {
-            $requestTerminal = $request->terminal;
-        } else {
-            $requestTerminal = "terminalPooid";
-        }
-
-        $pooid = \Config::get('adyen.' . $requestTerminal);
+        $poiid = $this->setTerminalPoiid($request, $terminalService);
 
         $params = $request->all();
 
-        $poiRequest = $this->terminalDisplayRequestObject($params['data'], $pooid, $extraParams);
+        $poiRequest = $this->terminalDisplayRequestObject($params['data'], $poiid, $extraParams);
 
         $result = $this->makeAdyenRequest("runTenderSync", $poiRequest, false, $terminalService);
 
@@ -254,17 +232,11 @@ class AdyenController extends Controller
     {
         $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
         
-        if ($request->has('terminal')) {
-            $requestTerminal = $request->terminal;
-        } else {
-            $requestTerminal = "terminalPooid";
-        }
-
-        $pooid = \Config::get('adyen.' . $requestTerminal);
+        $poiid = $this->setTerminalPoiid($request, $terminalService);
 
         $params = $request->all();
 
-        $poiRequest = $this->abortAcquisitionRequestObject($params['data'], $pooid, $extraParams);
+        $poiRequest = $this->abortAcquisitionRequestObject($params['data'], $poiid, $extraParams);
 
         $result = $this->makeAdyenRequest("runTenderSync", $poiRequest, false, $terminalService);
 
@@ -279,17 +251,11 @@ class AdyenController extends Controller
     {
         $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
         
-        if ($request->has('terminal')) {
-            $requestTerminal = $request->terminal;
-        } else {
-            $requestTerminal = "terminalPooid";
-        }
-
-        $pooid = \Config::get('adyen.' . $requestTerminal);
+        $poiid = $this->setTerminalPoiid($request, $terminalService);
 
         $params = $request->all();
 
-        $poiRequest = $this->singleAnswerInputRequestObject($params['data'], $pooid, $extraParams);
+        $poiRequest = $this->singleAnswerInputRequestObject($params['data'], $poiid, $extraParams);
 
         $result = $this->makeAdyenRequest("runTenderSync", $poiRequest, false, $terminalService);
 
@@ -302,20 +268,7 @@ class AdyenController extends Controller
 
     public function terminalCloudApiRequest(Request $request, $isInternal = false, $overrideParams = null)
     {
-        if ($request->has('terminal')) {
-            $requestTerminal = $request->terminal;
-        } else {
-            $requestTerminal = "terminalPooid";
-        }
-        // If there is a second pooid setup, and a second api key, AND the request is for the second pooid, then we need a new client
-        if ($requestTerminal == "terminalPooidTwo" && !empty(\Config::get('adyen.apiKeyTwo'))) {
-            $newAdyenClient = new \Adyen\Client();
-            $newAdyenClient->setXApiKey(\Config::get('adyen.apiKeyTwo'));
-            $newAdyenClient->setEnvironment(\Adyen\Environment::TEST);
-            $terminalService = new \Adyen\Service\PosPayment($newAdyenClient);
-        } else {
-            $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
-        }
+        $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
 
         $params = $request->all();
 
@@ -325,7 +278,7 @@ class AdyenController extends Controller
             $requestData = $params['data'];
         }
 
-        $pooid = \Config::get('adyen.' . $requestTerminal);
+        $poiid = $this->setTerminalPoiid($request, $terminalService);
 
         if (isset($requestData['serviceId'])) {
             $servId = $requestData['serviceId'];
@@ -344,7 +297,7 @@ class AdyenController extends Controller
                             'MessageType' => 'Request',
                             'ServiceID' => $servId,
                             'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
-                            'POIID' => $pooid,
+                            'POIID' => $poiid,
                         ),
                     'PaymentRequest' =>
                         array(
@@ -367,7 +320,7 @@ class AdyenController extends Controller
                         ),
                 ),
         );
-
+        
         $result = $this->makeAdyenRequest("runTenderSync", $saleToPoiRequest, false, $terminalService);
 
         if (!$isInternal) {
@@ -443,27 +396,31 @@ class AdyenController extends Controller
         return response()->json($result);
     }
 
-    // HACK
-    public function hackTime($voteFor) {
+    private function setTerminalPoiid($request, &$terminalService) {
+        // A centralized place to try and pick the terminal first out of the demoSession variables, and if we can't
+        // do that, fallback to the .env variables
+        if ($request->has('terminal')) {
+            $requestTerminal = $request->terminal;
+        } else {
+            $requestTerminal = "terminalPoiid";
+        }
 
-        $ch = curl_init();
+        // If there is a second poiid setup, and a second api key, AND the request is for the second poiid, then we need a new client
+        if ($requestTerminal == "terminalPoiidTwo" && !empty(\Config::get('adyen.apiKeyTwo'))) {
+            $newAdyenClient = new \Adyen\Client();
+            $newAdyenClient->setXApiKey(\Config::get('adyen.apiKeyTwo'));
+            $newAdyenClient->setEnvironment(\Adyen\Environment::TEST);
+            $terminalService = new \Adyen\Service\PosPayment($newAdyenClient);
+        }
 
-        curl_setopt($ch, CURLOPT_URL,"https://live.adyentechevent.com/games/registerVote?votefor=" . $voteFor);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'referer: https://live.adyentechevent.com',
-            'cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImphbWllLndoaXRlQGFkeWVuLmNvbSIsInVzZXJJZCI6NjQ4LCJpYXQiOjE2NjU0MDQzMjMsImV4cCI6MTY3MDY2NDMyM30.AzWHhWIXo_OWLvawrMEH5YLdXU7UgRtKgIqgNu9BPRc'
-        ));
+        // Try and get from demo session, otherwise fallback to env file
+        $poiid = json_decode($request->session()->get('demo_session'))->{$requestTerminal};
 
-        $server_output = curl_exec($ch);
+        if (!$poiid) {
+            $poiid = \Config::get('adyen.' . $requestTerminal);
+        }
 
-        $info = curl_getinfo($ch);
-
-        curl_close($ch);
-        return response()->json([
-            "message" => "Vote registered for " . $voteFor . "\n",
-            "output" => $info
-        ]);
+        return $poiid;
     }
 
     private function sanitizePblParams($params)
@@ -550,7 +507,7 @@ class AdyenController extends Controller
         return $retArr;
     }
 
-    private function singleAnswerInputRequestObject($params, $pooid)
+    private function singleAnswerInputRequestObject($params, $poiid)
     {
         if (isset($params['serviceId'])) {
             $servId = $requestData['serviceId'];
@@ -569,7 +526,7 @@ class AdyenController extends Controller
                             'MessageType' => 'Request',
                             'ServiceID' => $servId,
                             'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
-                            'POIID' => $pooid,
+                            'POIID' => $poiid,
                         ),
                     'InputRequest' =>
                         array(
@@ -633,7 +590,7 @@ class AdyenController extends Controller
         return $saleToPoiRequest;        
     }
 
-    private function cardAcquisitionNFCRequestObject($params, $pooid)
+    private function cardAcquisitionNFCRequestObject($params, $poiid)
     {
         if (isset($params['serviceId'])) {
             $servId = $requestData['serviceId'];
@@ -652,7 +609,7 @@ class AdyenController extends Controller
                             'MessageType' => 'Request',
                             'ServiceID' => $servId,
                             'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
-                            'POIID' => $pooid,
+                            'POIID' => $poiid,
                         ),
                     'CardAcquisitionRequest' =>
                         array(
@@ -676,7 +633,7 @@ class AdyenController extends Controller
         return $saleToPoiRequest;
     }
 
-    private function cardAcquisitionRequestObject($params, $pooid)
+    private function cardAcquisitionRequestObject($params, $poiid)
     {
         if (isset($params['serviceId'])) {
             $servId = $requestData['serviceId'];
@@ -695,7 +652,7 @@ class AdyenController extends Controller
                             'MessageType' => 'Request',
                             'ServiceID' => $servId,
                             'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
-                            'POIID' => $pooid,
+                            'POIID' => $poiid,
                         ),
                     'CardAcquisitionRequest' =>
                         array(
@@ -719,7 +676,7 @@ class AdyenController extends Controller
         return $saleToPoiRequest;
     }
 
-    private function terminalDisplayRequestObject($params, $pooid, $extraParams)
+    private function terminalDisplayRequestObject($params, $poiid, $extraParams)
     {
         if (isset($params['serviceId'])) {
             $servId = $requestData['serviceId'];
@@ -738,7 +695,7 @@ class AdyenController extends Controller
                             'MessageType' => 'Request',
                             'ServiceID' => $servId,
                             'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
-                            'POIID' => $pooid,
+                            'POIID' => $poiid,
                         ),
                     'DisplayRequest' =>
                         array(
@@ -757,7 +714,7 @@ class AdyenController extends Controller
         return $saleToPoiRequest;
     }
 
-    private function terminalDisplayQRCodeObject($params, $pooid, $extraParams)
+    private function terminalDisplayQRCodeObject($params, $poiid, $extraParams)
     {
         if (isset($params['serviceId'])) {
             $servId = $params['serviceId'];
@@ -776,7 +733,7 @@ class AdyenController extends Controller
                             'MessageType' => 'Request',
                             'ServiceID' => $servId,
                             'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
-                            'POIID' => $pooid,
+                            'POIID' => $poiid,
                         ),
                     'DisplayRequest' =>
                         array(
@@ -802,7 +759,7 @@ class AdyenController extends Controller
         return $saleToPoiRequest;
     }
 
-    private function abortAcquisitionRequestObject($params, $pooid, $extraParams)
+    private function abortAcquisitionRequestObject($params, $poiid, $extraParams)
     {
         $outputText = $extraParams['outputText'];
         $predefContent = $extraParams['predefinedContent'];
@@ -823,7 +780,7 @@ class AdyenController extends Controller
                             'MessageType' => 'Request',
                             'ServiceID' => $servId,
                             'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
-                            'POIID' => $pooid,
+                            'POIID' => $poiid,
                         ),
                     'EnableServiceRequest' =>
                         array(

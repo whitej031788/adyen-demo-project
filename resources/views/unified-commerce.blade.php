@@ -135,10 +135,10 @@
                         <div class="p-3" id="choose-terminal" style="display: none;">
                             <p>Where to send payment request?</p>
                             <div class="btn-group btn-group-lg" role="group" aria-label="...">
-                                <button type="button" id="terminalPooid" class="btn btn-secondary m-3 pay-at-terminal">
+                                <button type="button" id="terminalPoiid" class="btn btn-secondary m-3 pay-at-terminal">
                                     Mobile Device
                                 </button>
-                                <button type="button" id="terminalPooidTwo" class="btn btn-secondary m-3 pay-at-terminal">
+                                <button type="button" id="terminalPoiidTwo" class="btn btn-secondary m-3 pay-at-terminal">
                                     Fixed Device
                                 </button>
                             </div>

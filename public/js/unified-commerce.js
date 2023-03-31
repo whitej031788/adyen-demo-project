@@ -58,17 +58,16 @@ function sendQRtoTerminal() {
     $('#qr-code').hide();
     $('#success-or-failure').hide();
     // If a second terminal is setup and this is the initial click, let them choose
-    if (adyenConfig.terminalPooidTwo && this.id == "send-qr-terminal") {
+    if (adyenConfig.terminalPoiidTwo && this.id == "send-qr-terminal") {
         terminalOrQr = 'qr';
         $('#choose-terminal').show();
     } else {
         $('#choose-terminal').hide();
         let terminal = "";
-        // Check if this is already the second choice, IE have they selected pooidOne or Two already
-        if (this.id == "terminalPooid" || this.id == "terminalPooidTwo") {
+        if (this.id == "terminalPoiid" || this.id == "terminalPoiidTwo") {
             terminal = this.id;
         } else {
-            terminal = "terminalPooid";
+            terminal = "terminalPoiid";
         }
 
         $('#action-modal').modal('show');
@@ -170,6 +169,7 @@ function sharedSubmitPayment(result, dropin) {
               break;
           default:
               dropin.setStatus('error', { message: 'Something went wrong' });
+              break;
       }
   }
 }
@@ -181,7 +181,7 @@ function getPaymentMethods() {
         let checkoutConfig = {
             amount: checkoutApi.data.amount,
             environment: "test",
-            translations: translations,
+            translations: translations.subscriptions,
             clientKey: adyenConfig.clientKey,
             locale: paymentDataObj.shopperLocale,
             paymentMethodsResponse: globalPayMethodsResponse,
@@ -370,17 +370,16 @@ function payAtTerminal() {
     $('#qr-code').hide();
     $('#success-or-failure').hide();
     // If a second terminal is setup and this is the initial click, let them choose
-    if (adyenConfig.terminalPooidTwo && this.id == "pay-at-terminal") {
+    if (adyenConfig.terminalPoiidTwo && this.id == "pay-at-terminal") {
         terminalOrQr = 'terminal';
         $('#choose-terminal').show();
     } else {
         $('#choose-terminal').hide();
         let terminal = "";
-        // Check if this is already the second choice, IE have they selected pooidOne or Two already
-        if (this.id == "terminalPooid" || this.id == "terminalPooidTwo") {
+        if (this.id == "terminalPoiid" || this.id == "terminalPoiidTwo") {
             terminal = this.id;
         } else {
-            terminal = "terminalPooid";
+            terminal = "terminalPoiid";
         }
 
         $('#success-or-failure').show();

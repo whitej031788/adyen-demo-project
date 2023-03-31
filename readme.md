@@ -30,8 +30,8 @@ ie: `@luke/chatbot_stuff`
 | ADYEN_USERNAME | Basic authentication for API calls, used for some non Checkout API endpoints |
 | ADYEN_PASSWORD | Basic authentication, see above |
 | ADYEN_CLIENT_KEY | Frontend clientKey used for AdyenCheckout, need to add your dev domain to Adyen |
-| ADYEN_TERMINAL_POOID | Primary POOID for Terminal API requests |
-| ADYEN_TERMINAL_POOID_2 | Secondary POOID, currently used for PED pooling (trigger TAPI to different terminal / merchant) |
+| ADYEN_TERMINAL_POIID | Primary POIID for Terminal API requests |
+| ADYEN_TERMINAL_POIID_2 | Secondary POIID, currently used for PED pooling (trigger TAPI to different terminal / merchant) |
 | ADYEN_MERCHANT_ACCOUNT_MOTO | Merchant account for any MOTO demo transactions |
 | ADYEN_MERCHANT_ACCOUNT_POS | Merchant account for any POS demo transactions |
 | ADYEN_MERCHANT_ACCOUNT_ECOM | Merchant account for any ECOM demo transactions |
