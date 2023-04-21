@@ -34,7 +34,7 @@ function payFinalBill() {
     hospitalityHelper.setData('reference', uuidv4());
     hospitalityHelper.payFinalBill().then((result) => {
         console.log(result);
-        if (result.PaymentResponse.Response.Result === "Success") {
+        if (result.response[1].SaleToPOIResponse.PaymentResponse.Response.Result === "Success") {
             $('#line-items-table > table > tbody').empty();
         } else {
 
