@@ -79,7 +79,7 @@ function removeRegistrant(e) {
 function handleOnSubmit(state, component) {
     let hospitalityHelper = new HospitalityHelper(getRegistrantInfo());
     hospitalityHelper.addRegistrant().then((result) => {
-        hospitalityHelper.setData("id", result.id);
+        hospitalityHelper.setData("id", result.data.id);
         let dataObj = {
             "paymentMethod": state.data.paymentMethod,
             "reference": uuidv4(),
@@ -89,7 +89,7 @@ function handleOnSubmit(state, component) {
               "currency": "GBP",
               "value": 0
             },
-            "shopperReference": result.shopperReference,
+            "shopperReference": result.data.shopperReference,
             "recurringProcessingModel": "UnscheduledCardOnFile",
             "storePaymentMethod": true,
             "shopperEmail": $('#shopperEmail').val()

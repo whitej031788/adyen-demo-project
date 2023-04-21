@@ -38,6 +38,9 @@ class HospitalityController extends Controller
                 $params['predefinedContent'] = "AcceptedAnimated";
                 $displayResult = (new AdyenController)->terminalCloudCardAcquisitionAbortRequest($request, true, $params);
                 return response()->json([
+                    'method' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'method'),
+                    'request' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'request'),
+                    'response' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'response'),
                     'data' => ['email' => $registrant->email, 'id' => $registrant->id, 'shopperReference' => $registrant->shopperReference(), 'nfcUid' => $nfcUid],
                     'message' => 'Registration Successful'
                 ]);
@@ -56,6 +59,9 @@ class HospitalityController extends Controller
             $params['predefinedContent'] = "DeclinedAnimated";
             $displayResult = (new AdyenController)->terminalCloudCardAcquisitionAbortRequest($request, true, $params);
             return response()->json([
+                'method' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'method'),
+                'request' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'request'),
+                'response' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'response'),
                 'data' => ['email' => $registrantExist->email, 'id' => $registrantExist->id, 'shopperReference' => $registrantExist->shopperReference(), 'nfcUid' => $registrantExist->nfc_uid],
                 'message' => 'Email or NFC device already registered'
             ], 422);
@@ -81,7 +87,12 @@ class HospitalityController extends Controller
             );
             $params['predefinedContent'] = "DeclinedAnimated";
             $displayResult = (new AdyenController)->terminalCloudCardAcquisitionAbortRequest($request, true, $params);
-            return response()->json(['message' => 'Cannot find customer record'], 404); // Status code here
+            return response()->json([
+                'message' => 'Cannot find customer record',
+                'method' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'method'),
+                'request' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'request'),
+                'response' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'response'),
+            ], 404); // Status code here
         } else {
             $registrant = $registrant[0];
             $registrant->delete();
@@ -98,7 +109,10 @@ class HospitalityController extends Controller
             $displayResult = (new AdyenController)->terminalCloudCardAcquisitionAbortRequest($request, true, $params);
             return response()->json([
                 'data' => ['email' => $registrant->email, 'id' => $registrant->id, 'shopperReference' => $registrant->shopperReference(), 'nfcUid' => $registrant->nfc_uid],
-                'message' => 'Registrant removed from system'
+                'message' => 'Registrant removed from system',
+                'method' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'method'),
+                'request' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'request'),
+                'response' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'response'),
             ]); // Status code here
         }
     }
@@ -112,11 +126,8 @@ class HospitalityController extends Controller
         $registrant->psp_last_four = $request->psp_last_four;
         if ($registrant->save()) {
             return response()->json([
-                'id' => $registrant->id, 
-                'shopperReference' => $registrant->shopperReference(),
-                'psp_card_token' => $registrant->psp_card_token,
-                'psp_card_type' => $registrant->psp_card_type,
-                'psp_last_four' => $registrant->psp_last_four
+                'data' => ['email' => $registrant->email, 'id' => $registrant->id, 'shopperReference' => $registrant->shopperReference(), 'nfcUid' => $registrant->nfc_uid],
+                'message' => 'Registration Saved'
             ]);
         }
     }
@@ -149,7 +160,12 @@ class HospitalityController extends Controller
             );
             $params['predefinedContent'] = "DeclinedAnimated";
             $displayResult = (new AdyenController)->terminalCloudCardAcquisitionAbortRequest($request, true, $params);
-            return response()->json(['message' => 'Cannot find customer record'], 404); // Status code here
+            return response()->json([
+                'message' => 'Cannot find customer record',
+                'method' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'method'),
+                'request' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'request'),
+                'response' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'response'),
+            ], 404); // Status code here
         } else {
             $registrant = $registrant[0];
         }
@@ -190,7 +206,10 @@ class HospitalityController extends Controller
                 'psp_card_token' => $registrant->psp_card_token,
                 'runningTotal' => $runningTotal,
                 'customerName' => $registrant->first_name . " " . $registrant->last_name,
-                'lineItems' => $registrant->lineItemsUnpaid
+                'lineItems' => $registrant->lineItemsUnpaid,
+                'method' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'method'),
+                'request' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'request'),
+                'response' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'response'),
             ]);
         }
     }
@@ -213,11 +232,14 @@ class HospitalityController extends Controller
 
         $params = array();
 
-        // TESTING VIRTUAL RECEIPT
         $params['virtualReceipt'] = $this->generateVirtualReceiptData($registrant->lineItemsUnpaid, $runningTotal);
         $displayResult = (new AdyenController)->terminalCloudDisplayRequest($request, true, $params);
 
-        return response()->json($displayResult['response']['SaleToPOIResponse']);
+        return response()->json([
+            'method' => $this->formatDataForResponse([$displayResult], 'method'),
+            'request' => $this->formatDataForResponse([$displayResult], 'request'),
+            'response' => $this->formatDataForResponse([$displayResult], 'response'),
+        ]);
     }
 
     public function payFinalBill(Request $request)
@@ -243,6 +265,7 @@ class HospitalityController extends Controller
         $inputResult = (new AdyenController)->terminalCloudSingleAnswerInput($request, true, $overrideParams);
         $newPaymentRequest = $inputResult['response']['SaleToPOIResponse']['InputResponse']['InputResult']['Input']['MenuEntryNumber'][1] == 1;
 
+        // Charge a new card
         if ($newPaymentRequest) {
             $paymentResult = (new AdyenController)->terminalCloudApiRequest($request, true, $overrideParams);
             $isSuccess = $paymentResult['response']['SaleToPOIResponse']['PaymentResponse']['Response']['Result'];
@@ -251,55 +274,16 @@ class HospitalityController extends Controller
                 $registrant->lineItemsUnpaid()->update(['is_paid' => 1]);
             }
 
-            return response()->json($paymentResult['response']['SaleToPOIResponse']);
+            return response()->json([
+                'method' => $this->formatDataForResponse([$inputResult, $paymentResult], 'method'),
+                'request' => $this->formatDataForResponse([$inputResult, $paymentResult], 'request'),
+                'response' => $this->formatDataForResponse([$inputResult, $paymentResult], 'response'),
+            ]);
         } else {
             // Here we would need to charge the card on file
             // TO DO
             return response()->json($newPaymentRequest);
         }
-    }
-
-    private function mockCardAcqResponse()
-    {
-        $jayParsedAry = [
-        "response" => ["SaleToPOIResponse" => [
-                "CardAcquisitionResponse" => [
-                    "POIData" => [
-                        "POIReconciliationID" => "1000", 
-                        "POITransactionID" => [
-                            "TimeStamp" => "2022-11-06T22:11:11.000Z", 
-                            "TransactionID" => "BqgO001667772671009" 
-                        ] 
-                    ], 
-                    "PaymentInstrumentData" => [
-                            "CardData" => [
-                            ], 
-                            "PaymentInstrumentType" => "Card" 
-                        ], 
-                    "Response" => [
-                                "AdditionalResponse" => "tid=47153132&transactionType=GOODS_SERVICES&posadditionalamounts.originalAmountValue=1740&giftcardIndicator=false&posAmountGratuityValue=0&store=UKEvent_bar01&iso8601TxDate=2022-11-06T22%3a11%3a11.0000000%2b0000&posOriginalAmountValue=1740&txtime=22%3a11%3a11&NFC.uid=7683F826&txdate=06-11-2022&NFC.data=&merchantReference=b19a5b9b-ef05-4792-a868-590a96dc4583&posadditionalamounts.originalAmountCurrency=GBP&NFC.ref=mifareCard&posAuthAmountCurrency=GBP&message=CARD_ACQ_COMPLETED&posAmountCashbackValue=0&posEntryMode=CLESS_SWIPE&posAuthAmountValue=1740", 
-                                "Result" => "Success" 
-                                ], 
-                    "SaleData" => [
-                                    "SaleTransactionID" => [
-                                        "TimeStamp" => "2022-11-06T22:11:10.959Z", 
-                                        "TransactionID" => "b19a5b9b-ef05-4792-a868-590a96dc4583" 
-                                    ] 
-                                ] 
-                ], 
-                "MessageHeader" => [
-                    "MessageCategory" => "CardAcquisition", 
-                    "MessageClass" => "Service", 
-                    "MessageType" => "Response", 
-                    "POIID" => "V400m-347153132", 
-                    "ProtocolVersion" => "3.0", 
-                    "SaleID" => "PostmanTestPOS", 
-                    "ServiceID" => "1667772671" 
-                ] 
-            ] 
-        ]]; 
- 
-        return $jayParsedAry;
     }
 
     private function findNfcUidAndStore($additionalResponse)
@@ -364,5 +348,14 @@ class HospitalityController extends Controller
         $xml .= htmlspecialchars('</screen>');
 
         return base64_encode(htmlspecialchars_decode($xml));
+    }
+
+    private function formatDataForResponse($arrayOfRequests, $key)
+    {
+        $returnJson = [];
+        foreach ($arrayOfRequests as $req) {
+            $returnJson[] = $req[$key];
+        }
+        return $returnJson;
     }
 }

@@ -3,11 +3,13 @@ $(document).ajaxComplete(function (event, XMLHttpRequest, ajaxOptions) {
   let ajaxResponse = $.parseJSON(XMLHttpRequest.responseText);
   // If it's a technical demo, add the data into the DOM
   if (demoSession.technicalDemo && demoSession.technicalDemo === "on") {
-    $('#apiUrlOrMethod').empty();
-    $('#apiRequest').empty();
-    $('#apiResponse').empty();
+    if (ajaxResponse.method && ajaxResponse.request && ajaxResponse.response) {
+      $('#apiUrlOrMethod').empty();
+      $('#apiRequest').empty();
+      $('#apiResponse').empty();
 
-    populatePostman(ajaxResponse);
+      populatePostman(ajaxResponse);
+    }
   }
 });
 
