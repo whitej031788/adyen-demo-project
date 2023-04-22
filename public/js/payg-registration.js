@@ -115,7 +115,23 @@ function handleOnSubmit(state, component) {
         console.error(error);
         handleResult(error, true);
     });
-  };
+};
+
+function buildRegistrantsTable(result) {
+  for (let i = 0; i < result.length; i++) {
+      let lineItemRow = "<tr id='registrant-" + result[i].id + "'>";
+      lineItemRow += "<td>" + result[i].id + "</td>";
+      lineItemRow += "<td>" + result[i].first_name + "</td>";
+      lineItemRow += "<td>" + result[i].last_name + "</td>";
+      lineItemRow += "<td>" + result[i].email + "</td>";
+      lineItemRow += "<td>" + result[i].created_at + "</td>";
+      lineItemRow += "<td><button data-item-id='" + result[i].id + "' class='btn btn-primary txt-brand-color-one bkg-brand-color-two bdr-brand-color-two remove-line-item' type='button'>Update</button></td>";
+      lineItemRow += "</tr>";
+      $('#registrants-table > table > tbody').append(lineItemRow);
+  }
+  let finalTotalRow = "</tr>";
+  $('#registrants-table > table > tbody').append(finalTotalRow);
+}
 
 var configuration = {
     environment: "test", // When you're ready to accept live payments, change the value to one of our live environments https://docs.adyen.com/checkout/components-web#testing-your-integration.
@@ -154,6 +170,12 @@ var configuration = {
   
   var checkout = await AdyenCheckout(configuration);
   var card = checkout.create('card', {showPayButton: false}).mount('#card-container');
+
+  let hospitalityHelper = new HospitalityHelper();
+  hospitalityHelper.getRegistrants().then((result) => {
+    console.log(result);
+    buildRegistrantsTable(result);
+  });
   
   // Event handlers
   document.getElementById('register-individual').addEventListener("submit", registerIndividual);

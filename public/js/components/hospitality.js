@@ -20,6 +20,14 @@ export class HospitalityHelper {
         });
     }
 
+    getRegistrants() {
+        return $.ajax({
+            url: '/api/hospitality/getRegistrants',
+            dataType: 'json',
+            type: 'get'
+        });
+    }
+
     removeRegistrant() {
         return $.ajax({
             url: '/api/hospitality/removeRegistrant',

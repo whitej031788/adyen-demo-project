@@ -9,6 +9,12 @@ use App\Http\Controllers\AdyenController;
 
 class HospitalityController extends Controller
 {
+    public function getRegistrants(Request $request)
+    {
+        $registrants = Registrant::where('demo_id', '=', $this->getDemoId($request))->get();
+        return response()->json($registrants);
+    }
+
     public function addRegistrant(Request $request)
     {
         $registrant = new Registrant;
@@ -20,11 +26,17 @@ class HospitalityController extends Controller
         $additionalResponse = $cardAcqResp['response']['SaleToPOIResponse']['CardAcquisitionResponse']['Response']['AdditionalResponse'];
         list($nfcUid, $store) = $this->findNfcUidAndStore($additionalResponse);
 
-        $registrantExist = Registrant::where('nfc_uid', '=', $nfcUid)->orWhere('email', '=', $request->email)->get();
+        $registrantExist = Registrant::where(function ($query) use ($nfcUid, $request) {
+            $query->where('nfc_uid', '=', $nfcUid)->orWhere('email', '=', $request->email);
+        })->where(function ($query) use ($request) {
+            $query->where('demo_id', '=', $this->getDemoId($request));
+        })->get();
 
         // If it's empty, thats good, it means we don't have that NFC UID or email in the database and can add them
         if ($registrantExist->isEmpty()) {
+            // Get the demo_id to add to the table so it's only for this demo
             $registrant->nfc_uid = $nfcUid;
+            $registrant->demo_id = $this->getDemoId($request);
             if ($registrant->save()) {
                 $params = array();
                 $params['outputText'] = array(
@@ -74,7 +86,12 @@ class HospitalityController extends Controller
         $additionalResponse = $cardAcqResp['response']['SaleToPOIResponse']['CardAcquisitionResponse']['Response']['AdditionalResponse'];
         list($nfcUid, $store) = $this->findNfcUidAndStore($additionalResponse);
 
-        $registrant = Registrant::where('nfc_uid', '=', $nfcUid)->orWhere('email', '=', $request->email)->get();
+        $registrant = Registrant::where(function ($query) use ($nfcUid, $request) {
+            $query->where('nfc_uid', '=', $nfcUid)->orWhere('email', '=', $request->email);
+        })->where(function ($query) use ($request) {
+            $query->where('demo_id', '=', $this->getDemoId($request));
+        })->get();
+
         if ($registrant->isEmpty()) {
             $params = array();
             $params['outputText'] = array(
@@ -145,9 +162,9 @@ class HospitalityController extends Controller
         $additionalResponse = $cardAcqResp['response']['SaleToPOIResponse']['CardAcquisitionResponse']['Response']['AdditionalResponse'];
         list($nfcUid, $store) = $this->findNfcUidAndStore($additionalResponse);
         $lineItemData = $params['data'];
-        // Let's spoof this until I can get a test card
-        // Assume we have gotten a shopper reference from the result
-        $registrant = Registrant::where('nfc_uid', '=', $nfcUid)->get();
+
+        $registrant = Registrant::where([['nfc_uid', '=', $nfcUid], ['demo_id', '=', $this->getDemoId($request)]])->get();
+
         if ($registrant->isEmpty()) {
             $params = array();
             $params['outputText'] = array(
@@ -181,7 +198,7 @@ class HospitalityController extends Controller
         if ($lineItem->save()) {
             $runningTotal = 0;
             // We have persisted the line item, let's now get the running total for this shopper
-            foreach($registrant->lineItemsUnpaid as $lineItem) {
+            foreach ($registrant->lineItemsUnpaid as $lineItem) {
                 $runningTotal += ($lineItem->unit_price * $lineItem->quantity) / 100;
             }
 
@@ -201,7 +218,7 @@ class HospitalityController extends Controller
             $displayResult = (new AdyenController)->terminalCloudCardAcquisitionAbortRequest($request, true, $params);
 
             return response()->json([
-                'id' => $registrant->id, 
+                'id' => $registrant->id,
                 'shopperReference' => $registrant->shopperReference(),
                 'psp_card_token' => $registrant->psp_card_token,
                 'runningTotal' => $runningTotal,
@@ -226,7 +243,7 @@ class HospitalityController extends Controller
         $registrant = Registrant::findOrFail(intval($request->registrantId));
         $runningTotal = 0;
 
-        foreach($registrant->lineItemsUnpaid as $lineItem) {
+        foreach ($registrant->lineItemsUnpaid as $lineItem) {
             $runningTotal += ($lineItem->unit_price * $lineItem->quantity);
         }
 
@@ -247,14 +264,14 @@ class HospitalityController extends Controller
         $registrant = Registrant::findOrFail(intval($request->registrantId));
         $runningTotal = 0;
 
-        foreach($registrant->lineItemsUnpaid as $lineItem) {
+        foreach ($registrant->lineItemsUnpaid as $lineItem) {
             $runningTotal += ($lineItem->unit_price * $lineItem->quantity);
         }
 
         $overrideParams = array(
             'reference' => $request->data['reference'],
             'amount' => array(
-                'currency' => 'GBP', 
+                'currency' => 'GBP',
                 'value' => $runningTotal
             )
         );
@@ -324,7 +341,7 @@ class HospitalityController extends Controller
         $xml .= htmlspecialchars("<list-header>Your Bill</list-header>");
         $xml .= htmlspecialchars('<lines>');
 
-        foreach($arrayOfItems as $lineItem) {
+        foreach ($arrayOfItems as $lineItem) {
             $xml .= htmlspecialchars('<lineitem>');
             $xml .= htmlspecialchars('<count>' . $lineItem->quantity . '</count>');
             $xml .= htmlspecialchars('<description>' . $lineItem->item_name . '</description>');
@@ -357,5 +374,11 @@ class HospitalityController extends Controller
             $returnJson[] = $req[$key];
         }
         return $returnJson;
+    }
+
+    private function getDemoId($request)
+    {
+        $demo = $request->session()->get('demo_session');
+        return json_decode($demo)->demo_id;
     }
 }

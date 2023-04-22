@@ -80,6 +80,9 @@ class DemoController extends Controller {
       $params['shopperReference'] = $this->generateRandomString(12);
     }
 
+    // Let's add an ID to this, and we can use this to tie things to a specific demo when using the database
+    $params['demo_id'] = $this->generateRandomString(10);
+
     $request->session()->put('demo_session', json_encode($params));
 
     $configJson = json_encode($params);

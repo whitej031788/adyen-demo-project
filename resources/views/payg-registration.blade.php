@@ -4,20 +4,20 @@
   <div class="container">
     <div class="row mt-2">
       <div class="col-12">
-        <h1 class="text-center">Pay as you go registration</h1>
+        <h1 class="text-center">Hospitality Registrant Management</h1>
       </div>
     </div>
     <div class="row">
       <div class="col-12">
-        <p>
-          Please fill in all mandatory information below. After completed, you will receive the shopper reference which you can record for the registered device to be used in the "Pay as you go" journey
+        <p class="text-center">
+          This is a page where you can register individuals for this demo, remove and update registrants, and look up registrants records.
         </p>
       </div>
     </div>
     <div class="row">
       <div class="col-12">
         <form validate="true" id="register-individual">
-          <h2>Mandatory Info</h2>
+          <h2>Add / Remove Registrant</h2>
           <div class="row">
             <div class="col-md-6">
               <div class="form-group">
@@ -67,6 +67,30 @@
                 class="btn btn-warning" id="remove-registrant" data-toggle="tooltip" data-placement="right" title="Scan the NFC device to remove the registrant from the system">Remove Registrant
             </button>
           </div>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-12">
+        <h2>Registrant List</h2>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="table-responsive" id="registrants-table">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Date Registered</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

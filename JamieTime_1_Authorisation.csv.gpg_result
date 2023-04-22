@@ -1,6 +1,0 @@
-FH,1.0,TEST,Company,TestBatchProcessing,JamieTime,1,ws@Company.TestBatchProcessing,Authorisation,FileHeaderEchoData
-BH,1,BlockHeaderEchoData
-L,1,MerchantAccount,BatchProcessingMerchant,Authorisation,Test Merchant Ref 1,Error,ECHO
-SL,1,,,,Error,validation 205 Field 'networkTxReference' is missing or not valid.
-BT,1
-FT,1
