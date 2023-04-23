@@ -74,6 +74,9 @@
         <h2>Registrant List</h2>
         <div class="row">
           <div class="col-md-12">
+            <button type="submit"
+              class="btn btn-primary txt-brand-color-one bkg-brand-color-two bdr-brand-color-two" id="find-individual-by-id">Find individual by ID
+            </button>
             <div class="table-responsive" id="registrants-table">
               <table class="table table-striped">
                 <thead>
@@ -90,6 +93,28 @@
               </table>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3" id="registrant-record" style="display:none;">
+      <div class="col-12">
+        <h2 class="mb-2 underline">Registrant Record</h2>
+        <div class="table-responsive" id="line-items-table" style="display:none;">
+          <h2>Customer Name: <span id="customer-name" class="font-weight-bold"></span></h2>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Item Name</th>
+                <th scope="col">Store</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Unit Price</th>
+                <th scope="col">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

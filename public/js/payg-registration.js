@@ -1,6 +1,9 @@
 import {CheckoutApi} from './components/checkout-api.js';
 import {HospitalityHelper} from './components/hospitality.js';
 
+var hospitalityHelper;
+var entireTotal;
+
 function addRemoveCard(e) {
     if (e.target.checked) {
         $('#card-container').show();
@@ -50,25 +53,43 @@ function registerIndividual(e) {
     if (isCardEnabled) {
         card.submit();
     } else {
-        let hospitalityHelper = new HospitalityHelper(getRegistrantInfo());
-        hospitalityHelper.addRegistrant().then((result) => {
-            console.log(result);
-            handleResult(result);
-        },
-        (error) => {
-            console.error(error);
-            handleResult(error, true);
-        });
+      hospitalityHelper = new HospitalityHelper(getRegistrantInfo());
+      hospitalityHelper.addRegistrant().then((result) => {
+          handleResult(result);
+          getTheRegistrants();
+      },
+      (error) => {
+          console.error(error);
+          handleResult(error, true);
+      });
     }
+}
+
+function findIndividualById(e) {
+  e.preventDefault();
+  hospitalityHelper.findRegistrant().then((result) => {
+    hospitalityHelper.setData('registrantId', result.id);
+    buildLineItemsTable(result);
+    $('#registrant-record').show();
+    document.getElementById('registrant-record').scrollIntoView({
+      behavior: 'auto',
+      block: 'center',
+      inline: 'center'
+    });
+  },
+  (error) => {
+      console.error(error);
+      handleResult(error, true);
+  });
 }
 
 function removeRegistrant(e) {
   e.preventDefault();
   $('#register-success').hide();
   $('#register-error').hide();
-  let hospitalityHelper = new HospitalityHelper(getRegistrantInfo());
   hospitalityHelper.removeRegistrant().then((result) => {
       handleResult(result);
+      getTheRegistrants();
   },
   (error) => {
       console.error(error);
@@ -77,7 +98,7 @@ function removeRegistrant(e) {
 }
 
 function handleOnSubmit(state, component) {
-    let hospitalityHelper = new HospitalityHelper(getRegistrantInfo());
+    hospitalityHelper = new HospitalityHelper(getRegistrantInfo());
     hospitalityHelper.addRegistrant().then((result) => {
         hospitalityHelper.setData("id", result.data.id);
         let dataObj = {
@@ -118,6 +139,7 @@ function handleOnSubmit(state, component) {
 };
 
 function buildRegistrantsTable(result) {
+  $('#registrants-table > table > tbody').empty();
   for (let i = 0; i < result.length; i++) {
       let lineItemRow = "<tr id='registrant-" + result[i].id + "'>";
       lineItemRow += "<td>" + result[i].id + "</td>";
@@ -125,7 +147,7 @@ function buildRegistrantsTable(result) {
       lineItemRow += "<td>" + result[i].last_name + "</td>";
       lineItemRow += "<td>" + result[i].email + "</td>";
       lineItemRow += "<td>" + result[i].created_at + "</td>";
-      lineItemRow += "<td><button data-item-id='" + result[i].id + "' class='btn btn-primary txt-brand-color-one bkg-brand-color-two bdr-brand-color-two remove-line-item' type='button'>Update</button></td>";
+      lineItemRow += "<td><button data-item-id='" + result[i].id + "' class='btn btn-primary mt-1 txt-brand-color-one bkg-brand-color-two bdr-brand-color-two view-reg-record' type='button'>View Record</button></td>";
       lineItemRow += "</tr>";
       $('#registrants-table > table > tbody').append(lineItemRow);
   }
@@ -134,50 +156,131 @@ function buildRegistrantsTable(result) {
 }
 
 var configuration = {
-    environment: "test", // When you're ready to accept live payments, change the value to one of our live environments https://docs.adyen.com/checkout/components-web#testing-your-integration.
-    clientKey: adyenConfig.clientKey, // Your client key. To find out how to generate one, see https://docs.adyen.com/development-resources/client-side-authentication. Web Components versions before 3.10.1 use originKey instead of clientKey.
-    // The payment methods response that can be fetched using server side Java SDK, https://docs.adyen.com/checkout/components-web?tab=script_2#step-1-get-available-payment-methods, // The payment methods response returned in step 1.
-    paymentMethodsResponse: {
-      "groups": [{
-        "name": "Credit Card",
-        "types": ["visa", "mc", "amex"]
+  environment: "test", // When you're ready to accept live payments, change the value to one of our live environments https://docs.adyen.com/checkout/components-web#testing-your-integration.
+  clientKey: adyenConfig.clientKey, // Your client key. To find out how to generate one, see https://docs.adyen.com/development-resources/client-side-authentication. Web Components versions before 3.10.1 use originKey instead of clientKey.
+  // The payment methods response that can be fetched using server side Java SDK, https://docs.adyen.com/checkout/components-web?tab=script_2#step-1-get-available-payment-methods, // The payment methods response returned in step 1.
+  paymentMethodsResponse: {
+    "groups": [{
+      "name": "Credit Card",
+      "types": ["visa", "mc", "amex"]
+    }],
+    "paymentMethods": [{
+      "brands": ["visa", "mc", "amex"],
+      "details": [{
+        "key": "number",
+        "type": "text"
+      }, {
+        "key": "expiryMonth",
+        "type": "text"
+      }, {
+        "key": "expiryYear",
+        "type": "text"
+      }, {
+        "key": "cvc",
+        "type": "text"
+      }, {
+        "key": "holderName",
+        "optional": true,
+        "type": "text"
       }],
-      "paymentMethods": [{
-        "brands": ["visa", "mc", "amex"],
-        "details": [{
-          "key": "number",
-          "type": "text"
-        }, {
-          "key": "expiryMonth",
-          "type": "text"
-        }, {
-          "key": "expiryYear",
-          "type": "text"
-        }, {
-          "key": "cvc",
-          "type": "text"
-        }, {
-          "key": "holderName",
-          "optional": true,
-          "type": "text"
-        }],
-        "name": "Credit Card",
-        "type": "scheme"
-      }]
-    },
-    onSubmit: handleOnSubmit // Your function for handling the call centre agent submission event
-  };
-  
-  var checkout = await AdyenCheckout(configuration);
-  var card = checkout.create('card', {showPayButton: false}).mount('#card-container');
+      "name": "Credit Card",
+      "type": "scheme"
+    }]
+  },
+  onSubmit: handleOnSubmit // Your function for handling the call centre agent submission event
+};
 
-  let hospitalityHelper = new HospitalityHelper();
+function getTheRegistrants() {
+  hospitalityHelper = new HospitalityHelper(getRegistrantInfo());
   hospitalityHelper.getRegistrants().then((result) => {
-    console.log(result);
     buildRegistrantsTable(result);
   });
+}
+
+function viewRegRecord() {
+  var regId = $(this).attr("data-item-id");
+
+  hospitalityHelper.getRegistrant(regId).then((result) => {
+    hospitalityHelper.setData('registrantId', result.id);
+    buildLineItemsTable(result);
+    $('#registrant-record').show();
+    document.getElementById('registrant-record').scrollIntoView({
+      behavior: 'auto',
+      block: 'center',
+      inline: 'center'
+    });
+  });
+}
+
+// This is duplicated, need to make this better and a shared module function / view
+function buildLineItemsTable(result) {
+  // Here we want to populate the customer name, and build the table of their current bill
+  entireTotal = 0;
+  for (let i = 0; i < result.lineItems.length; i++) {
+      let lineTotal = result.lineItems[i].quantity * result.lineItems[i].unit_price / 100;
+      let lineItemRow = "<tr id='line-item-" + result.lineItems[i].id + "'>";
+      lineItemRow += "<td>" + result.lineItems[i].id + "</td>";
+      lineItemRow += "<td>" + result.lineItems[i].item_name + "</td>";
+      lineItemRow += "<td>" + result.lineItems[i].store + "</td>";
+      lineItemRow += "<td>" + result.lineItems[i].quantity + "</td>";
+      lineItemRow += "<td>£" + parseFloat(result.lineItems[i].unit_price / 100).toFixed(2) + "</td>";
+      lineItemRow += "<td>£" + parseFloat(lineTotal).toFixed(2) + "</td>";
+      lineItemRow += "<td><button data-item-amount='" + lineTotal + "' data-item-id='" + result.lineItems[i].id + "' class='btn btn-primary txt-brand-color-one bkg-brand-color-two bdr-brand-color-two remove-line-item' type='button'>Remove</button></td>";
+      lineItemRow += "</tr>";
+      $('#line-items-table > table > tbody').append(lineItemRow);
+      entireTotal += lineTotal;
+  }
+  let finalTotalRow = "<tr><td id='grand-total' class='font-weight-bold text-capitalize font-italic' colspan='5'>Grand Total: £" + parseFloat(entireTotal).toFixed(2) + "</td>";
+  finalTotalRow += "<td><button id='show-receipt' class='btn btn-secondary txt-brand-color-one bkg-brand-color-two bdr-brand-color-two' type='button'>Show Receipt</button></td>";
+  finalTotalRow += "<td><button id='pay-bill' class='btn btn-secondary txt-brand-color-one bkg-brand-color-two bdr-brand-color-two' type='button'>Pay Bill</button></td>";
+  finalTotalRow += "</tr>";
+  $('#line-items-table > table > tbody').append(finalTotalRow);
+  $('#customer-name').text(result.customerName);
+  $('#line-items-table').show();
+}
+
+function payFinalBill() {
+  hospitalityHelper.setData('reference', uuidv4());
+  hospitalityHelper.payFinalBill().then((result) => {
+      console.log(result);
+      if (result.response[1].SaleToPOIResponse.PaymentResponse.Response.Result === "Success") {
+          $('#line-items-table > table > tbody').empty();
+      } else {
+
+      }
+  });
+}
+
+function showFinalReceipt() {
+  hospitalityHelper.showVirtualReceipt().then((result) => {
+      console.log(result);
+  });
+}
+
+function removeLineItem() {
+  var lineItemId = $(this).attr("data-item-id");
+  var lineItemAmount = $(this).attr("data-item-amount");
+  hospitalityHelper.removeLineItem(lineItemId).then((result) => {
+      $('#line-item-' + lineItemId).remove();
+      entireTotal -= lineItemAmount;
+      $('#grand-total').text("Grand Total: £" + parseFloat(entireTotal).toFixed(2));
+  });
+}
+// End duplication
   
-  // Event handlers
-  document.getElementById('register-individual').addEventListener("submit", registerIndividual);
-  document.getElementById('enable-card').addEventListener("change", addRemoveCard);
-  document.getElementById('remove-registrant').addEventListener("click", removeRegistrant);
+var checkout = await AdyenCheckout(configuration);
+var card = checkout.create('card', {showPayButton: false}).mount('#card-container');
+
+getTheRegistrants();
+
+// Event handlers
+document.getElementById('register-individual').addEventListener("submit", registerIndividual);
+document.getElementById('enable-card').addEventListener("change", addRemoveCard);
+$(document.body).on("click", ".view-reg-record", viewRegRecord);
+document.getElementById('remove-registrant').addEventListener("click", removeRegistrant);
+document.getElementById('find-individual-by-id').addEventListener("click", findIndividualById);
+
+// DUPLICATED
+$(document.body).on("click", "#pay-bill", payFinalBill);
+$(document.body).on("click", "#show-receipt", showFinalReceipt);
+$(document.body).on("click", ".remove-line-item", removeLineItem);

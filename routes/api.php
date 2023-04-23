@@ -47,4 +47,6 @@ Route::prefix('hospitality')->group(function () {
     Route::post('/payFinalBill', 'HospitalityController@payFinalBill');
     Route::post('/showVirtualReceipt', 'HospitalityController@showVirtualReceipt');
     Route::get('/getRegistrants', 'HospitalityController@getRegistrants');
+    Route::get('/getRegistrant/{id}', 'HospitalityController@getRegistrant');
+    Route::post('/findRegistrant', 'HospitalityController@findRegistrant');
 });

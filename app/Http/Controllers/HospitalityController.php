@@ -15,6 +15,92 @@ class HospitalityController extends Controller
         return response()->json($registrants);
     }
 
+    // Get single registrant by demo ID and ID
+    public function getRegistrant(Request $request, $id)
+    {
+        $registrant = Registrant::findOrFail($id);
+        $runningTotal = 0;
+
+        foreach ($registrant->lineItemsUnpaid as $lineItem) {
+            $runningTotal += ($lineItem->unit_price * $lineItem->quantity) / 100;
+        }
+
+        $runningTotal = '£' . strval(number_format($runningTotal, 2));
+
+        return response()->json([
+            'id' => $registrant->id,
+            'shopperReference' => $registrant->shopperReference(),
+            'psp_card_token' => $registrant->psp_card_token,
+            'runningTotal' => $runningTotal,
+            'customerName' => $registrant->first_name . " " . $registrant->last_name,
+            'lineItems' => $registrant->lineItemsUnpaid
+        ]);
+    }
+
+    // Get single registrant by NFC look up
+    public function findRegistrant(Request $request)
+    {
+        $cardAcqResp = (new AdyenController)->terminalCloudCardAcquisitionRequest($request, true);
+        $params = $request->all();
+        // Is the additional response base64 encoded, and does it exist with the NFC UID
+        $additionalResponse = $cardAcqResp['response']['SaleToPOIResponse']['CardAcquisitionResponse']['Response']['AdditionalResponse'];
+        list($nfcUid, $store) = $this->findNfcUidAndStore($additionalResponse);
+
+        $registrant = Registrant::where([['nfc_uid', '=', $nfcUid], ['demo_id', '=', $this->getDemoId($request)]])->get();
+
+        if ($registrant->isEmpty()) {
+            $params = array();
+            $params['outputText'] = array(
+                array(
+                    "Text" => "Error"
+                ),
+                array(
+                    "Text" => "We could not find your customer record."
+                )
+            );
+            $params['predefinedContent'] = "DeclinedAnimated";
+            $displayResult = (new AdyenController)->terminalCloudCardAcquisitionAbortRequest($request, true, $params);
+            return response()->json([
+                'message' => 'Cannot find customer record',
+                'method' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'method'),
+                'request' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'request'),
+                'response' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'response'),
+            ], 404); // Status code here
+        } else {
+            $registrant = $registrant[0];
+            $runningTotal = 0;
+
+            foreach ($registrant->lineItemsUnpaid as $lineItem) {
+                $runningTotal += ($lineItem->unit_price * $lineItem->quantity) / 100;
+            }
+    
+            $runningTotal = '£' . strval(number_format($runningTotal, 2));
+            $params = array();
+            $params['outputText'] = array(
+                array(
+                    "Text" => "Found Record"
+                ),
+                array(
+                    "Text" => "We have found and displayed the record"
+                )
+            );
+            $params['predefinedContent'] = "AcceptedAnimated";
+            $displayResult = (new AdyenController)->terminalCloudCardAcquisitionAbortRequest($request, true, $params);
+    
+            return response()->json([
+                'id' => $registrant->id,
+                'shopperReference' => $registrant->shopperReference(),
+                'psp_card_token' => $registrant->psp_card_token,
+                'runningTotal' => $runningTotal,
+                'customerName' => $registrant->first_name . " " . $registrant->last_name,
+                'lineItems' => $registrant->lineItemsUnpaid,
+                'method' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'method'),
+                'request' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'request'),
+                'response' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'response'),
+            ]);
+        }
+    }
+
     public function addRegistrant(Request $request)
     {
         $registrant = new Registrant;

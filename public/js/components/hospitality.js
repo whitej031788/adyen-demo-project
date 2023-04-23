@@ -46,6 +46,23 @@ export class HospitalityHelper {
         });
     }
 
+    getRegistrant(id) {
+        return $.ajax({
+            url: '/api/hospitality/getRegistrant/' + id,
+            dataType: 'json',
+            type: 'get'
+        });
+    }
+
+    findRegistrant() {
+        return $.ajax({
+            url: '/api/hospitality/findRegistrant',
+            dataType: 'json',
+            type: 'post',
+            data: this.data
+        });
+    }
+
     addLineItem(terminal) {
         return $.ajax({
             url: '/api/hospitality/addLineItem',
