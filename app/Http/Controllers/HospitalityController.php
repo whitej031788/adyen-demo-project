@@ -172,7 +172,7 @@ class HospitalityController extends Controller
                         'data' => ['email' => $registrant->email, 'id' => $registrant->id, 'shopperReference' => $registrant->shopperReference(), 'nfcUid' => $nfcUid],
                         'message' => 'Registration Successful'
                     ]);
-                } catch (Throwable $e) {
+                } catch (\Exception $e) {
                     return response()->json([
                         'method' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'method'),
                         'request' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'request'),
