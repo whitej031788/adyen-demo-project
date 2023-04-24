@@ -110,8 +110,18 @@ class HospitalityController extends Controller
         $registrant->last_name = $request->lastName;
         $registrant->email = $request->email;
         $cardAcqResp = (new AdyenController)->terminalCloudCardAcquisitionRequest($request, true);
+
+        if (!array_key_exists('SaleToPOIResponse', $cardAcqResp['response'])) {
+            return response()->json([
+                'method' => $this->formatDataForResponse([$cardAcqResp], 'method'),
+                'request' => $this->formatDataForResponse([$cardAcqResp], 'request'),
+                'response' => $this->formatDataForResponse([$cardAcqResp], 'response'),
+                'message' => 'Issue with Terminal API call, see logs'
+            ], 422);
+        }
         // Is the additional response base64 encoded, and does it exist with the NFC UID
         $additionalResponse = $cardAcqResp['response']['SaleToPOIResponse']['CardAcquisitionResponse']['Response']['AdditionalResponse'];
+
         list($nfcUid, $store) = $this->findNfcUidAndStore($additionalResponse);
 
         $registrantExist = Registrant::where(function ($query) use ($nfcUid, $request) {
