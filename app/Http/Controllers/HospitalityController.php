@@ -152,10 +152,10 @@ class HospitalityController extends Controller
                 $demo = $request->session()->get('demo_session');
                 $merchantName = json_decode($demo)->merchantName;
                 $merchantLogoUrl = json_decode($demo)->merchantLogoUrl;
-                $brandColorOne = json_decode($demo)->brandColorOne;
-                $brandColorTwo = json_decode($demo)->brandColorTwo;
 
-                Mail::to($registrant->email)
+                // We will try and send an email, but no bother if it doesn't go through, catch and return normal response
+                try {
+                    Mail::to($registrant->email)
                     ->send(new RegistrationEmailQrCode(
                         $merchantName,
                         $merchantLogoUrl,
@@ -165,13 +165,22 @@ class HospitalityController extends Controller
                         base64_encode($this->getDemoId($request) . '-' . $registrant->nfc_uid)
                     ));
 
-                return response()->json([
-                    'method' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'method'),
-                    'request' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'request'),
-                    'response' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'response'),
-                    'data' => ['email' => $registrant->email, 'id' => $registrant->id, 'shopperReference' => $registrant->shopperReference(), 'nfcUid' => $nfcUid],
-                    'message' => 'Registration Successful'
-                ]);
+                    return response()->json([
+                        'method' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'method'),
+                        'request' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'request'),
+                        'response' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'response'),
+                        'data' => ['email' => $registrant->email, 'id' => $registrant->id, 'shopperReference' => $registrant->shopperReference(), 'nfcUid' => $nfcUid],
+                        'message' => 'Registration Successful'
+                    ]);
+                } catch (Throwable $e) {
+                    return response()->json([
+                        'method' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'method'),
+                        'request' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'request'),
+                        'response' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'response'),
+                        'data' => ['email' => $registrant->email, 'id' => $registrant->id, 'shopperReference' => $registrant->shopperReference(), 'nfcUid' => $nfcUid],
+                        'message' => 'Registration Successful'
+                    ]);
+                }
             }
         } else {
             $registrantExist = $registrantExist[0];
