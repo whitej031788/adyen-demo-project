@@ -50,3 +50,7 @@ Route::prefix('hospitality')->group(function () {
     Route::get('/getRegistrant/{id}', 'HospitalityController@getRegistrant');
     Route::post('/findRegistrant', 'HospitalityController@findRegistrant');
 });
+
+Route::prefix('demo')->group(function () {
+    Route::get('/getShareUrl', 'DemoController@getShareUrl');
+});

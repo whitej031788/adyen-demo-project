@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Registrant;
 use App\Models\LineItem;
 use App\Http\Controllers\AdyenController;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\RegistrationEmailQrCode;
 
 class HospitalityController extends Controller
 {
@@ -135,6 +137,24 @@ class HospitalityController extends Controller
                 );
                 $params['predefinedContent'] = "AcceptedAnimated";
                 $displayResult = (new AdyenController)->terminalCloudCardAcquisitionAbortRequest($request, true, $params);
+
+                // Now send confirmation email
+                $demo = $request->session()->get('demo_session');
+                $merchantName = json_decode($demo)->merchantName;
+                $merchantLogoUrl = json_decode($demo)->merchantLogoUrl;
+                $brandColorOne = json_decode($demo)->brandColorOne;
+                $brandColorTwo = json_decode($demo)->brandColorTwo;
+
+                Mail::to($registrant->email)
+                    ->send(new RegistrationEmailQrCode(
+                        $merchantName,
+                        $merchantLogoUrl,
+                        $registrant->first_name,
+                        $registrant->last_name,
+                        $registrant->email,
+                        base64_encode($this->getDemoId($request) . '-' . $registrant->nfc_uid)
+                    ));
+
                 return response()->json([
                     'method' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'method'),
                     'request' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'request'),
@@ -243,6 +263,7 @@ class HospitalityController extends Controller
         // We check if we have that shopperReference in our registrant table, and if so, add a LineItem with what they are buying
         // We then send a terminal display request summing up everything they have bought to date
         $cardAcqResp = (new AdyenController)->terminalCloudCardAcquisitionRequest($request, true);
+        //$cardAcqResp = (new AdyenController)->terminalCloudBarCodeScanner($request, true);
         $params = $request->all();
         // Is the additional response base64 encoded, and does it exist with the NFC UID
         $additionalResponse = $cardAcqResp['response']['SaleToPOIResponse']['CardAcquisitionResponse']['Response']['AdditionalResponse'];

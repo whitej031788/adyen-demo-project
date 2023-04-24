@@ -266,6 +266,25 @@ class AdyenController extends Controller
         }
     }
 
+    public function terminalCloudBarCodeScanner(Request $request, $isInternal = false, $extraParams = null)
+    {
+        $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
+        
+        $poiid = $this->setTerminalPoiid($request, $terminalService);
+
+        $params = $request->all();
+
+        $poiRequest = $this->barCodeScannerRequestObject($params['data'], $poiid, $extraParams);
+
+        $result = $this->makeAdyenRequest("runTenderSync", $poiRequest, false, $terminalService);
+
+        if (!$isInternal) {
+            return response()->json($result);
+        } else {
+            return $result;
+        }
+    }
+
     public function terminalCloudApiRequest(Request $request, $isInternal = false, $overrideParams = null)
     {
         $terminalService = new \Adyen\Service\PosPayment($this->adyenClient);
@@ -587,7 +606,48 @@ class AdyenController extends Controller
                 ),
         );
 
-        return $saleToPoiRequest;        
+        return $saleToPoiRequest;
+    }
+
+    private function barCodeScannerRequestObject($params, $poiid)
+    {
+        if (isset($params['serviceId'])) {
+            $servId = $requestData['serviceId'];
+        } else {
+            $servId = $this->generateRandomString();
+        }
+
+        $barcodeObject = array(
+            'Session' => array(
+                'Id' => $servId,
+                'Type' => 'Once'
+            ),
+            'Operation' => array(
+                array('Type' => 'ScanBarcode', 'TimeoutMs' => 10000),
+            )
+        );
+
+        $saleToPoiRequest = array(
+            'SaleToPOIRequest' =>
+                array(
+                    'MessageHeader' =>
+                        array(
+                            'ProtocolVersion' => '3.0',
+                            'MessageClass' => 'Service',
+                            'MessageCategory' => 'Admin',
+                            'MessageType' => 'Request',
+                            'ServiceID' => $servId,
+                            'SaleID' => 'DemoCashRegister', // could be sales agentID or iPad
+                            'POIID' => $poiid,
+                        ),
+                    'AdminRequest' =>
+                        array(
+                            'ServiceIdentification' => base64_encode(json_encode($barcodeObject))
+                        ),
+                ),
+        );
+
+        return $saleToPoiRequest;
     }
 
     private function cardAcquisitionNFCRequestObject($params, $poiid)

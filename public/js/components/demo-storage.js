@@ -11,4 +11,11 @@ export class DemoStorage {
         return JSON.parse(window.localStorage.getItem(key));
     }
 
+    static getShareUrl() {
+        return $.ajax({
+            url: '/api/demo/getShareUrl',
+            dataType: 'json',
+            type: 'get'
+        });
+    }
 }

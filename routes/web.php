@@ -47,6 +47,8 @@ Route::post('/create-demo', 'DemoController@create');
 
 Route::get('/edit-demo', 'DemoController@edit');
 
+Route::get('/load-demo-share-url/{hash}', 'DemoController@loadFromShareUrl');
+
 // File upload controllers
 Route::get('file-upload', 'DemoController@fileUpload')->name('file.upload');
 

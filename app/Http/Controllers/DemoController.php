@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Demo;
 
 class DemoController extends Controller {
   public function view() {
@@ -81,11 +82,34 @@ class DemoController extends Controller {
     }
 
     // Let's add an ID to this, and we can use this to tie things to a specific demo when using the database
-    $params['demo_id'] = $this->generateRandomString(10);
-
-    $request->session()->put('demo_session', json_encode($params));
+    // Only add an ID if it's a create, not edit
+    if (!$request->session()->get('demo_session')) {
+      $params['demo_id'] = $this->generateRandomString(15);
+    } else {
+      $demo = json_decode($request->session()->get('demo_session'));
+      if (property_exists($demo, 'demo_id')) {
+        $params['demo_id'] = $demo->demo_id;
+      } else {
+        $params['demo_id'] = $this->generateRandomString(15);
+      }
+    }
 
     $configJson = json_encode($params);
+    // Save the demo to the DB and to Disk
+    if (!$request->session()->get('demo_session')) {
+      $demo = new Demo;
+      $demo->demo_id = $params['demo_id'];
+      $demo->demo_json = $configJson;
+      $demo->save();
+    } else { // session already exists, so maybe an edit, update the demo DB with any new JSON
+      $demo = Demo::where('demo_id', json_decode($request->session()->get('demo_session'))->demo_id)->first();
+      $demo->demo_json = $configJson;
+      $demo->save();
+    }
+
+    // Put the demo_session into their PHP session
+    $request->session()->put('demo_session', json_encode($params));
+
     Storage::disk('local')->put('public/demos/' . $params['merchantName'] . '.json', $configJson);
 
     if ($request->has("configFile")) {
@@ -98,6 +122,32 @@ class DemoController extends Controller {
   public function delete(Request $request) {
     $request->session()->forget('demo_session');
     return redirect('/create-demo');
+  }
+
+  public function loadFromShareUrl(Request $request, $hash) {
+    $demoId = explode('-', base64_decode($hash))[0];
+    $demoHash = explode('-', base64_decode($hash))[1];
+
+    $theDemo = Demo::where([['id', '=', $demoId], ['demo_id', '=', $demoHash]])->first();
+
+    if (!$theDemo) {
+      $request->session()->forget('demo_session');
+      return redirect('/create-demo');
+    } else {
+      $sessionJson = $theDemo->demo_json;
+      $request->session()->put('demo_session', $sessionJson);
+      return redirect('/');
+    }
+  }
+
+  public function getShareUrl(Request $request) {
+    return response()->json($this->getDemoShareUrl($request));
+  }
+
+  private function getDemoShareUrl($request) {
+    $demo = Demo::where('demo_id', json_decode($request->session()->get('demo_session'))->demo_id)->first();
+    $host = $request->getSchemeAndHttpHost();
+    return $host . '/load-demo-share-url/' . base64_encode($demo->id . '-' . $demo->demo_id);
   }
 
   private function generateRandomString($length = 10)
