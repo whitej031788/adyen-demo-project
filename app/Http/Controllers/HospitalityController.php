@@ -173,6 +173,7 @@ class HospitalityController extends Controller
                         'message' => 'Registration Successful'
                     ]);
                 } catch (\Exception $e) {
+                    report($e);
                     return response()->json([
                         'method' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'method'),
                         'request' => $this->formatDataForResponse([$cardAcqResp, $displayResult], 'request'),
