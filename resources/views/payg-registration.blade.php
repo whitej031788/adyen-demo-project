@@ -77,6 +77,9 @@
             <button type="submit"
               class="btn btn-primary txt-brand-color-one bkg-brand-color-two bdr-brand-color-two" id="find-individual-by-id">Find individual by ID
             </button>
+            <button type="submit"
+              class="btn btn-primary txt-brand-color-one bkg-brand-color-two bdr-brand-color-two" id="find-individual-by-qr">Find individual by QR
+            </button>
             <div class="table-responsive" id="registrants-table">
               <table class="table table-striped">
                 <thead>

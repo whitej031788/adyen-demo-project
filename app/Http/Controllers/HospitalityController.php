@@ -42,11 +42,16 @@ class HospitalityController extends Controller
     // Get single registrant by NFC look up
     public function findRegistrant(Request $request)
     {
-        $cardAcqResp = (new AdyenController)->terminalCloudCardAcquisitionRequest($request, true);
         $params = $request->all();
-        // Is the additional response base64 encoded, and does it exist with the NFC UID
-        $additionalResponse = $cardAcqResp['response']['SaleToPOIResponse']['CardAcquisitionResponse']['Response']['AdditionalResponse'];
-        list($nfcUid, $store) = $this->findNfcUidAndStore($additionalResponse);
+        if (isset($params['type']) && $params['type'] == 'qr') {
+            $cardAcqResp = (new AdyenController)->terminalCloudBarCodeScanner($request, true);
+            $additionalResponse = $cardAcqResp['response']['SaleToPOIResponse']['AdminResponse']['Response']['AdditionalResponse'];
+        } else {
+            $cardAcqResp = (new AdyenController)->terminalCloudCardAcquisitionRequest($request, true);
+            $additionalResponse = $cardAcqResp['response']['SaleToPOIResponse']['CardAcquisitionResponse']['Response']['AdditionalResponse'];
+        }
+
+        list($nfcUid) = $this->findNfcUid($additionalResponse);
 
         $registrant = Registrant::where([['nfc_uid', '=', $nfcUid], ['demo_id', '=', $this->getDemoId($request)]])->get();
 
@@ -122,7 +127,7 @@ class HospitalityController extends Controller
         // Is the additional response base64 encoded, and does it exist with the NFC UID
         $additionalResponse = $cardAcqResp['response']['SaleToPOIResponse']['CardAcquisitionResponse']['Response']['AdditionalResponse'];
 
-        list($nfcUid, $store) = $this->findNfcUidAndStore($additionalResponse);
+        list($nfcUid) = $this->findNfcUid($additionalResponse);
 
         $registrantExist = Registrant::where(function ($query) use ($nfcUid, $request) {
             $query->where('nfc_uid', '=', $nfcUid)->orWhere('email', '=', $request->email);
@@ -210,7 +215,7 @@ class HospitalityController extends Controller
     {
         $cardAcqResp = (new AdyenController)->terminalCloudCardAcquisitionRequest($request, true);
         $additionalResponse = $cardAcqResp['response']['SaleToPOIResponse']['CardAcquisitionResponse']['Response']['AdditionalResponse'];
-        list($nfcUid, $store) = $this->findNfcUidAndStore($additionalResponse);
+        list($nfcUid) = $this->findNfcUid($additionalResponse);
 
         $registrant = Registrant::where(function ($query) use ($nfcUid, $request) {
             $query->where('nfc_uid', '=', $nfcUid)->orWhere('email', '=', $request->email);
@@ -282,12 +287,17 @@ class HospitalityController extends Controller
         // The customer then taps their NFC wearable, which should return to us the shopper reference
         // We check if we have that shopperReference in our registrant table, and if so, add a LineItem with what they are buying
         // We then send a terminal display request summing up everything they have bought to date
-        $cardAcqResp = (new AdyenController)->terminalCloudCardAcquisitionRequest($request, true);
-        //$cardAcqResp = (new AdyenController)->terminalCloudBarCodeScanner($request, true);
         $params = $request->all();
-        // Is the additional response base64 encoded, and does it exist with the NFC UID
-        $additionalResponse = $cardAcqResp['response']['SaleToPOIResponse']['CardAcquisitionResponse']['Response']['AdditionalResponse'];
-        list($nfcUid, $store) = $this->findNfcUidAndStore($additionalResponse);
+
+        if (isset($params['data']['type']) && $params['data']['type'] == 'qr') {
+            $cardAcqResp = (new AdyenController)->terminalCloudBarCodeScanner($request, true);
+            $additionalResponse = $cardAcqResp['response']['SaleToPOIResponse']['AdminResponse']['Response']['AdditionalResponse'];
+        } else {
+            $cardAcqResp = (new AdyenController)->terminalCloudCardAcquisitionRequest($request, true);
+            $additionalResponse = $cardAcqResp['response']['SaleToPOIResponse']['CardAcquisitionResponse']['Response']['AdditionalResponse'];
+        }
+
+        list($nfcUid, $store) = $this->findNfcUid($additionalResponse);
         $lineItemData = $params['data'];
 
         $registrant = Registrant::where([['nfc_uid', '=', $nfcUid], ['demo_id', '=', $this->getDemoId($request)]])->get();
@@ -430,15 +440,25 @@ class HospitalityController extends Controller
         }
     }
 
-    private function findNfcUidAndStore($additionalResponse)
+    private function findNfcUid($additionalResponse)
     {
+        // Check if it's a base64 encoded string
         if (base64_encode(base64_decode($additionalResponse, true)) === $additionalResponse) {
             $jsonString = base64_decode($additionalResponse, true);
             $data = json_decode($jsonString, TRUE);
-            $nfcUid = $data['additionalData']['NFC.uid'];
-            $store = $data['store'];
+            // Now we have the JSON object, check if it's NFC or QR identification
+            if (isset($data['additionalData']['NFC.uid'])) {
+                $nfcUid = $data['additionalData']['NFC.uid'];
+                $store = $data['store'];
+            } else { // this means it's QR ID, so parse it out
+                $baseSixFourQr = $data['additionalData']['Barcode']['Data'];
+                $demoNfcString = base64_decode($baseSixFourQr);
+                $nfcUid = explode('-', $demoNfcString)[1];
+                $store = "";
+            }
         } else {
             // It's just key value pairs
+            // Need to add QR for this, haven't tested it
             parse_str($additionalResponse, $output);
             $nfcUid = $output['NFC_uid'];
             $store = $output['store'];

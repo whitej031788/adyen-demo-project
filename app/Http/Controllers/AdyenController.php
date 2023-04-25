@@ -623,7 +623,7 @@ class AdyenController extends Controller
                 'Type' => 'Once'
             ),
             'Operation' => array(
-                array('Type' => 'ScanBarcode', 'TimeoutMs' => 10000),
+                array('Type' => 'ScanBarcode', 'TimeoutMs' => 15000),
             )
         );
 

@@ -54,7 +54,7 @@ export class HospitalityHelper {
         });
     }
 
-    findRegistrant() {
+    findRegistrant(type) {
         return $.ajax({
             url: '/api/hospitality/findRegistrant',
             dataType: 'json',

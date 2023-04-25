@@ -20,6 +20,22 @@
       </tbody>
     </table>
   </div>
+  <div class="row mb-1">
+    <div class="col-md-12">
+      <p class="mb-0 pb-0">How to identify the registrant?</p>
+      <small><i>Please only use QR if you are using S1EL or S1E2L terminals</i></small>
+      <div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="identificationType" id="identificationType1" value="id" checked="checked">
+          <label class="form-check-label" for="identificationType1">NFC Read</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="identificationType" id="identificationType2" value="qr">
+          <label class="form-check-label" for="identificationType2">QR Scan</label>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="row mb-3">
     <div class="col-md-4">
       <div class="card text-white bg-dark mb-3" style="height: 100%;">

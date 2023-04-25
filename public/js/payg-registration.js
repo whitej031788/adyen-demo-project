@@ -67,7 +67,27 @@ function registerIndividual(e) {
 
 function findIndividualById(e) {
   e.preventDefault();
-  hospitalityHelper.findRegistrant().then((result) => {
+  hospitalityHelper.setData('type', 'id');
+  hospitalityHelper.findRegistrant('id').then((result) => {
+    hospitalityHelper.setData('registrantId', result.id);
+    buildLineItemsTable(result);
+    $('#registrant-record').show();
+    document.getElementById('registrant-record').scrollIntoView({
+      behavior: 'auto',
+      block: 'center',
+      inline: 'center'
+    });
+  },
+  (error) => {
+      console.error(error);
+      handleResult(error, true);
+  });
+}
+
+function findIndividualByQr(e) {
+  e.preventDefault();
+  hospitalityHelper.setData('type', 'qr');
+  hospitalityHelper.findRegistrant('qr').then((result) => {
     hospitalityHelper.setData('registrantId', result.id);
     buildLineItemsTable(result);
     $('#registrant-record').show();
@@ -214,6 +234,7 @@ function viewRegRecord() {
 
 // This is duplicated, need to make this better and a shared module function / view
 function buildLineItemsTable(result) {
+  $('#line-items-table > table > tbody').empty();
   // Here we want to populate the customer name, and build the table of their current bill
   entireTotal = 0;
   for (let i = 0; i < result.lineItems.length; i++) {
@@ -279,6 +300,7 @@ document.getElementById('enable-card').addEventListener("change", addRemoveCard)
 $(document.body).on("click", ".view-reg-record", viewRegRecord);
 document.getElementById('remove-registrant').addEventListener("click", removeRegistrant);
 document.getElementById('find-individual-by-id').addEventListener("click", findIndividualById);
+document.getElementById('find-individual-by-qr').addEventListener("click", findIndividualByQr);
 
 // DUPLICATED
 $(document.body).on("click", "#pay-bill", payFinalBill);

@@ -84,7 +84,8 @@ function submitLineItem(e) {
 function sendLineItem(lineItemInfo) {
     hospitalityHelper = new HospitalityHelper(lineItemInfo);
     $('#line-items-table > table > tbody').empty();
-
+    let scanType = document.querySelector('input[name="identificationType"]:checked').value;
+    hospitalityHelper.setData('type', scanType);
     hospitalityHelper.addLineItem().then((result) => {
         hospitalityHelper.setData('registrantId', result.id);
         buildLineItemsTable(result);
