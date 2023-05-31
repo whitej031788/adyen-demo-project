@@ -297,7 +297,6 @@ function getPaymentMethods() {
         // Now lets create and mount the apple pay express component
         let applepay = globalCheckout.create("applepay", {
           amount: checkoutApi.data.amount,
-          countryCode: checkoutApi.data.countryCode,
           // BEGIN Apple Pay Express Checkout Configuration
           requiredBillingContactFields: ["name", "email", "postalAddress"],
           requiredShippingContactFields: ["name", "email", "postalAddress"],
