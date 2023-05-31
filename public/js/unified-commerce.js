@@ -264,7 +264,11 @@ function getPaymentMethods() {
                 },
                 applepay: {
                     amount: checkoutApi.data.amount,
-                    countryCode: checkoutApi.data.countryCode
+                    countryCode: checkoutApi.data.countryCode,
+                    configuration: {
+                        merchantName: "Farah's Flowers",
+                        merchantId: "000000000200649"
+                    }
                 },
                 paypal: {
                     merchantId: adyenConfig.paypalID,

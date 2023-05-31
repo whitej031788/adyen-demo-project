@@ -47,6 +47,7 @@ class DemoController extends Controller {
 
       $params = $request->all();
 
+      $uploadedNewShot = false;
       // Check if they uploaded a screenshot
       if ($request->hasFile('checkoutScreenshot')) {
         if ($request->file('checkoutScreenshot')->isValid()) {
@@ -58,6 +59,7 @@ class DemoController extends Controller {
           $screenshotUrl = "/uploads/screenshots/" . $storeAsName;
           $params['screenshotUrl'] = $screenshotUrl;
           unset($params['checkoutScreenshot']);
+          $uploadedNewShot = true;
         }
       }
       // Once we have validated all required fields, lets just put the demo settings into a JSON object
@@ -71,7 +73,7 @@ class DemoController extends Controller {
 
     // See if there is already a session, to get the screenshot from it
     if ($request->session()->get('demo_session')) {
-      if (property_exists(json_decode($request->session()->get('demo_session')), 'screenshotUrl')) {
+      if (property_exists(json_decode($request->session()->get('demo_session')), 'screenshotUrl') && !$uploadedNewShot) {
         $params['screenshotUrl'] = json_decode($request->session()->get('demo_session'))->screenshotUrl;
       }
     }
