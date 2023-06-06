@@ -39,11 +39,11 @@ Route::group(['middleware' => 'demosession'], function () {
   // End Normal JS Routes
 });
 // Create demo, GET for new  demo, POST for the actual creation
-Route::get('/create-demo', 'DemoController@view');
+Route::get('/create-demo', 'DemoController@viewManual');
 
 Route::get('/create-demo-manual', 'DemoController@viewManual');
 
-Route::post('/create-demo', 'DemoController@viewManual');
+Route::post('/create-demo', 'DemoController@create');
 
 Route::get('/edit-demo', 'DemoController@edit');
 
