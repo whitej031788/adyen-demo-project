@@ -43,7 +43,7 @@ Route::get('/create-demo', 'DemoController@view');
 
 Route::get('/create-demo-manual', 'DemoController@viewManual');
 
-Route::post('/create-demo', 'DemoController@create');
+Route::post('/create-demo', 'DemoController@viewManual');
 
 Route::get('/edit-demo', 'DemoController@edit');
 
