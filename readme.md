@@ -6,6 +6,10 @@
 - You should now have a `composer.phar` file in the repository folder
 - Install dependencies `php composer.phar install`
 - Copy the `.env.example` file to `.env` using `cp .env.example .env`
+- Create a file in your home directory and call it `database.sqlite`
+- Update the `DB_DATABASE` variable in the `.env` file to reflect your file path to `database.sqlite`
+- Run `php artisan config:cache` to clear any existing cache
+- Run `php artisan migrate` to build the database
 - Generate a key `php artisan key:generate`
 - Run Laravel `php artisan serve`
 
