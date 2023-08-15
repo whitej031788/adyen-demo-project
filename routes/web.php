@@ -15,6 +15,11 @@
 Route::group(['middleware' => 'demosession'], function () {
   Route::get('/', 'ShowController@index');
   Auth::routes();
+
+//   Route::get('phpmyinfo', function () {
+//     phpinfo(); 
+// })->name('phpmyinfo');
+
   // Preact Routes
   Route::get('/afp-onboarding', function () {return view('afp-onboarding');});
   Route::get('/afp-payment', function () {return view('afp-payment');});
