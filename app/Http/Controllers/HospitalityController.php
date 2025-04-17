@@ -445,7 +445,7 @@ class HospitalityController extends Controller
         // Check if it's a base64 encoded string
         if (base64_encode(base64_decode($additionalResponse, true)) === $additionalResponse) {
             $jsonString = base64_decode($additionalResponse, true);
-            $data = json_decode($jsonString, TRUE);
+            $data = json_decode($jsonString, true);
             // Now we have the JSON object, check if it's NFC or QR identification
             if (isset($data['additionalData']['NFC.uid'])) {
                 $nfcUid = $data['additionalData']['NFC.uid'];
