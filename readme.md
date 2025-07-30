@@ -1,4 +1,4 @@
-## Setup the application
+## Setup the application for running
 
 - [Download composer installer](http://getcomposer.org/installer)
 - Open terminal, navigate to this repository
